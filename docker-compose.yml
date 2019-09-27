@@ -1,0 +1,43 @@
+version: '3'
+
+# Volume used to persist data in postgresql database
+volumes:
+  postgres-db-data-volume:
+    driver: local
+
+services:
+
+  #  Nginx web server + php7.2 fpm
+  web_server_with_app_code:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/var/www
+    ports:
+      - "9595:80"
+    links:
+      - postgresql-database
+      - redis_cache
+    environment:
+      - "APP_NAME=SpringVerse-investment-app-api"
+      - "DATABASE_URL=postgres://springVerseUser:springVersePassword@postgresql-database:5432/springVerseDB"
+      - "REDIS_PORT=6379"
+      - "REDIS_HOST=redis_cache"
+
+  # Database
+  postgresql-database:
+    image: postgres:12
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: "springVersePassword"
+      POSTGRES_USER: "springVerseUser"
+      POSTGRES_DB: "springVerseDB"
+    ports:
+      - "5434:5432"
+
+ # Redis cache only used in development and testing
+  redis_cache:
+    image: redis:3.0
+    ports:
+      - "6371:6379"
