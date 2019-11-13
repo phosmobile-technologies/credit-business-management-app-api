@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Models\Concerns\UsesUuid;
+use App\Models\UserProfile;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -52,5 +53,13 @@ class User extends Authenticatable
         return $this->where('email', $username)
             ->orWhere('phone_number', $username)
             ->first();
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function profile()
+    {
+        return $this->hasOne(UserProfile::class, 'user_id', 'id');
     }
 }
