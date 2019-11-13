@@ -1,0 +1,10 @@
+# The Application User
+type User {
+    id: ID!
+    first_name: String!
+    last_name: String!
+    phone_number: String!
+    email: String!
+    created_at: DateTime!
+    updated_at: DateTime!
+}

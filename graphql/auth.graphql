@@ -9,8 +9,12 @@ input RefreshTokenInput {
 
 type User {
     id: ID!
-    name: String!
+    first_name: String!
+    last_name: String!
+    phone_number: String!
     email: String!
+    created_at: DateTime!
+    updated_at: DateTime!
 }
 
 type AuthPayload {
@@ -50,7 +54,9 @@ input NewPasswordWithCodeInput {
 }
 
 input RegisterInput {
-    name: String! @rules(apply: ["required", "string"])
+    first_name: String! @rules(apply: ["required", "string"])
+    last_name: String! @rules(apply: ["required", "string"])
+    phone_number: String! @rules(apply: ["required", "string"])
     email: String! @rules(apply: ["required", "email"])
     password: String! @rules(apply: ["required", "confirmed", "min:8"])
     password_confirmation: String!

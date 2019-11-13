@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Repositories\Interfaces\UserRepositoryInterface;
+use App\Repositories\UserRepository;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Passport\Passport;
 
@@ -15,6 +17,8 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         Passport::ignoreMigrations();
+
+        $this->registerRepositories();
     }
 
     /**
@@ -25,5 +29,20 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         //
+    }
+
+    /**
+     * Register our repositories with Laravel's IOC container
+     *
+     * @return void
+     */
+    private function registerRepositories() {
+        $repositories = [
+            UserRepositoryInterface::class => UserRepository::class
+        ];
+
+        foreach($repositories as $interface => $repository) {
+            $this->app->bind($interface, $repository);
+        }
     }
 }

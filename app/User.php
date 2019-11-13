@@ -44,11 +44,13 @@ class User extends Authenticatable
      * Find the user instance for the given username.
      * This method is used by Laravel Passport to determine how to resolve the username during authentication.
      *
-     * @param  string  $username
+     * @param  string $username
      * @return \App\User
      */
     public function findForPassport($username)
     {
-        return $this->where('name', $username)->orWhere('email', $username)->first();
+        return $this->where('email', $username)
+            ->orWhere('phone_number', $username)
+            ->first();
     }
 }
