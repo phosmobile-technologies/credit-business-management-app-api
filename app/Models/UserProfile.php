@@ -13,4 +13,9 @@ class UserProfile extends Model
      * @var string
      */
     protected $table = "user_profile";
+
+    /**
+     * @var array
+     */
+    protected $guarded = [];
 }

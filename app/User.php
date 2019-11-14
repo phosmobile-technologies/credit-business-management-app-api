@@ -22,7 +22,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password', 'first_name', 'last_name', 'phone_number'
     ];
 
     /**
@@ -58,6 +58,8 @@ class User extends Authenticatable
     }
 
     /**
+     * Relationship between a user and their user profile.
+     *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function profile()

@@ -2,20 +2,20 @@
 
 namespace App\GraphQL\Mutations;
 
-use App\Repositories\Interfaces\UserRepositoryInterface;
+use App\Services\UserService;
 use GraphQL\Type\Definition\ResolveInfo;
 use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
 
 class RegisterUser
 {
     /**
-     * @var UserRepositoryInterface
+     * @var UserService
      */
-    public $userRepository;
+    public $userService;
 
-    public function __construct(UserRepositoryInterface $userRepository)
+    public function __construct(UserService $userService)
     {
-        $this->userRepository = $userRepository;
+        $this->userService = $userService;
     }
 
     /**
@@ -29,6 +29,6 @@ class RegisterUser
      */
     public function __invoke($rootValue, array $args, GraphQLContext $context, ResolveInfo $resolveInfo)
     {
-        return $this->userRepository->createUser($args);
+        return $this->userService->registerUser($args);
     }
 }
