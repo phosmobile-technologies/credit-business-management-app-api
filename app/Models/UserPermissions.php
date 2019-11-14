@@ -14,4 +14,7 @@ abstract class UserPermissions
 {
     const SAVE_MONEY = "SAVE_MONEY";
     const WITHDRAW_MONEY = "WITHDRAW_MONEY";
+
+    // Admin User Permissions
+    const CAN_CRUD_USERS = "CAN_CRUD_USERS";
 }
