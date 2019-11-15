@@ -6,6 +6,7 @@ namespace App\Services;
 use App\Events\NewUserRegistered;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use App\User;
+use Illuminate\Auth\Events\Registered;
 
 class UserService
 {
@@ -52,6 +53,7 @@ class UserService
         $this->userRepository->attachUserProfile($user, $userProfileData);
 
         event(new NewUserRegistered($user));
+        event(new Registered($user));
 
         return [
             "user" => $user
