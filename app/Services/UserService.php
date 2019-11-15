@@ -3,6 +3,7 @@
 namespace App\Services;
 
 
+use App\Events\NewUserRegistered;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use App\User;
 
@@ -50,8 +51,8 @@ class UserService
         $user = $this->userRepository->createUser($userData);
         $this->userRepository->attachUserProfile($user, $userProfileData);
 
-        //        event(new NewUserRegistered($user));
-        
+        event(new NewUserRegistered($user));
+
         return [
             "user" => $user
         ];

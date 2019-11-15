@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\GraphQL;
 
 use App\Models\UserProfile;
 use App\User;
