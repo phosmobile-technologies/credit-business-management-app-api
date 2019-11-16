@@ -15,7 +15,7 @@ class CreateActivityLogTable extends Migration
             $table->bigIncrements('id');
             $table->string('log_name')->nullable();
             $table->text('description');
-            $table->unsignedBigInteger('subject_id')->nullable();
+            $table->uuid('subject_id')->nullable();
             $table->string('subject_type')->nullable();
             $table->uuid('causer_id')->nullable();
             $table->string('causer_type')->nullable();

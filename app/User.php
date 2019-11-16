@@ -3,15 +3,19 @@
 namespace App;
 
 use App\Models\Concerns\UsesUuid;
+use App\Models\UserProfile;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Hash;
 use Laravel\Passport\HasApiTokens;
+use Spatie\Activitylog\Traits\CausesActivity;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use Notifiable, HasApiTokens, UsesUuid, LogsActivity;
+    use Notifiable, HasApiTokens, UsesUuid, LogsActivity, HasRoles, CausesActivity;
 
     /**
      * The attributes that are mass assignable.
@@ -19,7 +23,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password', 'first_name', 'last_name', 'phone_number'
     ];
 
     /**
@@ -44,11 +48,32 @@ class User extends Authenticatable
      * Find the user instance for the given username.
      * This method is used by Laravel Passport to determine how to resolve the username during authentication.
      *
-     * @param  string  $username
+     * @param  string $username
      * @return \App\User
      */
     public function findForPassport($username)
     {
-        return $this->where('name', $username)->orWhere('email', $username)->first();
+        return $this->where('email', $username)
+            ->orWhere('phone_number', $username)
+            ->first();
+    }
+
+    /**
+     * Relationship between a user and their user profile.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function profile()
+    {
+        return $this->hasOne(UserProfile::class, 'user_id', 'id');
+    }
+
+    /**
+     * Encrypt the user password when setting it.
+     *
+     * @param $value
+     */
+    public function setPasswordAttribute($value) {
+        $this->attributes['password'] = Hash::make($value);
     }
 }

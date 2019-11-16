@@ -7,17 +7,16 @@ input RefreshTokenInput {
     refresh_token: String
 }
 
-type User {
-    id: ID!
-    name: String!
-    email: String!
-}
-
 type AuthPayload {
     access_token: String!
     refresh_token: String!
     expires_in: Int!
     token_type: String!
+    user: User!
+    roles: [String]!
+}
+
+type RegisterPayload {
     user: User!
 }
 
@@ -50,17 +49,32 @@ input NewPasswordWithCodeInput {
 }
 
 input RegisterInput {
-    name: String! @rules(apply: ["required", "string"])
+    first_name: String! @rules(apply: ["required", "string"])
+    last_name: String! @rules(apply: ["required", "string"])
+    phone_number: String! @rules(apply: ["required", "string"])
     email: String! @rules(apply: ["required", "email"])
-    password: String! @rules(apply: ["required", "confirmed", "min:8"])
-    password_confirmation: String!
+
+    gender: Gender! @rules(apply: ["required"])
+    date_of_birth: Date! @rules(apply: ["required"])
+    marital_status: MaritalStatus! @rules(apply: ["required"])
+    occupation: String!  @rules(apply: ["required", "string"])
+    address: String!  @rules(apply: ["required", "string"])
+    state_of_origin: String!  @rules(apply: ["required", "string"])
+    saving_amount: Float! @rules(apply: ["required"])
+    frequency_of_saving: FrequencyOfSaving! @rules(apply: ["required"])
+    next_of_kin: String!  @rules(apply: ["required", "string"])
+    relationship_with_next_of_kin: String!  @rules(apply: ["required", "string"])
+    account_administrator: String!  @rules(apply: ["required", "string"])
+    account_name: String!  @rules(apply: ["required", "string"])
+    account_number: String!  @rules(apply: ["required", "string"])
+    status: AccountStatus!  @rules(apply: ["required"])
 }
 
 extend type Mutation {
-    login(input: LoginInput @spread): AuthPayload! @field(resolver: "Joselfonseca\\LighthouseGraphQLPassport\\GraphQL\\Mutations\\Login@resolve")
+    login(input: LoginInput @spread): AuthPayload! @field(resolver: "App\\GraphQL\\Mutations\\Login")
     refreshToken(input: RefreshTokenInput @spread): RefreshTokenPayload! @field(resolver: "Joselfonseca\\LighthouseGraphQLPassport\\GraphQL\\Mutations\\RefreshToken@resolve")
     logout: LogoutResponse! @field(resolver: "Joselfonseca\\LighthouseGraphQLPassport\\GraphQL\\Mutations\\Logout@resolve")
     forgotPassword(input: ForgotPasswordInput! @spread): ForgotPasswordResponse! @field(resolver: "Joselfonseca\\LighthouseGraphQLPassport\\GraphQL\\Mutations\\ForgotPassword@resolve")
     updateForgottenPassword(input: NewPasswordWithCodeInput @spread): ForgotPasswordResponse! @field(resolver: "Joselfonseca\\LighthouseGraphQLPassport\\GraphQL\\Mutations\\ResetPassword@resolve")
-    register(input: RegisterInput @spread): AuthPayload! @field(resolver: "Joselfonseca\\LighthouseGraphQLPassport\\GraphQL\\Mutations\\Register@resolve")
+    register(input: RegisterInput @spread): RegisterPayload! @field(resolver: "App\\GraphQL\\Mutations\\RegisterUser")
 }
