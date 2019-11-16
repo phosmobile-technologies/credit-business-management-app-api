@@ -7,6 +7,7 @@ use App\Events\NewUserRegistered;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use App\User;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Str;
 
 class UserService
 {
@@ -34,9 +35,12 @@ class UserService
             'first_name',
             'last_name',
             'email',
-            'phone_number',
-            'password'
+            'phone_number'
         ])->toArray();
+
+        // Generate a random password for the user
+        $defaultPassword  = Str::random(8);
+        $userData['password'] = $defaultPassword;
 
         // TODO: Figure why the 'directive' index is added by Lighthouse-php to the args it passes down
         $userProfileData = $attributes->except([
@@ -44,16 +48,13 @@ class UserService
             'last_name',
             'email',
             'phone_number',
-            'password',
-            'password_confirmation',
             'directive'
         ])->toArray();
 
         $user = $this->userRepository->createUser($userData);
         $this->userRepository->attachUserProfile($user, $userProfileData);
 
-        event(new NewUserRegistered($user));
-        event(new Registered($user));
+        event(new NewUserRegistered($user, $defaultPassword));
 
         return [
             "user" => $user

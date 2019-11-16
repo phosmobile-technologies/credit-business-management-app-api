@@ -4,6 +4,7 @@ namespace App\Listeners;
 
 use App\Events\NewUserRegistered;
 use App\Mail\NewUserRegisteredMail;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
@@ -23,14 +24,15 @@ class SendUserRegistrationEmail implements ShouldQueue
     /**
      * Handle the event.
      *
-     * @param  NewUserRegistered  $event
+     * @param  NewUserRegistered $event
      * @return void
      */
     public function handle(NewUserRegistered $event)
     {
         $user = $event->user;
+        $defaultPassword = $event->defaultPassword;
 
-        Mail::to($user)->send(new NewUserRegisteredMail($user));
+        Mail::to($user)->send(new NewUserRegisteredMail($user, $defaultPassword));
     }
 
     /**
@@ -42,6 +44,6 @@ class SendUserRegistrationEmail implements ShouldQueue
      */
     public function failed(NewUserRegistered $event, $exception)
     {
-        //
+        Log::info($exception);
     }
 }

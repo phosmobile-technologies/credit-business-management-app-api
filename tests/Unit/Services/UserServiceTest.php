@@ -47,10 +47,7 @@ class UserServiceTest extends TestCase
         $user = factory(User::class)->make();
         $userData = collect($user)->except('email_verified_at')->toArray();
         $userProfileData = factory(UserProfile::class)->make()->toArray();
-        $registrationData = array_merge($userData, $userProfileData, [
-            'password' => 'password',
-            'password_confirmation' => 'password',
-        ]);
+        $registrationData = array_merge($userData, $userProfileData);
 
         $this->userRepository->shouldReceive('createUser')
             ->andReturn($user);

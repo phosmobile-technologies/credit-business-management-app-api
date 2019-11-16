@@ -16,12 +16,9 @@ class UserRegistrationTest extends TestCase
      */
     public function testItSuccessfullyRegistersANewUser()
     {
-        $userData = collect(factory(User::class)->make())->except('email_verified_at')->toArray();
+        $userData = collect(factory(User::class)->make())->except(['email_verified_at', 'password'])->toArray();
         $userProfileData = factory(UserProfile::class)->make()->toArray();
-        $registrationData = array_merge($userData, $userProfileData, [
-            'password' => 'password',
-            'password_confirmation' => 'password',
-        ]);
+        $registrationData = array_merge($userData, $userProfileData);
 
         /** @var \Illuminate\Foundation\Testing\TestResponse $response */
         $response = $this->postGraphQL([

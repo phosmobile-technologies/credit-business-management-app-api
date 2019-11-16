@@ -18,13 +18,20 @@ class NewUserRegisteredMail extends Mailable
     public $user;
 
     /**
+     * @var string
+     */
+    public $defaultPassword;
+
+    /**
      * Create a new message instance.
      *
      * @param User $user
+     * @param string $defaultPassword
      */
-    public function __construct(User $user)
+    public function __construct(User $user, string $defaultPassword)
     {
         $this->user = $user;
+        $this->defaultPassword = $defaultPassword;
     }
 
     /**
