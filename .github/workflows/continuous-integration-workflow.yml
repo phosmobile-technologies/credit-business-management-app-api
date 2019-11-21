@@ -1,0 +1,37 @@
+# The name of the workflow.
+name: Continuous integration pipeline triggered by pull requests to dev branch
+
+# The events that trigger this github workflow
+on:
+  pull_request:
+    branches:
+      - dev
+
+
+jobs:
+  # Job used to setup the app and run unit tests
+  build-and-run-unit-tests:
+    runs-on: ubuntu-latest
+    steps:
+    # Checkout your code
+      - uses: actions/checkout@v1
+
+      - name: Copy .env
+        run: php -r "file_exists('.env') || copy('.env.example', '.env');"
+
+      - name: Install Dependencies
+        run: composer install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
+
+      - name: Generate Application key
+        run: php artisan key:generate
+
+      - name: Create Testing Database
+        run: |
+            mkdir -p database
+            touch database/database.sqlite
+
+      - name: Execute tests (Unit and Feature tests) via PHPUnit
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: database/database.sqlite
+        run: vendor/bin/phpunit
