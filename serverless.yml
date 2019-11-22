@@ -1,0 +1,34 @@
+service: springverse-api
+
+provider:
+    name: aws
+    region: us-east-1
+    runtime: provided
+    environment:
+        # Laravel environment variables
+        APP_STORAGE: '/tmp'
+
+plugins:
+    - ./vendor/bref/bref
+
+functions:
+    api:
+        handler: public/index.php
+        description: ''
+        timeout: 28 # in seconds (API Gateway has a timeout of 29 seconds)
+        layers:
+            - ${bref:layer.php-73-fpm}
+        events:
+            -   http: 'ANY /'
+            -   http: 'ANY /{proxy+}'
+            - schedule:
+                rate: rate(5 minutes)
+                input:
+                    warmer: true
+
+    artisan:
+        handler: artisan
+        timeout: 120 # in seconds
+        layers:
+            - ${bref:layer.php-73} # PHP
+            - ${bref:layer.console} # The "console" layer

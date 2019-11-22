@@ -28,7 +28,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        /**
+         * Make sure the directory for compiled views exist
+         *
+         * This is because we are using serverless
+         */
+        if (! is_dir(config('view.compiled'))) {
+            mkdir(config('view.compiled'), 0755, true);
+        }
     }
 
     /**
