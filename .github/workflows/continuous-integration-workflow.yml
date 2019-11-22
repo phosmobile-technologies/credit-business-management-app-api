@@ -7,7 +7,6 @@ on:
     branches:
       - dev
 
-
 jobs:
   # Job used to setup the app and run unit tests
   build-and-run-unit-tests:
@@ -20,7 +19,8 @@ jobs:
         run: php -r "file_exists('.env') || copy('.env.example', '.env');"
 
       - name: Cache Composer Dependencies
-        with: actions/cache@v1
+        uses: actions/cache@v1
+        with:
           path: vendor
           key: ${{ runner.OS }}-build-${{ hashFiles('**/composer.lock') }}
 
