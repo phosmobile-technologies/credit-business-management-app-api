@@ -1,4 +1,4 @@
-name: Run unit tests when code is pushed to any branch
+name: Continuous integration pipeline triggered by commits to any branch
 
 on: [push]
 
