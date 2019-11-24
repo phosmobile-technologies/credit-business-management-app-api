@@ -15,6 +15,8 @@ jobs:
     steps:
     # Checkout your code
       - uses: actions/checkout@v1
+        with:
+          ref: dev
 
       - name: Copy .env
         run: php -r "file_exists('.env') || copy('.env.example', '.env');"
