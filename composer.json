@@ -10,6 +10,7 @@
     "require": {
         "php": "^7.2",
         "barryvdh/laravel-cors": "^0.11.4",
+        "bref/bref": "^0.5.11",
         "fideloper/proxy": "^4.0",
         "guzzlehttp/guzzle": "^6.4",
         "joselfonseca/lighthouse-graphql-passport-auth": "^2.0",
