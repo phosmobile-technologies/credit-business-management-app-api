@@ -31,7 +31,7 @@ class AppServiceProvider extends ServiceProvider
         /**
          * Make sure the directory for compiled views exist
          *
-         * This is because we are using serverless
+         * @for-serverless
          */
         if (! is_dir(config('view.compiled'))) {
             mkdir(config('view.compiled'), 0755, true);

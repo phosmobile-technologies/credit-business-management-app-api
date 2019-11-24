@@ -16,7 +16,10 @@ $app = new Illuminate\Foundation\Application(
 );
 
 /*
+ * Since the filesystem in AWS lambda is readonly except for /tmp we need to customize where the cache files are stored.
  * Allow overriding the storage path in production using an environment variable.
+ *
+ * @for-serverless
  */
 $app->useStoragePath($_ENV['APP_STORAGE'] ?? $app->storagePath());
 

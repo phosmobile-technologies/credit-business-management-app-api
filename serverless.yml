@@ -7,6 +7,19 @@ provider:
     environment:
         # Laravel environment variables
         APP_STORAGE: '/tmp'
+        DATABASE_URL: ${ssm:/springverse-api/database-url}
+        MAILGUN_DOMAIN: ${ssm:/springverse-api/mailgun-domain}
+        MAILGUN_SECRET: ${ssm:/springverse-api/mailgun-secret}
+        MAIL_FROM_ADDRESS: ${ssm:/springverse-api/mail-from-address}
+        MAIL_FROM_NAME: ${ssm:/springverse-api/mail-from-name}
+        MAIL_DRIVER: ${ssm:/springverse-api/mail-driver}
+        MAIL_HOST: ${ssm:/springverse-api/mail-host}
+        MAIL_PORT: ${ssm:/springverse-api/mail-port}
+        MAIL_USERNAME: ${ssm:/springverse-api/mail-username}
+        MAIL_PASSWORD: ${ssm:/springverse-api/mail-password}
+        MAIL_ENCRYPTION: ${ssm:/springverse-api/mail-encryption}
+        PASSPORT_CLIENT_ID: ${ssm:/springverse-api/passport-client-id}
+        PASSPORT_CLIENT_SECRET: ${ssm:/springverse-api/passport-client-secret}
 
 plugins:
     - ./vendor/bref/bref

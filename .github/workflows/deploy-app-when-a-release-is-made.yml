@@ -1,0 +1,60 @@
+# The name of the workflow.
+name: Continuous integration pipeline triggered when a release
+
+# The events that trigger this github workflow
+on:
+  release:
+    types: [created]
+    branches:
+      - dev
+
+jobs:
+  # Job used to setup the app and run unit tests
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+    # Checkout your code
+      - uses: actions/checkout@v1
+
+      - name: Copy .env
+        run: php -r "file_exists('.env') || copy('.env.example', '.env');"
+
+      - name: Cache Composer Dependencies
+        uses: actions/cache@v1
+        with:
+          path: vendor
+          key: ${{ runner.OS }}-build-${{ hashFiles('**/composer.lock') }}
+
+      - name: Install Composer Dependencies
+        run: composer install --optimize-autoloader -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
+
+      - name: Generate Application Key
+        run: php artisan key:generate
+
+      - name: Create Testing Database
+        run: |
+            mkdir -p database
+            touch database/database.sqlite
+
+      - name: Execute tests (Unit, Feature and GraphQL tests) via PHPUnit
+        env:
+          DB_CONNECTION: sqlite
+          DB_DATABASE: database/database.sqlite
+        run: vendor/bin/phpunit --testdox
+
+  deploy-release:
+    runs-on: ubuntu-latest
+    needs: [build-and-test]
+    steps:
+      ### Serverless app deployment
+      - name: Clear Laraval config cache in preparation for serverless deployment
+        run: php artisan config:clear
+
+      - name: Install Composer dependencies optimized for production
+        run: composer install --prefer-dist --optimize-autoloader --no-dev
+
+      - name: Deploy the application to AWS lambda using bref.sh(serverless)
+        run: |
+            export AWS_ACCESS_KEY_ID=${{ secrets.AwsAccessKeyId }}
+            export AWS_SECRET_ACCESS_KEY=${{ secrets.AwsSecretAccessKey }}
+            serverless deploy
