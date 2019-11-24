@@ -25,7 +25,7 @@ jobs:
           key: ${{ runner.OS }}-build-${{ hashFiles('**/composer.lock') }}
 
       - name: Install Composer Dependencies
-        run: composer install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
+        run: composer install --optimize-autoloader -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
 
       - name: Generate Application Key
         run: php artisan key:generate
@@ -35,8 +35,8 @@ jobs:
             mkdir -p database
             touch database/database.sqlite
 
-      - name: Execute tests (Unit and Feature tests) via PHPUnit
+      - name: Execute tests (Unit, Feature and GraphQL tests) via PHPUnit
         env:
           DB_CONNECTION: sqlite
           DB_DATABASE: database/database.sqlite
-        run: vendor/bin/phpunit
+        run: vendor/bin/phpunit --testdox
