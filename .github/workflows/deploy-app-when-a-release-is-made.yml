@@ -10,7 +10,7 @@ on:
 
 jobs:
   # Job used to setup the app and run unit tests
-  build-and-test:
+  build--test-and-deploy:
     runs-on: ubuntu-latest
     steps:
     # Checkout your code
@@ -44,11 +44,7 @@ jobs:
           DB_DATABASE: database/database.sqlite
         run: vendor/bin/phpunit --testdox
 
-  deploy-release:
-    runs-on: ubuntu-latest
-    needs: [build-and-test]
-    steps:
-      ### Serverless app deployment
+        ### Serverless app deployment
       - name: Clear Laraval config cache in preparation for serverless deployment
         run: php artisan config:clear
 
