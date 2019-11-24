@@ -51,6 +51,9 @@ jobs:
       - name: Install Composer dependencies optimized for production
         run: composer install --prefer-dist --optimize-autoloader --no-dev
 
+      - name: Install serverless cli
+        run: npm install -g serverless
+
       - name: Deploy the application to AWS lambda using bref.sh(serverless)
         run: |
             export AWS_ACCESS_KEY_ID=${{ secrets.AwsAccessKeyId }}
