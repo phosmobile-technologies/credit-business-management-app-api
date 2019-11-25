@@ -1,5 +1,5 @@
 # The name of the workflow.
-name: Continuous integration pipeline triggered by pull requests to dev branch
+name: Tests on dev PR
 
 # The events that trigger this github workflow
 on:

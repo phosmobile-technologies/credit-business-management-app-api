@@ -1,5 +1,5 @@
 # The name of the workflow.
-name: Continuous integration pipeline triggered when a release
+name: Release Dev
 
 # The events that trigger this github workflow
 on:
