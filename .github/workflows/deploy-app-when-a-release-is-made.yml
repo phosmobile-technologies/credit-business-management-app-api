@@ -1,4 +1,4 @@
-### This workflow releases the dev branch to AWS lambda via serverless(bref.sh) when a PR is merged into the dev
+### This workflow releases the dev branch to AWS lambda via serverless (bref.sh) when a PR is merged into the dev
 
 
 # The name of the workflow.
