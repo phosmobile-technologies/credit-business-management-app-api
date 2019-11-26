@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b995ca6f93f50f157eb5ffe5bee18d17",
+    "content-hash": "8d090f190fd23a4c13ead076537cfd46",
     "packages": [
         {
             "name": "anahkiasen/underscore-php",
@@ -5243,6 +5243,68 @@
             ],
             "description": "A library that can provide of a list of classes in a given namespace",
             "time": "2019-09-15T14:33:14+00:00"
+        },
+        {
+            "name": "jkocik/laravel-profiler",
+            "version": "1.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/jkocik/laravel-profiler.git",
+                "reference": "b0502392a1d113e4dff43a8eb9148c386751618b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/jkocik/laravel-profiler/zipball/b0502392a1d113e4dff43a8eb9148c386751618b",
+                "reference": "b0502392a1d113e4dff43a8eb9148c386751618b",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^5.0 || ^6.0",
+                "php": ">=7.1.0"
+            },
+            "require-dev": {
+                "fzaninotto/faker": "^1.8",
+                "laravel/homestead": "^7.3",
+                "mockery/mockery": "^1.0",
+                "php-coveralls/php-coveralls": "^2.1",
+                "php-mock/php-mock": "^2.0",
+                "phpunit/phpunit": "^6.5",
+                "predis/predis": "^1.1"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "JKocik\\Laravel\\Profiler\\ServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "JKocik\\Laravel\\Profiler\\": "src/"
+                },
+                "files": [
+                    "src/Services/helpers.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Janusz Kocik",
+                    "email": "janusz.kocik@gmail.com"
+                }
+            ],
+            "description": "Profiler for Laravel framework 5.2+",
+            "homepage": "https://github.com/jkocik/laravel-profiler",
+            "keywords": [
+                "debugbar",
+                "laravel",
+                "profiler"
+            ],
+            "time": "2019-11-21T00:39:11+00:00"
         },
         {
             "name": "mockery/mockery",
