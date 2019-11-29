@@ -29,6 +29,7 @@ class UserService
      */
     public function registerUser(array $attributes): array
     {
+        dd($attributes);
         $attributes = collect($attributes);
 
         $userData = $attributes->only([

@@ -17,18 +17,18 @@ class CreateUserProfileTable extends Migration
             $table->uuid('id')->unique();
             $table->uuid('user_id');
             $table->enum('gender', ['MALE', 'FEMALE']);
-            $table->date('date_of_birth');
+            $table->date('date_of_birth')->nullable();
             $table->enum('marital_status', ['SINGLE', 'MARRIED', 'DIVORCED']);
             $table->string('occupation');
             $table->string('address');
-            $table->string('state_of_origin');
-            $table->float('saving_amount');
-            $table->enum('frequency_of_saving', ['WEEKLY', 'MONTHLY', 'QUARTERLY']);
-            $table->string('next_of_kin');
-            $table->string('relationship_with_next_of_kin');
-            $table->string('account_administrator');
-            $table->string('account_name');
-            $table->string('account_number');
+            $table->string('state_of_origin')->nullable();
+            $table->float('saving_amount')->nullable();
+            $table->enum('frequency_of_saving', ['WEEKLY', 'MONTHLY', 'QUARTERLY'])->nullable();
+            $table->string('next_of_kin')->nullable();
+            $table->string('relationship_with_next_of_kin')->nullable();
+            $table->string('account_administrator')->nullable();
+            $table->string('account_name')->nullable();
+            $table->string('account_number')->nullable();
             $table->enum('status', ['ACTIVE', 'INACTIVE']);
             $table->timestamps();
 
