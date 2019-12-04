@@ -4,6 +4,7 @@ namespace Tests\Unit\Services;
 
 use App\Events\NewUserRegistered;
 use App\Models\UserProfile;
+use App\Repositories\UserProfileRepository;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -26,6 +27,11 @@ class UserServiceTest extends TestCase
     private $userRepository;
 
     /**
+     * @var UserProfileRepository
+     */
+    private $userProfileRepository;
+
+    /**
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     protected function setUp(): void
@@ -33,8 +39,10 @@ class UserServiceTest extends TestCase
         parent::setUp();
 
         $this->userRepository = Mockery::mock(UserRepository::class);
+        $this->userProfileRepository = Mockery::mock(UserProfileRepository::class);
 
         $this->app->instance(UserRepository::class, $this->userRepository);
+        $this->app->instance(UserProfileRepository::class, $this->userProfileRepository);
 
         $this->userService = $this->app->make(UserService::class);
     }
@@ -42,7 +50,6 @@ class UserServiceTest extends TestCase
     public function testItCanRegisterUser()
     {
         Event::fake();
-
 
         $user = factory(User::class)->make();
         $userData = collect($user)->except('email_verified_at')->toArray();
@@ -53,8 +60,10 @@ class UserServiceTest extends TestCase
             ->andReturn($user);
 
         $this->userRepository->shouldReceive('attachUserProfile')
-            ->withArgs([$user, $userProfileData])
             ->andReturn($user);
+
+        $this->userProfileRepository->shouldReceive('customerIdentifierExists')
+            ->andReturn(false);
 
         $response = $this->userService->registerUser($registrationData);
 

@@ -16,10 +16,11 @@ class CreateUserProfileTable extends Migration
         Schema::create('user_profile', function (Blueprint $table) {
             $table->uuid('id')->unique();
             $table->uuid('user_id');
-            $table->enum('gender', ['MALE', 'FEMALE']);
+            $table->string('customer_identifier')->unique();
+            $table->enum('gender', ['MALE', 'FEMALE'])->nullable();
             $table->date('date_of_birth')->nullable();
-            $table->enum('marital_status', ['SINGLE', 'MARRIED', 'DIVORCED']);
-            $table->string('occupation');
+            $table->enum('marital_status', ['SINGLE', 'MARRIED', 'DIVORCED', 'SEPERATED', 'WIDOWED'])->nullable();
+            $table->string('occupation')->nullable();
             $table->string('address');
             $table->string('state_of_origin')->nullable();
             $table->float('saving_amount')->nullable();

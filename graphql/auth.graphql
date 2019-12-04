@@ -56,8 +56,8 @@ input RegisterInput {
 
     gender: Gender! @rules(apply: ["required"])
     date_of_birth: Date
-    marital_status: MaritalStatus! @rules(apply: ["required"])
-    occupation: String!  @rules(apply: ["required", "string"])
+    marital_status: MaritalStatus
+    occupation: String
     address: String!  @rules(apply: ["required", "string"])
     state_of_origin: String  @rules(apply: ["string"])
     saving_amount: Float
