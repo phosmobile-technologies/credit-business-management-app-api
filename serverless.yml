@@ -1,4 +1,12 @@
-service: springverse-api
+service: credit-business-management-app
+
+package:
+  exclude:
+    - node_modules/**
+    - database/**
+    - docker-compose.yml
+    - Dockerfile
+    - tests/**
 
 provider:
     name: aws
