@@ -28,6 +28,8 @@ enum MaritalStatus {
     SINGLE
     MARRIED
     DIVORCED
+    SEPERATED
+    WIDOWED
 }
 
 # Frequency at which a user saves money

@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Repositories\Interfaces\UserProfileRepositoryInterface;
 use App\Repositories\Interfaces\UserRepositoryInterface;
+use App\Repositories\UserProfileRepository;
 use App\Repositories\UserRepository;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Passport\Passport;
@@ -45,7 +47,8 @@ class AppServiceProvider extends ServiceProvider
      */
     private function registerRepositories() {
         $repositories = [
-            UserRepositoryInterface::class => UserRepository::class
+            UserRepositoryInterface::class => UserRepository::class,
+            UserProfileRepositoryInterface::class => UserProfileRepository::class
         ];
 
         foreach($repositories as $interface => $repository) {
