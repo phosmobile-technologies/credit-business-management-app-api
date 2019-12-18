@@ -1,4 +1,4 @@
-# The User Profile
+""" Profile data for a user """
 type UserProfile {
     id: ID!
     gender: Gender!
@@ -15,6 +15,22 @@ type UserProfile {
     account_name: String!
     account_number: String!
     status: AccountStatus!
+    company: Company! @BelongsTo
+    branch: CompanyBranch! @BelongsTo
+}
+
+""" A company that has users """
+type Company {
+    id: ID!
+    name: String!
+    location: String
+}
+
+""" A branch operated by a company """
+type CompanyBranch {
+    id: ID!
+    name: String!
+    location: String
 }
 
 # Gender for a user

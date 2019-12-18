@@ -31,11 +31,21 @@ class CreateUserProfileTable extends Migration
             $table->string('account_name')->nullable();
             $table->string('account_number')->nullable();
             $table->enum('status', ['ACTIVE', 'INACTIVE']);
+            $table->uuid('company_id');
+            $table->uuid('branch_id');
             $table->timestamps();
 
             $table->foreign('user_id')
                 ->references('id')
                 ->on('users');
+
+            $table->foreign('company_id')
+                ->references('id')
+                ->on('companies');
+
+            $table->foreign('branch_id')
+                ->references('id')
+                ->on('company_branches');
         });
     }
 

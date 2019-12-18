@@ -6,6 +6,7 @@ type User {
     phone_number: String!
     email: String!
     profile: UserProfile @hasOne
+    roles: [Role!]! @belongsToMany
     created_at: DateTime!
     updated_at: DateTime!
 }
