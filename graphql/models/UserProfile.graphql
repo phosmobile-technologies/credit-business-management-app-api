@@ -15,8 +15,8 @@ type UserProfile {
     account_name: String!
     account_number: String!
     status: AccountStatus!
-    company: Company! @BelongsTo
-    branch: CompanyBranch! @BelongsTo
+    company: Company! @belongsTo
+    branch: CompanyBranch! @belongsTo
 }
 
 """ A company that has users """

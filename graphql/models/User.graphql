@@ -6,12 +6,17 @@ type User {
     phone_number: String!
     email: String!
     profile: UserProfile @hasOne
-    roles: [UserRole!]! @morphMany
+    roles: [Role!]! @morphMany
     created_at: DateTime!
     updated_at: DateTime!
 }
 
-enum UserRole {
+type Role {
+    id: ID!
+    name: String!
+}
+
+enum UserRoles {
     CUSTOMER,
     ADMIN_STAFF,
     ADMIN_ACCOUNTANT,

@@ -53,7 +53,7 @@ input RegisterInput {
     last_name: String! @rules(apply: ["required", "string"])
     phone_number: String! @rules(apply: ["required", "string"])
     email: String @rules(apply: ["email"])
-    roles: [UserRole!]!
+    roles: [UserRoles!]!
 
     gender: Gender! @rules(apply: ["required"])
     date_of_birth: Date

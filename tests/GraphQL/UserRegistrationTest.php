@@ -35,7 +35,6 @@ class UserRegistrationTest extends TestCase
         $registrationData = array_merge($userData, $userProfileData);
 
 
-
         /** @var \Illuminate\Foundation\Testing\TestResponse $response */
         $response = $this->postGraphQL([
             'query' => '
