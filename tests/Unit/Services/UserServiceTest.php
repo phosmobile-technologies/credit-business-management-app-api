@@ -4,6 +4,7 @@ namespace Tests\Unit\Services;
 
 use App\Events\NewUserRegistered;
 use App\Models\UserProfile;
+use App\Models\UserRoles;
 use App\Repositories\UserProfileRepository;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -16,6 +17,8 @@ use Illuminate\Support\Facades\Event;
 
 class UserServiceTest extends TestCase
 {
+    use RefreshDatabase;
+
     /**
      * @var UserService
      */
@@ -55,11 +58,15 @@ class UserServiceTest extends TestCase
         $userData = collect($user)->except('email_verified_at')->toArray();
         $userProfileData = factory(UserProfile::class)->make()->toArray();
         $registrationData = array_merge($userData, $userProfileData);
+        $registrationData['roles'] = [UserRoles::CUSTOMER];
 
         $this->userRepository->shouldReceive('createUser')
             ->andReturn($user);
 
         $this->userRepository->shouldReceive('attachUserProfile')
+            ->andReturn($user);
+
+        $this->userRepository->shouldReceive('attachUserRoles')
             ->andReturn($user);
 
         $this->userProfileRepository->shouldReceive('customerIdentifierExists')

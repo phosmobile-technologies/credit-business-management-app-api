@@ -3,7 +3,6 @@
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
 use App\Models\UserProfile;
-use App\User;
 use Faker\Generator as Faker;
 
 $factory->define(UserProfile::class, function (Faker $faker) {
@@ -27,6 +26,9 @@ $factory->define(UserProfile::class, function (Faker $faker) {
         'account_administrator' => $faker->name,
         'account_name' => $faker->text,
         'account_number' => $faker->numberBetween(100000, 20000000),
-        'status' => 'INACTIVE'
+        'status' => 'INACTIVE',
+        'customer_identifier' => $faker->uuid,
+        'company_id' => $faker->uuid,
+        'branch_id' => $faker->uuid
     ];
 });

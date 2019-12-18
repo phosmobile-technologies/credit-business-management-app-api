@@ -53,6 +53,7 @@ input RegisterInput {
     last_name: String! @rules(apply: ["required", "string"])
     phone_number: String! @rules(apply: ["required", "string"])
     email: String @rules(apply: ["email"])
+    roles: [UserRoles!]!
 
     gender: Gender! @rules(apply: ["required"])
     date_of_birth: Date
@@ -68,6 +69,8 @@ input RegisterInput {
     account_name: String
     account_number: String
     status: AccountStatus!  @rules(apply: ["required"])
+    company_id: ID!
+    branch_id: ID!
 }
 
 extend type Mutation {

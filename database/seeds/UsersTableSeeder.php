@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Company;
+use App\Models\CompanyBranch;
 use App\Models\UserProfile;
 use App\User;
 use App\Models\UserRoles;
@@ -37,7 +39,7 @@ class UsersTableSeeder extends Seeder
             'email_verified_at' => now(),
             'remember_token' => Str::random(10),
         ]);
-        $adminUser->assignRole(UserRoles::ADMIN_USER);
+        $adminUser->assignRole(UserRoles::SUPER_ADMIN);
     }
 
     /**
@@ -51,8 +53,15 @@ class UsersTableSeeder extends Seeder
                 'email' => "user{$index}@users.com",
             ]);
 
-            $user->profile()->save(factory(UserProfile::class)->make());
-            $user->assignRole(UserRoles::REGULAR_USER);
+            $company = Company::first();
+            $branch = CompanyBranch::inRandomOrder()->first();
+            $userProfile = factory(UserProfile::class)->make([
+                'company_id' => $company->id,
+                'branch_id' => $branch->id
+            ]);
+
+            $user->profile()->save($userProfile);
+            $user->assignRole(UserRoles::CUSTOMER);
         }
     }
 }

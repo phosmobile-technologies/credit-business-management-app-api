@@ -39,6 +39,8 @@ class UserService
     {
         $attributes = collect($attributes);
 
+        $roles = $attributes['roles'];
+
         $userData = $attributes->only([
             'first_name',
             'last_name',
@@ -56,12 +58,14 @@ class UserService
             'last_name',
             'email',
             'phone_number',
+            'roles',
             'directive'
         ])->toArray();
         $userProfileData['customer_identifier'] = $this->generateCustomerIdentifier();
 
         $user = $this->userRepository->createUser($userData);
         $this->userRepository->attachUserProfile($user, $userProfileData);
+        $this->userRepository->attachUserRoles($user, $roles);
 
         event(new NewUserRegistered($user, $defaultPassword));
 
