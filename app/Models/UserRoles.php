@@ -12,6 +12,9 @@ namespace App\Models;
  */
 abstract class UserRoles
 {
-    const REGULAR_USER = "REGULAR_USER";
-    const ADMIN_USER = "ADMIN_USER";
+    const CUSTOMER = "CUSTOMER";
+    const ADMIN_STAFF = "ADMIN_STAFF";
+    const ADMIN_ACCOUNTANT = "ADMIN_ACCOUNTANT";
+    const ADMIN_MANAGER = "ADMIN_MANAGER";
+    const SUPER_ADMIN = "SUPER_ADMIN";
 }

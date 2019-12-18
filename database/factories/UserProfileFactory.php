@@ -2,10 +2,7 @@
 
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 
-use App\Models\Company;
-use App\Models\CompanyBranch;
 use App\Models\UserProfile;
-use App\User;
 use Faker\Generator as Faker;
 
 $factory->define(UserProfile::class, function (Faker $faker) {
@@ -14,9 +11,6 @@ $factory->define(UserProfile::class, function (Faker $faker) {
     $stateOfOrigin = ['Lagos', 'Ogun', 'Delta'];
     $frequencyOfSaving = ['WEEKLY', 'MONTHLY', 'QUARTERLY'];
     $nokRelationship = ['father', 'mother', 'sibling'];
-
-    $company = Company::first();
-    $branch = CompanyBranch::inRandomOrder()->first();
 
     return [
         'gender' => $genders[array_rand($genders)],
@@ -34,7 +28,7 @@ $factory->define(UserProfile::class, function (Faker $faker) {
         'account_number' => $faker->numberBetween(100000, 20000000),
         'status' => 'INACTIVE',
         'customer_identifier' => $faker->uuid,
-        'company_id' => $company->id,
-        'branch_id' => $branch->id
+        'company_id' => $faker->uuid,
+        'branch_id' => $faker->uuid
     ];
 });

@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\Event;
 
 class UserServiceTest extends TestCase
 {
+    use RefreshDatabase;
+
     /**
      * @var UserService
      */

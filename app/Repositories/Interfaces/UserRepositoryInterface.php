@@ -24,4 +24,14 @@ interface UserRepositoryInterface
      * @return User
      */
     public function attachUserProfile(User $user, array $userProfileData): User;
+
+    /**
+     * Attach the user roles to a user.
+     * This will usually be called when a new user is registered.
+     *
+     * @param User $user
+     * @param array $roles
+     * @return User
+     */
+    public function attachUserRoles(User $user, array $roles): User;
 }

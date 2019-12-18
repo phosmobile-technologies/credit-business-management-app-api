@@ -2,7 +2,10 @@
 
 namespace Tests\GraphQL;
 
+use App\Models\Company;
+use App\Models\CompanyBranch;
 use App\Models\UserProfile;
+use App\Models\UserRoles;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -16,9 +19,22 @@ class UserRegistrationTest extends TestCase
      */
     public function testItSuccessfullyRegistersANewUser()
     {
+        $this->seed('DatabaseSeeder');
+
         $userData = collect(factory(User::class)->make())->except(['email_verified_at', 'password'])->toArray();
-        $userProfileData = factory(UserProfile::class)->make()->toArray();
+
+        $company = Company::first();
+        $branch = CompanyBranch::inRandomOrder()->first();
+        $userProfileData = factory(UserProfile::class)->make([
+            'company_id' => $company->id,
+            'branch_id' => $branch->id
+        ]);
+        $userProfileData = collect($userProfileData)->except(['customer_identifier'])->toArray();
+        $userProfileData['roles'] = [UserRoles::CUSTOMER];
+
         $registrationData = array_merge($userData, $userProfileData);
+
+
 
         /** @var \Illuminate\Foundation\Testing\TestResponse $response */
         $response = $this->postGraphQL([

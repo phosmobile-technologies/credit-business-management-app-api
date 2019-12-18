@@ -5,6 +5,7 @@ namespace App;
 use App\Models\Concerns\UsesUuid;
 use App\Models\UserProfile;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Hash;
