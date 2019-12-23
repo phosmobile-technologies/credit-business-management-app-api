@@ -1,7 +1,7 @@
 <?php
 
 use App\Models\UserPermissions;
-use App\Models\UserRoles;
+use App\Models\Enums\UserRoles;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;

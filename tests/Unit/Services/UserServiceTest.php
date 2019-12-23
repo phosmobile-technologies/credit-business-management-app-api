@@ -4,7 +4,7 @@ namespace Tests\Unit\Services;
 
 use App\Events\NewUserRegistered;
 use App\Models\UserProfile;
-use App\Models\UserRoles;
+use App\Models\Enums\UserRoles;
 use App\Repositories\UserProfileRepository;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
