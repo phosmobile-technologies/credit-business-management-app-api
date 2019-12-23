@@ -1,0 +1,52 @@
+# Loan model
+type Loan {
+    id: ID!
+    user_id: ID!
+    loan_identifier: String! # unique number string to identify the loan seperate from the uuid
+    loan_purpose: String!
+    loan_repayment_source: String!
+    loan_amount: Float!
+    interest_rate: Float! # In percentage
+    loan_repayment_frequency: LoanRepaymentFrequency!
+    loan_balance: Float!
+    next_due_payment: Date!
+    due_date: Date!
+    service_charge: Float! # percent of the loan / static amount
+    default_amount: Float! # static amount to be set for defaults on loans, defaults count when due date is exceeded
+    tenure: Int # In Months
+    disbursement_status: DisbursementStatus!
+    disbursement_date: Date
+    amount_disbursed: Float
+    application_status: LoanApplicationStatus!
+    loan_condition_status: LoanConditionStatus!
+    loan_default_status: LoanDefaultStatus!
+    num_of_default_days: Int
+}
+
+enum LoanRepaymentFrequency {
+    WEEKLY
+    MONTHLY
+}
+
+enum DisbursementStatus {
+    DISBURSED
+    NOT_DISBURSED
+}
+
+enum LoanApplicationStatus {
+    APPROVED
+    DISAPPROVED
+    PENDING
+}
+
+enum LoanConditionStatus {
+    ACTIVE
+    INACTIVE #(has default of up to 90 days)
+    COMPLETED
+    NONPERFORMING #(has default of more than 30 days)
+}
+
+enum LoanDefaultStatus {
+    DEFAULTING,
+    NOT_DEFAULTING
+}

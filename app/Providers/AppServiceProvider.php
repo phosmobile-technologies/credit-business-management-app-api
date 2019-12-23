@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Repositories\Interfaces\LoanRepositoryInterface;
 use App\Repositories\Interfaces\UserProfileRepositoryInterface;
 use App\Repositories\Interfaces\UserRepositoryInterface;
+use App\Repositories\LoanRepository;
 use App\Repositories\UserProfileRepository;
 use App\Repositories\UserRepository;
 use Illuminate\Support\ServiceProvider;
@@ -48,7 +50,8 @@ class AppServiceProvider extends ServiceProvider
     private function registerRepositories() {
         $repositories = [
             UserRepositoryInterface::class => UserRepository::class,
-            UserProfileRepositoryInterface::class => UserProfileRepository::class
+            UserProfileRepositoryInterface::class => UserProfileRepository::class,
+            LoanRepositoryInterface::class => LoanRepository::class
         ];
 
         foreach($repositories as $interface => $repository) {
