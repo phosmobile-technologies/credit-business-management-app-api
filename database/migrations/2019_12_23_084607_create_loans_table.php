@@ -47,9 +47,11 @@ class CreateLoansTable extends Migration
             $table->date("disbursement_date")->nullable(); //
             $table->float("amount_disbursed")->nullable(); //
             $table->enum("application_status", [
-                LoanApplicationStatus::APPROVED,
-                LoanApplicationStatus::DISAPPROVED,
-                LoanApplicationStatus::PENDING
+                LoanApplicationStatus::APPROVED_BY_BRANCH_MANAGER(),
+                LoanApplicationStatus::DISAPPROVED_BY_BRANCH_MANAGER(),
+                LoanApplicationStatus::DISAPPROVED_BY_GLOBAL_MANAGER(),
+                LoanApplicationStatus::APPROVED_BY_GLOBAL_MANAGER(),
+                LoanApplicationStatus::PENDING()
             ]);
             $table->enum("loan_condition_status", [
                 LoanConditionStatus::ACTIVE,

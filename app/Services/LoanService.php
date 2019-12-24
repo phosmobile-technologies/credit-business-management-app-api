@@ -3,7 +3,14 @@
 namespace App\Services;
 
 
+use App\Events\LoanApprovedByBranchManager;
+use App\Events\LoanApprovedByGlobalManager;
+use App\Events\LoanDisApprovedByBranchManager;
 use App\Events\NewLoanCreated;
+use App\Models\Enums\DisbursementStatus;
+use App\Models\Enums\LoanApplicationStatus;
+use App\Models\Enums\LoanConditionStatus;
+use App\Models\Enums\LoanDefaultStatus;
 use App\Models\Loan;
 use App\Repositories\Interfaces\LoanRepositoryInterface;
 
@@ -34,6 +41,12 @@ class LoanService
         // We need to generate a unique (app specified) identifier for each loan
         $loanData['loan_identifier'] = $this->generateLoanIdentifier();
 
+        // Ensure that the default values when creating a loan are set
+        $loanData['disbursement_status'] = DisbursementStatus::NOT_DISBURSED;
+        $loanData['application_status'] = LoanApplicationStatus::PENDING;
+        $loanData['loan_condition_status'] = LoanConditionStatus::INACTIVE;
+        $loanData['loan_default_status'] = LoanDefaultStatus::NOT_DEFAULTING;
+
         $loan = $this->loanRepository->create($loanData);
 
         event(new NewLoanCreated($loan));
@@ -46,7 +59,7 @@ class LoanService
      *
      * @return int
      */
-    public function generateLoanIdentifier(): int
+    private function generateLoanIdentifier(): int
     {
         $identifier = mt_rand(1000000000, 9999999999); // better than rand()
 
@@ -57,4 +70,37 @@ class LoanService
 
         return $identifier;
     }
+
+    /**
+     * Update the application_state of a loan.
+     *
+     * @param string $loanID
+     * @param string $loanApplicationStatus
+     * @param null|string $message
+     * @return Loan
+     */
+    public function updateLoanApplicationStatus(string $loanID, string $loanApplicationStatus, ?string $message)
+    {
+        $loan = Loan::where('id', $loanID)->firstOrFail();
+
+        $this->loanRepository->updateApplicationState($loan, $loanApplicationStatus);
+
+        switch ($loanApplicationStatus) {
+            case LoanApplicationStatus::APPROVED_BY_BRANCH_MANAGER():
+                event(new LoanApprovedByBranchManager($loan, $message));
+                break;
+            case LoanApplicationStatus::DISAPPROVED_BY_BRANCH_MANAGER():
+                event(new LoanDisApprovedByBranchManager($loan, $message));
+                break;
+            case LoanApplicationStatus::APPROVED_BY_GLOBAL_MANAGER():
+                event(new LoanApprovedByGlobalManager($loan, $message));
+                break;
+            case LoanApplicationStatus::DISAPPROVED_BY_GLOBAL_MANAGER():
+                event(new LoanDisApprovedByBranchManager($loan, $message));
+                break;
+        }
+
+        return $loan;
+    }
+
 }

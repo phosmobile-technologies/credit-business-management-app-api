@@ -2,6 +2,7 @@
 
 namespace App\Repositories\Interfaces;
 
+use App\Models\Enums\LoanApplicationStatus;
 use App\Models\Loan;
 
 interface LoanRepositoryInterface {
@@ -21,4 +22,13 @@ interface LoanRepositoryInterface {
      * @return bool
      */
     public function loanIdentifierExists(int $identifier): bool;
+
+    /**
+     * Update the application_state of a loan in the database.
+     *
+     * @param Loan $loan
+     * @param string $applicationState
+     * @return Loan
+     */
+    public function updateApplicationState(Loan $loan, string $applicationState): Loan;
 }

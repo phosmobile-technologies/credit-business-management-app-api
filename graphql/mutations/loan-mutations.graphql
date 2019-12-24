@@ -1,3 +1,11 @@
-extend type Mutation {
+extend type Mutation @middleware(checks: ["auth:api"]){
+    """ Create a new loan """
     CreateLoan(input: CreateLoanInput! @spread): Loan!
+
+    """ Update the Application Status of a loan """
+    UpdateLoanApplicationStatus(
+        loan_id: ID!
+        application_status: LoanApplicationStatus!
+        message: String
+    ): Loan!
 }

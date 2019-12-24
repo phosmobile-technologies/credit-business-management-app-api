@@ -2,6 +2,8 @@
 
 namespace App\Models\Enums;
 
+use MyCLabs\Enum\Enum;
+
 /**
  * Class LoanApplicationStatus
  *
@@ -9,9 +11,11 @@ namespace App\Models\Enums;
  *
  * @package App\Models\Enums
  */
-class LoanApplicationStatus
+class LoanApplicationStatus extends Enum
 {
-    const APPROVED = "APPROVED";
-    const DISAPPROVED = "DISAPPROVED";
+    const APPROVED_BY_BRANCH_MANAGER = "APPROVED_BY_BRANCH_MANAGER";
+    const APPROVED_BY_GLOBAL_MANAGER = "APPROVED_BY_GLOBAL_MANAGER";
+    const DISAPPROVED_BY_BRANCH_MANAGER = "DISAPPROVED_BY_BRANCH_MANAGER";
+    const DISAPPROVED_BY_GLOBAL_MANAGER = "DISAPPROVED_BY_GLOBAL_MANAGER";
     const PENDING = "PENDING";
 }

@@ -5,10 +5,11 @@ namespace App\Models;
 use App\Models\Concerns\UsesUuid;
 use App\Models\Enums\LoanDefaultStatus;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Loan extends Model
 {
-    use UsesUuid;
+    use UsesUuid, LogsActivity;
 
     /**
      * @var string
