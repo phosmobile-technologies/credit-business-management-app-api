@@ -3,6 +3,7 @@
 namespace App\Policies;
 
 use App\Models\Loan;
+use App\Models\UserPermissions;
 use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -41,7 +42,7 @@ class LoanPolicy
      */
     public function create(User $user)
     {
-        //
+        return $user->can(UserPermissions::CAN_CREATE_LOANS);
     }
 
     /**
@@ -90,5 +91,16 @@ class LoanPolicy
     public function forceDelete(User $user, Loan $loan)
     {
         //
+    }
+
+    /**
+     * Determine whether the user can update the loan status
+     *
+     * @param  \App\User $user
+     * @return mixed
+     */
+    public function updateStatus(User $user)
+    {
+        return $user->can(UserPermissions::CAN_UPDATE_LOAN_STATUS);
     }
 }

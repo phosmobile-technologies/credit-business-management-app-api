@@ -6,6 +6,7 @@ use App\Models\Enums\DisbursementStatus;
 use App\Models\Enums\LoanApplicationStatus;
 use App\Models\Enums\LoanConditionStatus;
 use App\Models\Enums\LoanDefaultStatus;
+use App\Models\Enums\UserRoles;
 use App\Models\Loan;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -33,11 +34,6 @@ class LoanMutationsTest extends TestCase
         parent::setUp();
 
         $this->seed('DatabaseSeeder');
-
-        $testUserDetails = $this->createLoginAndGetTestUserDetails();
-        $this->user = $testUserDetails['user'];
-        $accessToken = $testUserDetails['access_token'];
-        $this->headers = $this->getGraphQLAuthHeader($accessToken);
     }
 
     /**
@@ -45,6 +41,11 @@ class LoanMutationsTest extends TestCase
      */
     public function testItSuccessfullyCreatesANewLoan()
     {
+        $testUserDetails = $this->createLoginAndGetTestUserDetails([UserRoles::ADMIN_STAFF]);
+        $this->user = $testUserDetails['user'];
+        $accessToken = $testUserDetails['access_token'];
+        $this->headers = $this->getGraphQLAuthHeader($accessToken);
+
         $loanData = collect(factory(Loan::class)->state('not_disbursed_loan')->make())
             ->except(['loan_identifier'])
             ->toArray();
@@ -77,6 +78,11 @@ class LoanMutationsTest extends TestCase
      * @test
      */
     public function testItCanUpdateTheLoanApplicationStatus() {
+        $testUserDetails = $this->createLoginAndGetTestUserDetails([UserRoles::BRANCH_MANAGER]);
+        $this->user = $testUserDetails['user'];
+        $accessToken = $testUserDetails['access_token'];
+        $this->headers = $this->getGraphQLAuthHeader($accessToken);
+
         $loan = $this->createTestLoan();
 
         $response = $this->postGraphQL([
