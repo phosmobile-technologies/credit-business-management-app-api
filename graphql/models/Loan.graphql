@@ -1,4 +1,4 @@
-# Loan model
+""" A Loan for a customer """
 type Loan {
     id: ID!
     user_id: ID!
@@ -13,7 +13,7 @@ type Loan {
     due_date: Date!
     service_charge: Float! # percent of the loan / static amount
     default_amount: Float! # static amount to be set for defaults on loans, defaults count when due date is exceeded
-    tenure: Int # In Months
+    tenure: Int! # In Months
     disbursement_status: DisbursementStatus!
     disbursement_date: Date
     amount_disbursed: Float
@@ -21,6 +21,20 @@ type Loan {
     loan_condition_status: LoanConditionStatus!
     loan_default_status: LoanDefaultStatus!
     num_of_default_days: Int
+}
+
+""" An application made by a customer requesting for a loan """
+type LoanApplication {
+    id: ID!
+    user: User!
+    loan_purpose: String!
+    loan_repayment_source: String!
+    loan_amount: Float!
+    loan_repayment_frequency: LoanRepaymentFrequency!
+    tenure: Int!
+    expected_disbursement_date: Date
+    created_at: Date!
+    updated_at: Date
 }
 
 enum LoanRepaymentFrequency {

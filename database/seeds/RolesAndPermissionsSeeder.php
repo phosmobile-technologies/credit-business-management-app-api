@@ -8,6 +8,8 @@ use Spatie\Permission\Models\Role;
 
 class RolesAndPermissionsSeeder extends Seeder
 {
+    private $customer;
+
     /**
      * Run the database seeds.
      *
@@ -19,6 +21,8 @@ class RolesAndPermissionsSeeder extends Seeder
 //        $this->createAdminRolesAndPermissions();
 
         $this->createRoles();
+
+        $this->createCustomerPermissions();
     }
 
     /**
@@ -34,19 +38,17 @@ class RolesAndPermissionsSeeder extends Seeder
     }
 
     /**
-     * Create the roles and permissions for regular users
+     * Create the permissions for customers
      */
-    private function createRegularUserRolesAndPermissions()
+    private function createCustomerPermissions()
     {
-//        $regularUser = Role::create(['name' => UserRoles::REGULAR_USER]);
-//
-//        $saveMoney = Permission::create(['name' => UserPermissions::SAVE_MONEY]);
-//
-//        $regularUser->syncPermissions([$saveMoney]);
+        $createLoanApplication = Permission::create(['name' => UserPermissions::CAN_CREATE_LOAN_APPLICATIONS]);
+
+        $this->customer->syncPermissions([$createLoanApplication]);
     }
 
     private function createRoles() {
-        $customer = Role::create(['name' => UserRoles::CUSTOMER]);
+        $this->customer = Role::create(['name' => UserRoles::CUSTOMER]);
         $adminStaff = Role::create(['name' => UserRoles::ADMIN_STAFF]);
         $adminAccountant = Role::create(['name' => UserRoles::ADMIN_ACCOUNTANT]);
         $adminManager = Role::create(['name' => UserRoles::ADMIN_MANAGER]);

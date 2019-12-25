@@ -8,6 +8,7 @@
 
 namespace Tests\GraphQL\Helpers\Traits;
 
+use App\Models\Enums\UserRoles;
 use App\User;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
@@ -44,12 +45,15 @@ trait InteractsWithGraphQLRequests
     /**
      * Create and login a test user.
      *
+     * @param $roles
      * @return TestResponse
      */
-    public function loginTestUser(): TestResponse
+    public function loginTestUser($roles): TestResponse
     {
         $this->setUpPassportClient();
         $user = factory(User::class)->create();
+
+        $user->assignRole($roles);
 
         $response = $this->postGraphQL([
             'query' => AuthenticationQueriesAndMutations::login(),
@@ -67,11 +71,12 @@ trait InteractsWithGraphQLRequests
     /**
      * Create a test user, log them in, and return their login information.
      *
+     * @param array $roles
      * @return array
      */
-    public function createLoginAndGetTestUserDetails(): array
+    public function createLoginAndGetTestUserDetails($roles = [UserRoles::CUSTOMER]): array
     {
-        $loginResponse = $this->loginTestUser();
+        $loginResponse = $this->loginTestUser($roles);
 
         $accessToken = $loginResponse->json("data.login.access_token");
         $user = $loginResponse->json("data.login.user");

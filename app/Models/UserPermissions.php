@@ -17,4 +17,6 @@ abstract class UserPermissions
 
     // Admin User Permissions
     const CAN_CRUD_USERS = "CAN_CRUD_USERS";
+
+    const CAN_CREATE_LOAN_APPLICATIONS = "CAN_CREATE_LOAN_APPLICATIONS";
 }

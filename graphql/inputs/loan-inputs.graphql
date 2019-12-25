@@ -20,3 +20,14 @@ input CreateLoanInput {
     loan_default_status: LoanDefaultStatus!
     num_of_default_days: Int
 }
+
+""" Input which allows customers apply for a loan """
+input CreateLoanApplicationInput {
+    user_id: ID!
+    loan_purpose: String!
+    loan_repayment_source: String!
+    loan_amount: Float!
+    loan_repayment_frequency: LoanRepaymentFrequency!
+    tenure: Int # In Months
+    expected_disbursement_date: Date
+}

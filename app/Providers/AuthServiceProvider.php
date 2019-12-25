@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\LoanApplication;
+use App\Policies\LoanApplicationPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 use Laravel\Passport\Passport;
@@ -15,6 +17,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         // 'App\Model' => 'App\Policies\ModelPolicy',
+        LoanApplication::class => LoanApplicationPolicy::class
     ];
 
     /**
