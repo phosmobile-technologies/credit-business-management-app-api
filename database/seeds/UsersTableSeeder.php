@@ -4,7 +4,7 @@ use App\Models\Company;
 use App\Models\CompanyBranch;
 use App\Models\UserProfile;
 use App\User;
-use App\Models\UserRoles;
+use App\Models\Enums\UserRoles;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 use Faker\Factory as Faker;

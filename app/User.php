@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Models\Concerns\UsesUuid;
+use App\Models\Loan;
 use App\Models\UserProfile;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
@@ -60,6 +61,15 @@ class User extends Authenticatable
     }
 
     /**
+     * Encrypt the user password when setting it.
+     *
+     * @param $value
+     */
+    public function setPasswordAttribute($value) {
+        $this->attributes['password'] = Hash::make($value);
+    }
+
+    /**
      * Relationship between a user and their user profile.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
@@ -70,11 +80,13 @@ class User extends Authenticatable
     }
 
     /**
-     * Encrypt the user password when setting it.
+     * Relationship between a user and their loans.
      *
-     * @param $value
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function setPasswordAttribute($value) {
-        $this->attributes['password'] = Hash::make($value);
+    public function loans()
+    {
+        return $this->hasMany(Loan::class, 'user_id', 'id');
     }
+
 }
