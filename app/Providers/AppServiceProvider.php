@@ -25,10 +25,6 @@ class AppServiceProvider extends ServiceProvider
         Passport::ignoreMigrations();
 
         $this->registerRepositories();
-
-        if ($this->app->environment('local')) {
-            $this->app->register(\JKocik\Laravel\Profiler\ServiceProvider::class);
-        }
     }
 
     /**
