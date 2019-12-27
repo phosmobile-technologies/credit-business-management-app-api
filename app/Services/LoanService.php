@@ -122,6 +122,10 @@ class LoanService
             throw new GraphqlError("Cannot disburse {$amountDisbursed}, the loan balance is only {$loanBalance}");
         }
 
+        if($loan->application_status !== LoanApplicationStatus::APPROVED_BY_GLOBAL_MANAGER()->getValue()) {
+            throw new GraphqlError("Cannot disburse funds for a loan that is not approved");
+        }
+
         $this->loanRepository->disburseLoan($loan, $amountDisbursed);
 
         event(new LoanDisbursed($loan, $amountDisbursed, $message));
