@@ -22,4 +22,5 @@ abstract class UserPermissions
 
     const CAN_CREATE_LOANS = "CAN_CREATE_LOANS";
     const CAN_UPDATE_LOAN_STATUS = "CAN_UPDATE_LOAN_STATUS";
+    const CAN_DISBURSE_LOAN = "CAN_DISBURSE_LOAN";
 }

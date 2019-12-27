@@ -6,7 +6,9 @@ namespace App\Services;
 use App\Events\LoanApprovedByBranchManager;
 use App\Events\LoanApprovedByGlobalManager;
 use App\Events\LoanDisApprovedByBranchManager;
+use App\Events\LoanDisbursed;
 use App\Events\NewLoanCreated;
+use App\GraphQL\Errors\GraphqlError;
 use App\Models\Enums\DisbursementStatus;
 use App\Models\Enums\LoanApplicationStatus;
 use App\Models\Enums\LoanConditionStatus;
@@ -99,6 +101,30 @@ class LoanService
                 event(new LoanDisApprovedByBranchManager($loan, $message));
                 break;
         }
+
+        return $loan;
+    }
+
+    /**
+     * Disburse a loan
+     *
+     * @param string $loanID
+     * @param float $amountDisbursed
+     * @param null|string $message
+     * @return
+     * @throws \Exception
+     */
+    public function disburseLoan(string $loanID, float $amountDisbursed, ?string $message) {
+        $loan = Loan::where('id', $loanID)->firstOrFail();
+        $loanBalance = $loan->loan_balance;
+
+        if($loanBalance < $amountDisbursed) {
+            throw new GraphqlError("Cannot disburse {$amountDisbursed}, the loan balance is only {$loanBalance}");
+        }
+
+        $this->loanRepository->disburseLoan($loan, $amountDisbursed);
+
+        event(new LoanDisbursed($loan, $amountDisbursed, $message));
 
         return $loan;
     }

@@ -31,4 +31,13 @@ interface LoanRepositoryInterface {
      * @return Loan
      */
     public function updateApplicationState(Loan $loan, string $applicationState): Loan;
+
+    /**
+     * Store a loan disbursement action in the database.
+     *
+     * @param Loan $loan
+     * @param float $amountDisbursed
+     * @return Loan
+     */
+    public function disburseLoan(Loan $loan, float $amountDisbursed): Loan;
 }

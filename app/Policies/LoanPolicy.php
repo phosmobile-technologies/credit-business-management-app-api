@@ -103,4 +103,15 @@ class LoanPolicy
     {
         return $user->can(UserPermissions::CAN_UPDATE_LOAN_STATUS);
     }
+
+    /**
+     * Determine whether the user can disburse a loan
+     *
+     * @param  \App\User $user
+     * @return mixed
+     */
+    public function disburse(User $user)
+    {
+        return $user->can(UserPermissions::CAN_DISBURSE_LOAN);
+    }
 }

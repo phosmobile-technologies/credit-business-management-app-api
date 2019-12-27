@@ -31,3 +31,10 @@ input CreateLoanApplicationInput {
     tenure: Int # In Months
     expected_disbursement_date: Date
 }
+
+""" Input for disbursing loans """
+input DisburseLoanInput {
+    loan_id: ID!
+    amount_disbursed: Float!
+    message: String
+}
