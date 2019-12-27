@@ -112,6 +112,37 @@ class LoanDisbursementTest extends TestCase
     /**
      * @test
      */
+    public function testItDoesNotDisburseMoneyForUnapprovedLoans()
+    {
+        $loan = factory(Loan::class)->create([
+            'application_status' => LoanApplicationStatus::PENDING(),
+            'user_id' => $this->user['id'],
+            'loan_amount' => 1000,
+            'loan_balance' => 1000,
+            'amount_disbursed' => 0
+        ]);
+
+        $loanDisbursementInput = [
+            'loan_id' => $loan->id,
+            'amount_disbursed' => 600,
+            'message' => 'We are only able to disburse 600 for now'
+        ];
+
+        $response = $this->postGraphQL([
+            'query' => LoanDisbursementQueriesAndMutations::disburseLoan(),
+            'variables' => [
+                'input' => $loanDisbursementInput
+            ],
+        ], $this->headers);
+
+        $errors = $response->json("errors");
+
+        $this->assertIsString($errors[0]['message']);
+    }
+
+    /**
+     * @test
+     */
     public function testItThrowsErrorForNoneAuthorizedUsersTryingToDisburseALoan()
     {
         $testUserDetails = $this->createLoginAndGetTestUserDetails([UserRoles::CUSTOMER]);
