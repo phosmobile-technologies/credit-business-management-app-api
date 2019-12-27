@@ -29,6 +29,11 @@ class RolesAndPermissionsSeeder extends Seeder
     private $globalManager;
 
     /**
+     * @var Role
+     */
+    private $adminAccountant;
+
+    /**
      * Run the database seeds.
      *
      * @return void
@@ -41,6 +46,7 @@ class RolesAndPermissionsSeeder extends Seeder
         $this->createAdminStaffPermissions();
         $this->createBranchManagerPermissions();
         $this->createGlobalManagerPermissions();
+        $this->createAdminAccountantPermissions();
     }
 
     /**
@@ -96,6 +102,16 @@ class RolesAndPermissionsSeeder extends Seeder
     }
 
     /**
+     * Create the permissions for admin accountant
+     */
+    private function createAdminAccountantPermissions()
+    {
+        $canDisburseLoan = Permission::firstOrCreate(['name' => UserPermissions::CAN_DISBURSE_LOAN]);
+
+        $this->adminAccountant->syncPermissions([$canDisburseLoan]);
+    }
+
+    /**
      * Create all the user roles for the application
      */
     private function createRoles() {
@@ -103,7 +119,7 @@ class RolesAndPermissionsSeeder extends Seeder
         $this->adminStaff = Role::create(['name' => UserRoles::ADMIN_STAFF]);
         $this->branchManager = Role::create(['name' => UserRoles::BRANCH_MANAGER]);
         $this->globalManager = Role::create(['name' => UserRoles::GLOBAL_MANAGER]);
-        $adminAccountant = Role::create(['name' => UserRoles::ADMIN_ACCOUNTANT]);
+        $this->adminAccountant = Role::create(['name' => UserRoles::ADMIN_ACCOUNTANT]);
         $adminManager = Role::create(['name' => UserRoles::ADMIN_MANAGER]);
         $superAdmin= Role::create(['name' => UserRoles::SUPER_ADMIN]);
     }

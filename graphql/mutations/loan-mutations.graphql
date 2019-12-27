@@ -14,4 +14,8 @@ extend type Mutation @middleware(checks: ["auth:api"]){
     """ Allow customers create a loan application """
     CreateLoanApplication(input: CreateLoanApplicationInput! @spread): LoanApplication!
     @can(ability: "create", model: "App\\Models\\LoanApplication")
+
+    """ Disburse a loan """
+    DisburseLoan(input: DisburseLoanInput! @spread): Loan!
+    @can(ability: "disburse", model: "App\\Models\\Loan")
 }

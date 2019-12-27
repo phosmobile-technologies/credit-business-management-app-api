@@ -9,6 +9,7 @@
 namespace App\Repositories;
 
 
+use App\Models\Enums\DisbursementStatus;
 use App\Models\Enums\LoanApplicationStatus;
 use App\Models\Loan;
 use App\Repositories\Interfaces\LoanRepositoryInterface;
@@ -48,6 +49,23 @@ class LoanRepository implements LoanRepositoryInterface
     public function updateApplicationState(Loan $loan, string $applicationState): Loan
     {
         $loan->application_status = $applicationState;
+        $loan->save();
+
+        return $loan;
+    }
+
+    /**
+     * Store a loan disbursement action in the database.
+     *
+     * @param Loan $loan
+     * @param float $amountDisbursed
+     * @return Loan
+     */
+    public function disburseLoan(Loan $loan, float $amountDisbursed): Loan
+    {
+        $loan->disbursement_status = DisbursementStatus::DISBURSED;
+        $loan->loan_balance = $loan->loan_amount - ($loan->amount_disbursed + $amountDisbursed);
+        $loan->amount_disbursed = $loan->amount_disbursed + $amountDisbursed;
         $loan->save();
 
         return $loan;
