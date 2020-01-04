@@ -28,6 +28,8 @@ provider:
         MAIL_ENCRYPTION: ${ssm:/springverse-api/mail-encryption}
         PASSPORT_CLIENT_ID: ${ssm:/springverse-api/passport-client-id}
         PASSPORT_CLIENT_SECRET: ${ssm:/springverse-api/passport-client-secret}
+        PASSPORT_PRIVATE_KEY: ${ssm:/springverse-api/passport-private-key}
+        PASSPORT_PUBLIC_KEY: ${ssm:/springverse-api/passport-public-key}
 
 plugins:
     - ./vendor/bref/bref
