@@ -59,6 +59,9 @@ class ContributionMutationsTest extends TestCase
         ]);
     }
 
+    /**
+     * @test
+     */
     public function testUpdateContributionMutation() {
         $testUserDetails = $this->createLoginAndGetTestUserDetails([UserRoles::ADMIN_STAFF]);
         $this->user = $testUserDetails['user'];
@@ -94,4 +97,36 @@ class ContributionMutationsTest extends TestCase
             ]
         ]);
     }
+
+    /**
+     * @test
+     */
+    public function testDeleteContributionMutation() {
+        $testUserDetails = $this->createLoginAndGetTestUserDetails([UserRoles::ADMIN_STAFF]);
+        $this->user = $testUserDetails['user'];
+        $accessToken = $testUserDetails['access_token'];
+        $this->headers = $this->getGraphQLAuthHeader($accessToken);
+
+        $contributionData = factory(MemberContribution::class)->make()->toArray();
+        $contributionData['user_id'] = $this->user['id'];
+        $contribution = MemberContribution::create($contributionData);
+
+        $response = $this->postGraphQL([
+            'query' => ContributionQueriesAndMutations::deleteContribution(),
+            'variables' => [
+                'contribution_id' => $contribution->id
+            ],
+        ], $this->headers);
+
+        $response->assertJson([
+            'data' => [
+                'DeleteContribution' => [
+                    'contribution_type' => $contributionData['contribution_type'],
+                    'contribution_frequency' => $contributionData['contribution_frequency'],
+                    'contribution_amount' => $contributionData['contribution_amount'],
+                ]
+            ]
+        ]);
+    }
+
 }

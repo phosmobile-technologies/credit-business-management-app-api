@@ -79,8 +79,9 @@ class RolesAndPermissionsSeeder extends Seeder
     {
         $createLoan = Permission::create(['name' => UserPermissions::CAN_CREATE_LOANS]);
         $updateContribution = Permission::create(['name' => UserPermissions::CAN_UPDATE_CONTRIBUTION]);
+        $deleteContribution = Permission::create(['name' => UserPermissions::CAN_DELETE_CONTRIBUTION]);
 
-        $this->adminStaff->syncPermissions([$createLoan, $updateContribution]);
+        $this->adminStaff->syncPermissions([$createLoan, $updateContribution, $deleteContribution]);
     }
 
     /**
@@ -116,13 +117,14 @@ class RolesAndPermissionsSeeder extends Seeder
     /**
      * Create all the user roles for the application
      */
-    private function createRoles() {
+    private function createRoles()
+    {
         $this->customer = Role::create(['name' => UserRoles::CUSTOMER]);
         $this->adminStaff = Role::create(['name' => UserRoles::ADMIN_STAFF]);
         $this->branchManager = Role::create(['name' => UserRoles::BRANCH_MANAGER]);
         $this->globalManager = Role::create(['name' => UserRoles::GLOBAL_MANAGER]);
         $this->adminAccountant = Role::create(['name' => UserRoles::ADMIN_ACCOUNTANT]);
         $adminManager = Role::create(['name' => UserRoles::ADMIN_MANAGER]);
-        $superAdmin= Role::create(['name' => UserRoles::SUPER_ADMIN]);
+        $superAdmin = Role::create(['name' => UserRoles::SUPER_ADMIN]);
     }
 }

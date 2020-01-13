@@ -60,12 +60,11 @@ class MemberContributionPolicy
      * Determine whether the user can delete the member contribution.
      *
      * @param  \App\User $user
-     * @param MemberContribution $memberContribution
      * @return mixed
      */
-    public function delete(User $user, MemberContribution $memberContribution)
+    public function delete(User $user)
     {
-        //
+        return $user->can(UserPermissions::CAN_DELETE_CONTRIBUTION);
     }
 
     /**
