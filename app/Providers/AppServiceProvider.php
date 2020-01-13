@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Repositories\ContributionRepository;
+use App\Repositories\Interfaces\ContributionRepositoryInterface;
 use App\Repositories\Interfaces\LoanApplicationRepositoryInterface;
 use App\Repositories\Interfaces\LoanRepositoryInterface;
 use App\Repositories\Interfaces\UserProfileRepositoryInterface;
@@ -54,7 +56,8 @@ class AppServiceProvider extends ServiceProvider
             UserRepositoryInterface::class => UserRepository::class,
             UserProfileRepositoryInterface::class => UserProfileRepository::class,
             LoanRepositoryInterface::class => LoanRepository::class,
-            LoanApplicationRepositoryInterface::class => LoanApplicationRepository::class
+            LoanApplicationRepositoryInterface::class => LoanApplicationRepository::class,
+            ContributionRepositoryInterface::class => ContributionRepository::class,
         ];
 
         foreach($repositories as $interface => $repository) {

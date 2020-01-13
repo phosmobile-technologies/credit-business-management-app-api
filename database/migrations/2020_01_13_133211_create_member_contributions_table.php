@@ -18,7 +18,7 @@ class CreateMemberContributionsTable extends Migration
         Schema::create('member_contributions', function (Blueprint $table) {
             $table->uuid('id');
             $table->uuid('user_id');
-            $table->string('contribution_id');
+            $table->bigIncrements('contribution_id');
             $table->enum('contribution_type', [
                 ContributionType::FIXED,
                 ContributionType::GOAL,

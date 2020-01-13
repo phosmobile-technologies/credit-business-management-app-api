@@ -13,4 +13,18 @@ class MemberContribution extends Model
      * @var string
      */
     protected $table = "member_contributions";
+
+    /**
+     * @var array
+     */
+    protected $guarded = [];
+
+    /**
+     * Make the contribution_id into a custom readable format.
+     *
+     * @return string
+     */
+    public function getContributionIdAttribute() {
+        return "Loan - {$this->contribution_id}";
+    }
 }

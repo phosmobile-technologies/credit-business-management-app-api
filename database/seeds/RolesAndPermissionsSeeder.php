@@ -67,8 +67,9 @@ class RolesAndPermissionsSeeder extends Seeder
     private function createCustomerPermissions()
     {
         $createLoanApplication = Permission::create(['name' => UserPermissions::CAN_CREATE_LOAN_APPLICATIONS]);
+        $createContribution = Permission::create(['name' => UserPermissions::CAN_CREATE_CONTRIBUTION]);
 
-        $this->customer->syncPermissions([$createLoanApplication]);
+        $this->customer->syncPermissions([$createLoanApplication, $createContribution]);
     }
 
     /**
@@ -77,8 +78,9 @@ class RolesAndPermissionsSeeder extends Seeder
     private function createAdminStaffPermissions()
     {
         $createLoan = Permission::create(['name' => UserPermissions::CAN_CREATE_LOANS]);
+        $updateContribution = Permission::create(['name' => UserPermissions::CAN_UPDATE_CONTRIBUTION]);
 
-        $this->adminStaff->syncPermissions([$createLoan]);
+        $this->adminStaff->syncPermissions([$createLoan, $updateContribution]);
     }
 
     /**
