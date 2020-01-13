@@ -1,0 +1,23 @@
+""" Input for creating a contribution """
+input CreateContributionInput {
+    user_id: ID!
+    contribution_type: ContributionType!
+    contribution_amount: Float
+    contribution_name: String!
+    contribution_duration: Int! #in months
+    contribution_balance: Float!
+    contribution_interest_rate: Float! #per annum, depending on type and duration, rates would be given
+    contribution_frequency: ContributionFrequency!
+}
+
+""" Input for updating a contribution """
+input UpdateContributionInput {
+    id: ID!
+    contribution_type: ContributionType!
+    contribution_amount: Float!
+    contribution_name: String!
+    contribution_duration: Int! #in months
+    contribution_balance: Float!
+    contribution_interest_rate: Float! #per annum, depending on type and duration, rates would be given
+    contribution_frequency: ContributionFrequency!
+}

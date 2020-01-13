@@ -1,0 +1,16 @@
+extend type Mutation @middleware(checks: ["auth:api"]){
+
+    """ Create a new member contribution """
+    CreateContribution(input: CreateContributionInput! @spread): MemberContribution!
+    @can(ability: "create", model: "App\\Models\\MemberContribution")
+
+    """ Update a member contribution """
+    UpdateContribution(input: UpdateContributionInput! @spread): MemberContribution!
+    @can(ability: "update", model: "App\\Models\\MemberContribution")
+
+    """ Delete a contribution """
+    DeleteContribution(contribution_id: ID!): MemberContribution!
+    @delete(model: "App\\Models\\MemberContribution")
+    @can(ability: "delete", model: "App\\Models\\MemberContribution")
+
+}
