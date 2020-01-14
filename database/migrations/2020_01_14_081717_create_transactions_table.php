@@ -18,12 +18,6 @@ class CreateTransactionsTable extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->uuid('id');
-            $table->uuid('user_id');
-            $table->uuid('loan_id');
-            $table->uuid('branch_id');
-            $table->uuid('contribution_id');
-            $table->uuid('transaction_initiator_id');
-            $table->uuid('payment_request_id');
             $table->dateTime('transaction_date');
             $table->enum('transaction_type', [
                 TransactionType::BRANCH_EXPENSE,

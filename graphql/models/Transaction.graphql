@@ -1,12 +1,6 @@
 """ Transactions carried out in the system """
 type Transaction {
     id: ID!
-    user: User!
-    loan: Loan
-    branch: Branch!
-    contribution: Contribution
-    transaction_initiator: User!
-    payment_request_id: ID!
     transaction_date: DateTime!
     transaction_type: TransactionType!
     transaction_amount: Float!
