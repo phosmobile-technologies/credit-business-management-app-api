@@ -6,7 +6,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateMemberContributionsTable extends Migration
+class CreateContributionPlansTable extends Migration
 {
     /**
      * Run the migrations.
@@ -15,7 +15,7 @@ class CreateMemberContributionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('member_contributions', function (Blueprint $table) {
+        Schema::create('contribution_plans', function (Blueprint $table) {
             $table->uuid('id');
             $table->uuid('user_id');
             $table->bigIncrements('contribution_id');
@@ -51,6 +51,6 @@ class CreateMemberContributionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('member_contributions');
+        Schema::dropIfExists('contribution_plans');
     }
 }

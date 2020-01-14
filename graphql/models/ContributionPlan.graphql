@@ -1,5 +1,5 @@
 """ A contribution made by a user """
-type MemberContribution {
+type ContributionPlan {
     id: ID!
     user_id: ID!
     contribution_type: ContributionType!

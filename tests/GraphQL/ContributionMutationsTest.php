@@ -4,7 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\enums\ContributionFrequency;
 use App\Models\Enums\UserRoles;
-use App\Models\MemberContribution;
+use App\Models\ContributionPlan;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\GraphQL\Helpers\Schema\ContributionQueriesAndMutations;
@@ -38,7 +38,7 @@ class ContributionMutationsTest extends TestCase
         $accessToken = $testUserDetails['access_token'];
         $this->headers = $this->getGraphQLAuthHeader($accessToken);
 
-        $contributionData = factory(MemberContribution::class)->make()->toArray();
+        $contributionData = factory(ContributionPlan::class)->make()->toArray();
         $contributionData['user_id'] = $this->user['id'];
 
         $response = $this->postGraphQL([
@@ -68,9 +68,9 @@ class ContributionMutationsTest extends TestCase
         $accessToken = $testUserDetails['access_token'];
         $this->headers = $this->getGraphQLAuthHeader($accessToken);
 
-        $contributionData = factory(MemberContribution::class)->make()->toArray();
+        $contributionData = factory(ContributionPlan::class)->make()->toArray();
         $contributionData['user_id'] = $this->user['id'];
-        $contribution = MemberContribution::create($contributionData);
+        $contribution = ContributionPlan::create($contributionData);
 
         $contributionData = collect($contribution)->except([
             'created_at',
@@ -107,9 +107,9 @@ class ContributionMutationsTest extends TestCase
         $accessToken = $testUserDetails['access_token'];
         $this->headers = $this->getGraphQLAuthHeader($accessToken);
 
-        $contributionData = factory(MemberContribution::class)->make()->toArray();
+        $contributionData = factory(ContributionPlan::class)->make()->toArray();
         $contributionData['user_id'] = $this->user['id'];
-        $contribution = MemberContribution::create($contributionData);
+        $contribution = ContributionPlan::create($contributionData);
 
         $response = $this->postGraphQL([
             'query' => ContributionQueriesAndMutations::deleteContribution(),

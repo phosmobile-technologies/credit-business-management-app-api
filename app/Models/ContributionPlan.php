@@ -5,14 +5,14 @@ namespace App\Models;
 use App\Models\Concerns\UsesUuid;
 use Illuminate\Database\Eloquent\Model;
 
-class MemberContribution extends Model
+class ContributionPlan extends Model
 {
     use UsesUuid;
 
     /**
      * @var string
      */
-    protected $table = "member_contributions";
+    protected $table = "contribution_plans";
 
     /**
      * @var array
