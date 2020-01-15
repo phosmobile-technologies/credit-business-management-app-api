@@ -27,4 +27,13 @@ class ContributionPlan extends Model
     public function getContributionIdAttribute() {
         return "Loan - {$this->contribution_id}";
     }
+
+    /**
+     * Get all of the contribution plan's transactions.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     */
+    public function transactions() {
+        return $this->morphMany(Transaction::class, 'owner');
+    }
 }

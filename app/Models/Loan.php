@@ -32,4 +32,13 @@ class Loan extends Model
 
         return $this->num_of_default_days * $this->default_amount;
     }
+
+    /**
+     * Get all of the loan's transactions.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     */
+    public function transactions() {
+        return $this->morphMany(Transaction::class, 'owner');
+    }
 }

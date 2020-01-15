@@ -70,4 +70,16 @@ class LoanRepository implements LoanRepositoryInterface
 
         return $loan;
     }
+
+
+    /**
+     * Find a loan by id.
+     *
+     * @param string $loan_id
+     * @return Loan|null
+     */
+    public function find(string $loan_id): ?Loan
+    {
+        return Loan::findOrFail($loan_id);
+    }
 }

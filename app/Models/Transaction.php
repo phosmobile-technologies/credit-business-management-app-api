@@ -13,4 +13,14 @@ class Transaction extends Model
      * @var string
      */
     protected $table = "transactions";
+
+    /**
+     * Get the owing model of the transaction.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphTo
+     */
+    public function owner()
+    {
+        return $this->morphTo();
+    }
 }

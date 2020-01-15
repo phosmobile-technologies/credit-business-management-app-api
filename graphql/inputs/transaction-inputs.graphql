@@ -1,0 +1,5 @@
+""" Input used in creating a Loan Repayment Transaction """
+input CreateLoanRepaymentTransactionInput {
+    loan_id: ID!
+    transaction_details: TransactionDetails!
+}

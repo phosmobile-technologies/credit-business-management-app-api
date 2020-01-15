@@ -43,6 +43,8 @@ class CreateTransactionsTable extends Migration
                 TransactionStatus::COMPLETED,
                 TransactionStatus::FAILED
             ]);
+            $table->uuid('owner_id');
+            $table->string('owner_type');
             $table->timestamps();
         });
     }

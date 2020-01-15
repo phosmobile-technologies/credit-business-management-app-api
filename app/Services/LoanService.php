@@ -13,6 +13,7 @@ use App\Models\Enums\DisbursementStatus;
 use App\Models\Enums\LoanApplicationStatus;
 use App\Models\Enums\LoanConditionStatus;
 use App\Models\Enums\LoanDefaultStatus;
+use App\Models\enums\TransactionType;
 use App\Models\Loan;
 use App\Repositories\Interfaces\LoanRepositoryInterface;
 
@@ -23,13 +24,17 @@ class LoanService
      */
     private $loanRepository;
 
+    private $transactionService;
+
     /**
      * LoanService constructor.
      * @param LoanRepositoryInterface $loanRepository
+     * @param TransactionService $transactionService
      */
-    public function __construct(LoanRepositoryInterface $loanRepository)
+    public function __construct(LoanRepositoryInterface $loanRepository, TransactionService $transactionService)
     {
         $this->loanRepository = $loanRepository;
+        $this->transactionService = $transactionService;
     }
 
     /**
@@ -83,7 +88,7 @@ class LoanService
      */
     public function updateLoanApplicationStatus(string $loanID, string $loanApplicationStatus, ?string $message)
     {
-        $loan = Loan::where('id', $loanID)->firstOrFail();
+        $loan = $this->loanRepository->find($loanID);
 
         $this->loanRepository->updateApplicationState($loan, $loanApplicationStatus);
 
@@ -115,7 +120,7 @@ class LoanService
      * @throws \Exception
      */
     public function disburseLoan(string $loanID, float $amountDisbursed, ?string $message) {
-        $loan = Loan::where('id', $loanID)->firstOrFail();
+        $loan = $this->loanRepository->find($loanID);
         $loanBalance = $loan->loan_balance;
 
         if($loanBalance < $amountDisbursed) {
@@ -131,6 +136,32 @@ class LoanService
         event(new LoanDisbursed($loan, $amountDisbursed, $message));
 
         return $loan;
+    }
+
+    /**
+     * Repay a loan
+     *
+     * @param string $loan_id
+     * @param array $transactionDetails
+     * @return \App\Models\Transaction
+     * @throws GraphqlError
+     */
+    public function initiateLoanRepayment(string $loan_id, array $transactionDetails) {
+        $loan = $this->loanRepository->find($loan_id);
+
+        $transactionAmount = $transactionDetails['transaction_amount'];
+
+        if($transactionDetails['transaction_amount'] > $loan->loan_balance) {
+            throw new GraphqlError("Transaction amount {$transactionAmount} is greater than the total loan balance");
+        }
+
+        if($transactionDetails['transaction_type'] !== TransactionType::LOAN_REPAYMENT) {
+            throw new GraphqlError("The transaction type selected must be Loan Repayment");
+        }
+
+        $transaction = $this->transactionService->initiateLoanRepaymentTransaction($loan, $transactionDetails);
+
+        return $transaction;
     }
 
 }
