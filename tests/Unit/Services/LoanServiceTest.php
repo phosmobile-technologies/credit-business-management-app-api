@@ -9,7 +9,7 @@ use App\Models\Loan;
 use App\Models\Transaction;
 use App\Repositories\LoanRepository;
 use App\Services\LoanService;
-use App\Services\TransactionService;
+use App\Services\LoanRepaymentTransactionService;
 use Illuminate\Foundation\Testing\WithFaker;
 use Mockery;
 use Tests\TestCase;
@@ -29,7 +29,7 @@ class LoanServiceTest extends TestCase
     private $loanRepository;
 
     /**
-     * @var TransactionService
+     * @var LoanRepaymentTransactionService
      */
     private $transactionService;
 
@@ -41,10 +41,10 @@ class LoanServiceTest extends TestCase
         parent::setUp();
 
         $this->loanRepository = Mockery::mock(LoanRepository::class);
-        $this->transactionService = Mockery::mock(TransactionService::class);
+        $this->transactionService = Mockery::mock(LoanRepaymentTransactionService::class);
 
         $this->app->instance(LoanRepository::class, $this->loanRepository);
-        $this->app->instance(TransactionService::class, $this->transactionService);
+        $this->app->instance(LoanRepaymentTransactionService::class, $this->transactionService);
 
         $this->loanService = $this->app->make(LoanService::class);
     }

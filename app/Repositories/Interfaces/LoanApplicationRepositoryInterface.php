@@ -3,6 +3,7 @@
 namespace App\Repositories\Interfaces;
 
 
+use App\Models\Loan;
 use App\Models\LoanApplication;
 
 interface LoanApplicationRepositoryInterface
