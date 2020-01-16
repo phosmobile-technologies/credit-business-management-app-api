@@ -33,13 +33,40 @@ $factory->define(\App\Models\Transaction::class, function (Faker $faker) {
     ];
 
     return [
-        'transaction_date' => $faker->date(),
+        'transaction_date' => $faker->dateTime()->format('Y-m-d H:i:s'),
         'transaction_type' => $transactionTypes[array_rand($transactionTypes)],
         'transaction_amount' => $faker->randomFloat(2, 1000, 1000000),
         'transaction_medium' => $transactionMediums[array_rand($transactionMediums)],
         'transaction_purpose' => $faker->realText(),
-        'transaction_status' => $transactionStatustes[array_rand($transactionStatustes)],
-        'owner_id' => '',
-        'owner_type' => ''
+//        'owner_id' => '',
+//        'owner_type' => ''
+    ];
+});
+
+
+/**
+ * Factory state for a transaction that is pending
+ */
+$factory->state(\App\Models\Transaction::class, 'pending', function ($faker) {
+    return [
+        'transaction_status' => TransactionStatus::PENDING
+    ];
+});
+
+/**
+ * Factory state for a transaction that is pending
+ */
+$factory->state(\App\Models\Transaction::class, 'completed', function ($faker) {
+    return [
+        'transaction_status' => TransactionStatus::COMPLETED
+    ];
+});
+
+/**
+ * Factory state for a transaction that is failed
+ */
+$factory->state(\App\Models\Transaction::class, 'failed', function ($faker) {
+    return [
+        'transaction_status' => TransactionStatus::FAILED
     ];
 });

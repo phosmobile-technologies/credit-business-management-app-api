@@ -14,7 +14,7 @@ class LoanPolicy
     /**
      * Determine whether the user can view any loans.
      *
-     * @param  \App\User  $user
+     * @param  \App\User $user
      * @return mixed
      */
     public function viewAny(User $user)
@@ -37,7 +37,7 @@ class LoanPolicy
     /**
      * Determine whether the user can create loans.
      *
-     * @param  \App\User  $user
+     * @param  \App\User $user
      * @return mixed
      */
     public function create(User $user)
@@ -113,5 +113,18 @@ class LoanPolicy
     public function disburse(User $user)
     {
         return $user->can(UserPermissions::CAN_DISBURSE_LOAN);
+    }
+
+    /**
+     * Determine whether the user can initiate a Loan repayment.
+     *
+     * @param User $user
+     * @param Loan $loan
+     * @return bool
+     */
+    public function initiateRepayment(User $user, Loan $loan)
+    {
+        return $user->can(UserPermissions::CAN_INITIATE_LOAN_REPAYMENT)
+            || ($loan->user_id === $user->id);
     }
 }

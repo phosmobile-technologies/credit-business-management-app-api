@@ -15,6 +15,11 @@ class Transaction extends Model
     protected $table = "transactions";
 
     /**
+     * @var array
+     */
+    protected $guarded = [];
+
+    /**
      * Get the owing model of the transaction.
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphTo
