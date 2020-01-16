@@ -1,0 +1,14 @@
+""" Input used in creating a Loan Repayment Transaction """
+input CreateLoanRepaymentTransactionInput {
+    loan_id: ID!
+    transaction_details: TransactionDetailsInput!
+}
+
+""" A subset of a transaction's input, used for creating transaaction mutations """
+input TransactionDetailsInput {
+    transaction_date: DateTime!
+    transaction_type: TransactionType!
+    transaction_amount: Float!
+    transaction_medium: TransactionMedium!
+    transaction_purpose: String
+}

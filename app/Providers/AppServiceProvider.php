@@ -2,16 +2,22 @@
 
 namespace App\Providers;
 
+use App\Models\ContributionPlan;
+use App\Models\Loan;
+use App\Models\Transaction;
 use App\Repositories\ContributionRepository;
 use App\Repositories\Interfaces\ContributionRepositoryInterface;
 use App\Repositories\Interfaces\LoanApplicationRepositoryInterface;
 use App\Repositories\Interfaces\LoanRepositoryInterface;
+use App\Repositories\Interfaces\TransactionRepositoryInterface;
 use App\Repositories\Interfaces\UserProfileRepositoryInterface;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use App\Repositories\LoanApplicationRepository;
 use App\Repositories\LoanRepository;
+use App\Repositories\TransactionRepository;
 use App\Repositories\UserProfileRepository;
 use App\Repositories\UserRepository;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Passport\Passport;
 
@@ -44,6 +50,8 @@ class AppServiceProvider extends ServiceProvider
         if (! is_dir(config('view.compiled'))) {
             mkdir(config('view.compiled'), 0755, true);
         }
+
+        $this->registerMorphMap();
     }
 
     /**
@@ -58,10 +66,23 @@ class AppServiceProvider extends ServiceProvider
             LoanRepositoryInterface::class => LoanRepository::class,
             LoanApplicationRepositoryInterface::class => LoanApplicationRepository::class,
             ContributionRepositoryInterface::class => ContributionRepository::class,
+            TransactionRepositoryInterface::class => TransactionRepository::class
         ];
 
         foreach($repositories as $interface => $repository) {
             $this->app->bind($interface, $repository);
         }
     }
+
+    /**
+     * Register the Morph Map for custom polymorphic relationships.
+     *
+     */
+    private function registerMorphMap() {
+        Relation::morphMap([
+            'loan' => Loan::class,
+            'contribution_plan' => ContributionPlan::class,
+        ]);
+    }
+
 }

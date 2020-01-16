@@ -5,14 +5,14 @@ namespace App\Models;
 use App\Models\Concerns\UsesUuid;
 use Illuminate\Database\Eloquent\Model;
 
-class MemberContribution extends Model
+class ContributionPlan extends Model
 {
     use UsesUuid;
 
     /**
      * @var string
      */
-    protected $table = "member_contributions";
+    protected $table = "contribution_plans";
 
     /**
      * @var array
@@ -26,5 +26,14 @@ class MemberContribution extends Model
      */
     public function getContributionIdAttribute() {
         return "Loan - {$this->contribution_id}";
+    }
+
+    /**
+     * Get all of the contribution plan's transactions.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     */
+    public function transactions() {
+        return $this->morphMany(Transaction::class, 'owner');
     }
 }

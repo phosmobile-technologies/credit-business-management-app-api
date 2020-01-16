@@ -3,7 +3,7 @@
 namespace App\Services;
 
 
-use App\Models\MemberContribution;
+use App\Models\ContributionPlan;
 use App\Repositories\Interfaces\ContributionRepositoryInterface;
 
 /**
@@ -33,9 +33,9 @@ class ContributionService
      * Create a contribution
      *
      * @param array $contributionData
-     * @return MemberContribution
+     * @return ContributionPlan
      */
-    public function create(array $contributionData): MemberContribution
+    public function create(array $contributionData): ContributionPlan
     {
         return $this->contributionRepository->create($contributionData);
     }
@@ -44,9 +44,9 @@ class ContributionService
      * Update a contribution
      *
      * @param array $contributionData
-     * @return MemberContribution
+     * @return ContributionPlan
      */
-    public function update(array $contributionData): MemberContribution
+    public function update(array $contributionData): ContributionPlan
     {
         $contributionData = collect($contributionData);
         $id = $contributionData['id'];

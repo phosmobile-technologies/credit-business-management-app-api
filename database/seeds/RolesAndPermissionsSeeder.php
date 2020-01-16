@@ -77,11 +77,12 @@ class RolesAndPermissionsSeeder extends Seeder
      */
     private function createAdminStaffPermissions()
     {
-        $createLoan = Permission::create(['name' => UserPermissions::CAN_CREATE_LOANS]);
-        $updateContribution = Permission::create(['name' => UserPermissions::CAN_UPDATE_CONTRIBUTION]);
-        $deleteContribution = Permission::create(['name' => UserPermissions::CAN_DELETE_CONTRIBUTION]);
+        $createLoan = Permission::firstOrCreate(['name' => UserPermissions::CAN_CREATE_LOANS]);
+        $updateContribution = Permission::firstOrCreate(['name' => UserPermissions::CAN_UPDATE_CONTRIBUTION]);
+        $deleteContribution = Permission::firstOrCreate(['name' => UserPermissions::CAN_DELETE_CONTRIBUTION]);
+        $initiateLoanRepayment = Permission::firstOrCreate(['name' => UserPermissions::CAN_INITIATE_LOAN_REPAYMENT]);
 
-        $this->adminStaff->syncPermissions([$createLoan, $updateContribution, $deleteContribution]);
+        $this->adminStaff->syncPermissions([$createLoan, $updateContribution, $deleteContribution, $initiateLoanRepayment]);
     }
 
     /**
@@ -89,7 +90,7 @@ class RolesAndPermissionsSeeder extends Seeder
      */
     private function createBranchManagerPermissions()
     {
-        $updateLoanStatus = Permission::create(['name' => UserPermissions::CAN_UPDATE_LOAN_STATUS]);
+        $updateLoanStatus = Permission::firstOrCreate(['name' => UserPermissions::CAN_UPDATE_LOAN_STATUS]);
 
         $this->branchManager->syncPermissions([$updateLoanStatus]);
     }

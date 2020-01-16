@@ -3,7 +3,7 @@
 namespace App\Repositories\Interfaces;
 
 
-use App\Models\MemberContribution;
+use App\Models\ContributionPlan;
 
 /**
  * Interface ContributionRepositoryInterface
@@ -15,24 +15,24 @@ interface ContributionRepositoryInterface
      * Create a contribution in the database.
      *
      * @param array $contributionData
-     * @return MemberContribution
+     * @return ContributionPlan
      */
-    public function create(array $contributionData): MemberContribution;
+    public function create(array $contributionData): ContributionPlan;
 
     /**
      * Update a contribution in the database.
      *
      * @param string $id
      * @param array $contributionData
-     * @return MemberContribution
+     * @return ContributionPlan
      */
-    public function update(string $id ,array $contributionData): MemberContribution;
+    public function update(string $id ,array $contributionData): ContributionPlan;
 
     /**
      * Find a contribution by id.
      *
      * @param string $contribution_id
-     * @return MemberContribution|null
+     * @return ContributionPlan|null
      */
-    public function find(string $contribution_id): ?MemberContribution;
+    public function find(string $contribution_id): ?ContributionPlan;
 }

@@ -1,0 +1,49 @@
+""" Transactions carried out in the system """
+type Transaction {
+    id: ID!
+    transaction_date: DateTime!
+    transaction_type: TransactionType!
+    transaction_amount: Float!
+    transaction_medium: TransactionMedium!
+    transaction_purpose: String
+    transaction_status: TransactionStatus!
+    created_at: Date!
+    updated_at: Date
+}
+
+""" A subset of a transaction's info, used for creating transaaction mutations """
+type TransactionDetails {
+    transaction_date: DateTime!
+    transaction_type: TransactionType!
+    transaction_amount: Float!
+    transaction_medium: TransactionMedium!
+    transaction_purpose: String
+}
+
+""" The type of a financial transaction """
+enum TransactionType {
+    LOAN_REPAYMENT
+    CONTRIBUTION_PAYMENT
+    CONTRIBUTION_WITHDRAWAL
+    DEFAULT_REPAYMENT
+    DEFAULT_CANCELLATION
+    LOAN_DISBURSEMENT
+    VENDOR_PAYOUT
+    BRANCH_EXPENSE
+    BRANCH_FUND_DISBURSEMENT
+}
+
+""" The medium via which a transaction is made """
+enum TransactionMedium {
+    CASH
+    BANK_TRANSFER
+    BANK_TELLER
+    ONLINE
+}
+
+""" The status of a transaction """
+enum TransactionStatus {
+    COMPLETED
+    PENDING
+    FAILED
+}

@@ -2,12 +2,12 @@
 
 namespace App\Policies;
 
-use App\Models\MemberContribution;
+use App\Models\ContributionPlan;
 use App\Models\UserPermissions;
 use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class MemberContributionPolicy
+class ContributionPlanPolicy
 {
     use HandlesAuthorization;
 
@@ -26,10 +26,10 @@ class MemberContributionPolicy
      * Determine whether the user can view the member contribution.
      *
      * @param  \App\User $user
-     * @param MemberContribution $memberContribution
+     * @param ContributionPlan $ContributionPlan
      * @return mixed
      */
-    public function view(User $user, MemberContribution $memberContribution)
+    public function view(User $user, ContributionPlan $ContributionPlan)
     {
         //
     }
@@ -71,10 +71,10 @@ class MemberContributionPolicy
      * Determine whether the user can restore the member contribution.
      *
      * @param  \App\User $user
-     * @param MemberContribution $memberContribution
+     * @param ContributionPlan $ContributionPlan
      * @return mixed
      */
-    public function restore(User $user, MemberContribution $memberContribution)
+    public function restore(User $user, ContributionPlan $ContributionPlan)
     {
         //
     }
@@ -83,10 +83,10 @@ class MemberContributionPolicy
      * Determine whether the user can permanently delete the member contribution.
      *
      * @param  \App\User $user
-     * @param MemberContribution $memberContribution
+     * @param ContributionPlan $ContributionPlan
      * @return mixed
      */
-    public function forceDelete(User $user, MemberContribution $memberContribution)
+    public function forceDelete(User $user, ContributionPlan $ContributionPlan)
     {
         //
     }

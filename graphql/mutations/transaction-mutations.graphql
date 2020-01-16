@@ -1,0 +1,7 @@
+extend type Mutation @middleware(checks: ["auth:api"]){
+
+    """ Initiate a Loan repayment transaction """
+    InitiateLoanRepaymentTransaction(input: CreateLoanRepaymentTransactionInput! @spread): Transaction!
+    @can(ability: "initiateRepayment", model: "App\\Models\\Loan", find: "loan_id")
+
+}

@@ -5,10 +5,10 @@
 use App\Model;
 use App\Models\enums\ContributionFrequency;
 use App\Models\enums\ContributionType;
-use App\Models\MemberContribution;
+use App\Models\ContributionPlan;
 use Faker\Generator as Faker;
 
-$factory->define(MemberContribution::class, function (Faker $faker) {
+$factory->define(ContributionPlan::class, function (Faker $faker) {
     $contributionTypes = [
         ContributionType::FIXED,
         ContributionType::WALLET,

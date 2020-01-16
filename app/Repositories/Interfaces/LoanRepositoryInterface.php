@@ -2,7 +2,6 @@
 
 namespace App\Repositories\Interfaces;
 
-use App\Models\Enums\LoanApplicationStatus;
 use App\Models\Loan;
 
 interface LoanRepositoryInterface {
@@ -40,4 +39,12 @@ interface LoanRepositoryInterface {
      * @return Loan
      */
     public function disburseLoan(Loan $loan, float $amountDisbursed): Loan;
+
+    /**
+     * Find a loan by id.
+     *
+     * @param string $loan_id
+     * @return Loan|null
+     */
+    public function find(string $loan_id): ?Loan;
 }
