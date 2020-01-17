@@ -156,7 +156,7 @@ class BranchQueriesTest extends TestCase
                 'loan_condition_status' => LoanConditionStatus::ACTIVE
             ],
         ], $this->headers);
-        
+
         $loanStatuses = $response->json("data.GetBranchLoans.data.*.loan_condition_status");
 
         foreach ($loanStatuses as $loanStatus) {

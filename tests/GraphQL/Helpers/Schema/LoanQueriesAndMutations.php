@@ -47,4 +47,19 @@ class LoanQueriesAndMutations
             }
        ';
     }
+
+    /**
+     * Query for getting a loan by ID.
+     *
+     * @return string
+     */
+    public static function GetLoanById() {
+        return '
+            query GetLoanById($id: ID!) {
+                GetLoanById(id: $id) {
+                    id
+                }
+            }
+        ';
+    }
 }

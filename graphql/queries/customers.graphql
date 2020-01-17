@@ -1,4 +1,4 @@
-extend type Query {
+extend type Query @middleware(checks: ["auth:api"]){
     """ Get a client by their ID """
     GetCustomerById(id: ID! @eq): User @find(model: "App\\User")
 }
