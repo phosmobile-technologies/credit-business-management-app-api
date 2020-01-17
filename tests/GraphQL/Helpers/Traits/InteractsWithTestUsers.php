@@ -3,6 +3,7 @@
 namespace Tests\GraphQL\Helpers\Traits;
 use App\Models\Company;
 use App\Models\CompanyBranch;
+use App\Models\Enums\UserRoles;
 use App\Models\UserProfile;
 use App\User;
 
@@ -15,6 +16,18 @@ use App\User;
  */
 trait InteractsWithTestUsers
 {
+    use InteractsWithGraphQLRequests;
+
+    /**
+     * @var
+     */
+    public $user;
+
+    /**
+     * @var array
+     */
+    public $headers;
+
     /**
      * Create a new user.
      *
@@ -33,5 +46,16 @@ trait InteractsWithTestUsers
         );
 
         return $user;
+    }
+
+    /**
+     * Create a test user, login, and get authentication headers
+     * @param array $userRoles
+     */
+    public function loginTestUserAndGetAuthHeaders(array $userRoles = [UserRoles::CUSTOMER]) {
+        $testUserDetails = $this->createLoginAndGetTestUserDetails($userRoles);
+        $this->user = $testUserDetails['user'];
+        $accessToken = $testUserDetails['access_token'];
+        $this->headers = $this->getGraphQLAuthHeader($accessToken);
     }
 }

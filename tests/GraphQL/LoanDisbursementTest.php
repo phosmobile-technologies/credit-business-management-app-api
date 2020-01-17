@@ -18,26 +18,11 @@ class LoanDisbursementTest extends TestCase
 {
     use InteractsWIthTestLoans, InteractsWithTestUsers, RefreshDatabase;
 
-    /**
-     * @var User
-     */
-    private $user;
-
-    /**
-     * @var array
-     */
-    private $headers;
-
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->seed('DatabaseSeeder');
-
-        $testUserDetails = $this->createLoginAndGetTestUserDetails([UserRoles::ADMIN_ACCOUNTANT]);
-        $this->user = $testUserDetails['user'];
-        $accessToken = $testUserDetails['access_token'];
-        $this->headers = $this->getGraphQLAuthHeader($accessToken);
+        $this->seed('TestDatabaseSeeder');
     }
 
     /**
@@ -45,6 +30,8 @@ class LoanDisbursementTest extends TestCase
      */
     public function testItDisbursesLoanCorrectly()
     {
+        $this->loginTestUserAndGetAuthHeaders([UserRoles::ADMIN_ACCOUNTANT]);
+
         $loan = factory(Loan::class)->create([
             'application_status' => LoanApplicationStatus::APPROVED_BY_GLOBAL_MANAGER(),
             'user_id' => $this->user['id'],
@@ -83,6 +70,8 @@ class LoanDisbursementTest extends TestCase
      */
     public function testItDoesNotDisburseAmountGreaterThanLoanBalance()
     {
+        $this->loginTestUserAndGetAuthHeaders([UserRoles::ADMIN_ACCOUNTANT]);
+
         $loan = factory(Loan::class)->create([
             'application_status' => LoanApplicationStatus::APPROVED_BY_GLOBAL_MANAGER(),
             'user_id' => $this->user['id'],
@@ -114,6 +103,8 @@ class LoanDisbursementTest extends TestCase
      */
     public function testItDoesNotDisburseMoneyForUnapprovedLoans()
     {
+        $this->loginTestUserAndGetAuthHeaders([UserRoles::ADMIN_ACCOUNTANT]);
+
         $loan = factory(Loan::class)->create([
             'application_status' => LoanApplicationStatus::PENDING(),
             'user_id' => $this->user['id'],
@@ -145,10 +136,7 @@ class LoanDisbursementTest extends TestCase
      */
     public function testItThrowsErrorForNoneAuthorizedUsersTryingToDisburseALoan()
     {
-        $testUserDetails = $this->createLoginAndGetTestUserDetails([UserRoles::CUSTOMER]);
-        $this->user = $testUserDetails['user'];
-        $accessToken = $testUserDetails['access_token'];
-        $this->headers = $this->getGraphQLAuthHeader($accessToken);
+        $this->loginTestUserAndGetAuthHeaders([UserRoles::CUSTOMER]);
 
         $loan = factory(Loan::class)->create([
             'application_status' => LoanApplicationStatus::APPROVED_BY_GLOBAL_MANAGER(),

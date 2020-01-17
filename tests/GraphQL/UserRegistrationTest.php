@@ -19,7 +19,7 @@ class UserRegistrationTest extends TestCase
      */
     public function testItSuccessfullyRegistersANewUser()
     {
-        $this->seed('DatabaseSeeder');
+        $this->seed('TestDatabaseSeeder');
 
         $userData = collect(factory(User::class)->make())->except(['email_verified_at', 'password'])->toArray();
 

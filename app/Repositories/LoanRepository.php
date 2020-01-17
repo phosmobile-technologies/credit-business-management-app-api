@@ -9,8 +9,10 @@
 namespace App\Repositories;
 
 
+use App\GraphQL\Errors\GraphqlError;
 use App\Models\Enums\DisbursementStatus;
 use App\Models\Enums\LoanApplicationStatus;
+use App\Models\Enums\LoanConditionStatus;
 use App\Models\Loan;
 use App\Repositories\Interfaces\LoanRepositoryInterface;
 
@@ -81,5 +83,33 @@ class LoanRepository implements LoanRepositoryInterface
     public function find(string $loan_id): ?Loan
     {
         return Loan::findOrFail($loan_id);
+    }
+
+    /**
+     * Repay a loan
+     *
+     * @param Loan $loan
+     * @param float $repayment_amount
+     * @return Loan
+     * @throws GraphqlError
+     */
+    public function repayLoan(Loan $loan, float $repayment_amount): Loan
+    {
+        // Reduce the loan balance
+        // If the loan balance is 0, complete the loan
+
+        if ($repayment_amount > $loan->loan_balance) {
+            throw new GraphqlError("Unable to repay a loan with an amount greater than the loan balance.");
+        }
+
+        $loan->loan_balance = $loan->loan_balance - $repayment_amount;
+
+        if ($loan->loan_balance == 0) {
+            $loan->loan_condition_status = LoanConditionStatus::COMPLETED;
+        }
+
+        $loan->save();
+
+        return $loan;
     }
 }

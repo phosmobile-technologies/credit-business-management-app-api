@@ -47,4 +47,14 @@ interface LoanRepositoryInterface {
      * @return Loan|null
      */
     public function find(string $loan_id): ?Loan;
+
+    /**
+     * Repay a loan
+     *
+     * @param Loan $loan
+     * @param float $repayment_amount
+     * @throws GraphqlError
+     * @return Loan
+     */
+    public function repayLoan(Loan $loan, float $repayment_amount): Loan;
 }
