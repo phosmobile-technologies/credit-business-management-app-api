@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Concerns\UsesUuid;
+use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -19,5 +20,12 @@ class CompanyBranch extends Model
      */
     public function company(): BelongsTo {
         return $this->belongsTo(Company::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     */
+    public function customers() {
+        return $this->hasManyThrough(User::class, UserProfile::class, 'branch_id');
     }
 }

@@ -31,6 +31,7 @@ type CompanyBranch {
     id: ID!
     name: String!
     location: String
+    customers: [User]!
 }
 
 # Gender for a user

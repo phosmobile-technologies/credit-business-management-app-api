@@ -35,7 +35,7 @@ trait InteractsWithTestUsers
      */
     public function createUser(): User {
         $company = Company::first();
-        $branch = CompanyBranch::inRandomOrder()->first();
+        $branch = CompanyBranch::first();
 
         $user = factory(User::class)->create();
         $user->profile()->save(
@@ -44,6 +44,8 @@ trait InteractsWithTestUsers
                 'branch_id' => $branch->id
             ])
         );
+        $user->user_profile_id = $user->profile->id;
+        $user->save();
 
         return $user;
     }

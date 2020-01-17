@@ -1,4 +1,0 @@
-extend type Query {
-    """ Get a client by their ID """
-    GetClientById(id: ID! @eq): User @find(model: "App\\User")
-}

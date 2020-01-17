@@ -3,7 +3,7 @@
 namespace Tests\GraphQL\Helpers\Schema;
 
 
-class ClientQueriesAndMutations
+class CustomerQueriesAndMutations
 {
     /**
      * Query for getting a client by their id.
@@ -12,8 +12,8 @@ class ClientQueriesAndMutations
      */
     public static function getClientById() {
         return '
-            mutation GetClientById($id: ID!) {
-                GetClientById(id: $id) {
+            query GetCustomerById($id: ID!) {
+                GetCustomerById(id: $id) {
                     id
                 }
             }
