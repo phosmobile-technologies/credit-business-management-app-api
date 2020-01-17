@@ -61,6 +61,8 @@ class UsersTableSeeder extends Seeder
             ]);
 
             $user->profile()->save($userProfile);
+            $user->user_profile_id = $user->profile->id;
+            $user->save();
             $user->assignRole(UserRoles::CUSTOMER);
         }
     }

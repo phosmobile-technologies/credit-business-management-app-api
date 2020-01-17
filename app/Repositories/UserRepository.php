@@ -33,6 +33,8 @@ class UserRepository implements UserRepositoryInterface
     public function attachUserProfile(User $user, array $userProfileData): User
     {
         $user->profile()->save(new UserProfile($userProfileData));
+        $user->user_profile_id = $user->profile->id;
+        $user->save();
 
         return $user;
     }

@@ -5,7 +5,9 @@ namespace App\Providers;
 use App\Models\ContributionPlan;
 use App\Models\Loan;
 use App\Models\Transaction;
+use App\Repositories\CompanyBranchRepository;
 use App\Repositories\ContributionRepository;
+use App\Repositories\Interfaces\CompanyBranchRepositoryInterface;
 use App\Repositories\Interfaces\ContributionRepositoryInterface;
 use App\Repositories\Interfaces\LoanApplicationRepositoryInterface;
 use App\Repositories\Interfaces\LoanRepositoryInterface;
@@ -66,7 +68,8 @@ class AppServiceProvider extends ServiceProvider
             LoanRepositoryInterface::class => LoanRepository::class,
             LoanApplicationRepositoryInterface::class => LoanApplicationRepository::class,
             ContributionRepositoryInterface::class => ContributionRepository::class,
-            TransactionRepositoryInterface::class => TransactionRepository::class
+            TransactionRepositoryInterface::class => TransactionRepository::class,
+            CompanyBranchRepositoryInterface::class => CompanyBranchRepository::class
         ];
 
         foreach($repositories as $interface => $repository) {
