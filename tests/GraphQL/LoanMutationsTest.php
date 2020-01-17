@@ -19,21 +19,11 @@ class LoanMutationsTest extends TestCase
 {
     use RefreshDatabase, InteractsWithTestUsers, InteractsWIthTestLoans;
 
-    /**
-     * @var User
-     */
-    private $user;
-
-    /**
-     * @var array
-     */
-    private $headers;
-
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->seed('DatabaseSeeder');
+        $this->seed('TestDatabaseSeeder');
     }
 
     /**
@@ -41,10 +31,7 @@ class LoanMutationsTest extends TestCase
      */
     public function testItSuccessfullyCreatesANewLoan()
     {
-        $testUserDetails = $this->createLoginAndGetTestUserDetails([UserRoles::ADMIN_STAFF]);
-        $this->user = $testUserDetails['user'];
-        $accessToken = $testUserDetails['access_token'];
-        $this->headers = $this->getGraphQLAuthHeader($accessToken);
+        $this->loginTestUserAndGetAuthHeaders([UserRoles::ADMIN_STAFF]);
 
         $loanData = collect(factory(Loan::class)->state('not_disbursed_loan')->make())
             ->except(['loan_identifier'])
@@ -78,10 +65,7 @@ class LoanMutationsTest extends TestCase
      * @test
      */
     public function testItCanUpdateTheLoanApplicationStatus() {
-        $testUserDetails = $this->createLoginAndGetTestUserDetails([UserRoles::BRANCH_MANAGER]);
-        $this->user = $testUserDetails['user'];
-        $accessToken = $testUserDetails['access_token'];
-        $this->headers = $this->getGraphQLAuthHeader($accessToken);
+        $this->loginTestUserAndGetAuthHeaders([UserRoles::BRANCH_MANAGER]);
 
         $loan = $this->createTestLoan();
 

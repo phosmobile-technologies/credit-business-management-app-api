@@ -8,7 +8,7 @@ use App\Models\enums\TransactionType;
 use App\Models\Loan;
 use App\Models\Transaction;
 use App\Repositories\TransactionRepository;
-use App\Services\TransactionService;
+use App\Services\LoanRepaymentTransactionService;
 use Illuminate\Foundation\Testing\WithFaker;
 use Mockery;
 use Tests\TestCase;
@@ -18,7 +18,7 @@ class TransactionsServiceTest extends TestCase
     use WithFaker;
 
     /**
-     * @var TransactionService
+     * @var LoanRepaymentTransactionService
      */
     private $transactionsService;
 
@@ -38,7 +38,7 @@ class TransactionsServiceTest extends TestCase
 
         $this->app->instance(TransactionRepository::class, $this->transactionRepository);
 
-        $this->transactionsService = $this->app->make(TransactionService::class);
+        $this->transactionsService = $this->app->make(LoanRepaymentTransactionService::class);
     }
 
     /**

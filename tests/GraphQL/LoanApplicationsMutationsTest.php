@@ -15,26 +15,11 @@ class LoanApplicationsMutationsTest extends TestCase
 {
     use RefreshDatabase, InteractsWithTestUsers;
 
-    /**
-     * @var User
-     */
-    private $user;
-
-    /**
-     * @var array
-     */
-    private $headers;
-
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->seed('DatabaseSeeder');
-
-        $testUserDetails = $this->createLoginAndGetTestUserDetails();
-        $this->user = $testUserDetails['user'];
-        $accessToken = $testUserDetails['access_token'];
-        $this->headers = $this->getGraphQLAuthHeader($accessToken);
+        $this->seed('TestDatabaseSeeder');
     }
 
     /**
@@ -42,6 +27,8 @@ class LoanApplicationsMutationsTest extends TestCase
      */
     public function testItCreatesALoanApplication()
     {
+        $this->loginTestUserAndGetAuthHeaders([UserRoles::CUSTOMER]);
+
         $loanApplicationData = factory(LoanApplication::class)->make();
         $loanApplicationData['user_id'] = $this->user['id'];
 
@@ -74,10 +61,7 @@ class LoanApplicationsMutationsTest extends TestCase
      */
     public function testItDoesNotCreateLoanApplicationIfUserIsNotACustomer()
     {
-        $testUserDetails = $this->createLoginAndGetTestUserDetails([UserRoles::ADMIN_STAFF]);
-        $this->user = $testUserDetails['user'];
-        $accessToken = $testUserDetails['access_token'];
-        $this->headers = $this->getGraphQLAuthHeader($accessToken);
+        $this->loginTestUserAndGetAuthHeaders([UserRoles::ADMIN_STAFF]);
 
         $loanApplicationData = factory(LoanApplication::class)->make();
         $loanApplicationData['user_id'] = $this->user['id'];

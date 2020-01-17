@@ -15,28 +15,15 @@ class ContributionMutationsTest extends TestCase
 {
     use RefreshDatabase, InteractsWithTestUsers;
 
-    /**
-     * @var User
-     */
-    private $user;
-
-    /**
-     * @var array
-     */
-    private $headers;
-
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->seed('DatabaseSeeder');
+        $this->seed('TestDatabaseSeeder');
     }
 
     public function testCreateContributionMutation() {
-        $testUserDetails = $this->createLoginAndGetTestUserDetails([UserRoles::CUSTOMER]);
-        $this->user = $testUserDetails['user'];
-        $accessToken = $testUserDetails['access_token'];
-        $this->headers = $this->getGraphQLAuthHeader($accessToken);
+        $this->loginTestUserAndGetAuthHeaders();
 
         $contributionData = factory(ContributionPlan::class)->make()->toArray();
         $contributionData['user_id'] = $this->user['id'];
@@ -63,10 +50,7 @@ class ContributionMutationsTest extends TestCase
      * @test
      */
     public function testUpdateContributionMutation() {
-        $testUserDetails = $this->createLoginAndGetTestUserDetails([UserRoles::ADMIN_STAFF]);
-        $this->user = $testUserDetails['user'];
-        $accessToken = $testUserDetails['access_token'];
-        $this->headers = $this->getGraphQLAuthHeader($accessToken);
+        $this->loginTestUserAndGetAuthHeaders([UserRoles::ADMIN_STAFF]);
 
         $contributionData = factory(ContributionPlan::class)->make()->toArray();
         $contributionData['user_id'] = $this->user['id'];
@@ -102,10 +86,7 @@ class ContributionMutationsTest extends TestCase
      * @test
      */
     public function testDeleteContributionMutation() {
-        $testUserDetails = $this->createLoginAndGetTestUserDetails([UserRoles::ADMIN_STAFF]);
-        $this->user = $testUserDetails['user'];
-        $accessToken = $testUserDetails['access_token'];
-        $this->headers = $this->getGraphQLAuthHeader($accessToken);
+        $this->loginTestUserAndGetAuthHeaders([UserRoles::ADMIN_STAFF]);
 
         $contributionData = factory(ContributionPlan::class)->make()->toArray();
         $contributionData['user_id'] = $this->user['id'];

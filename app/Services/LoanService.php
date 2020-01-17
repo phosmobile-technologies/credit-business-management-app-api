@@ -24,17 +24,17 @@ class LoanService
      */
     private $loanRepository;
 
-    private $transactionService;
+    private $loanRepaymentTransactionService;
 
     /**
      * LoanService constructor.
      * @param LoanRepositoryInterface $loanRepository
-     * @param TransactionService $transactionService
+     * @param LoanRepaymentTransactionService $loanRepaymentTransactionService
      */
-    public function __construct(LoanRepositoryInterface $loanRepository, TransactionService $transactionService)
+    public function __construct(LoanRepositoryInterface $loanRepository, LoanRepaymentTransactionService $loanRepaymentTransactionService)
     {
         $this->loanRepository = $loanRepository;
-        $this->transactionService = $transactionService;
+        $this->loanRepaymentTransactionService = $loanRepaymentTransactionService;
     }
 
     /**
@@ -159,7 +159,7 @@ class LoanService
             throw new GraphqlError("The transaction type selected must be Loan Repayment");
         }
 
-        $transaction = $this->transactionService->initiateLoanRepaymentTransaction($loan, $transactionDetails);
+        $transaction = $this->loanRepaymentTransactionService->initiateLoanRepaymentTransaction($loan, $transactionDetails);
 
         return $transaction;
     }

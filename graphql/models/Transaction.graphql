@@ -47,3 +47,9 @@ enum TransactionStatus {
     PENDING
     FAILED
 }
+
+""" The processing types that can be carried out on a transaction """
+enum TransactionProcessingType {
+    APPROVE
+    DISAPPROVE
+}
