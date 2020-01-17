@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\GraphQL;
 
 use App\Models\enums\ContributionFrequency;
 use App\Models\Enums\UserRoles;

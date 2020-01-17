@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\GraphQL;
 
 use App\Models\Enums\LoanConditionStatus;
 use App\Models\enums\TransactionOwnerType;
