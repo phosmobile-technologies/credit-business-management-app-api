@@ -26,19 +26,19 @@ class BranchQueriesTest extends TestCase
     /**
      * @test
      */
-    public function testGetBranchByIdQuery() {
+    public function testGetBranchByIdQuery()
+    {
         $this->loginTestUserAndGetAuthHeaders();
 
         $company = Company::first();
         $branch = CompanyBranch::first();
         $users = [];
 
-        for($i = 0; $i < 3; $i++) {
+        for ($i = 0; $i < 3; $i++) {
             $user = $this->createUser();
 
             array_push($users, $user);
         }
-
 
 
         $response = $this->postGraphQL([
@@ -53,9 +53,46 @@ class BranchQueriesTest extends TestCase
                 'GetBranchById' => [
                     'id' => $branch->id,
                     'customers' => [
-                        [ 'id' => $users[0]['id']],
-                        [ 'id' => $users[1]['id']],
-                        [ 'id' => $users[2]['id']],
+                        ['id' => $users[0]['id']],
+                        ['id' => $users[1]['id']],
+                        ['id' => $users[2]['id']],
+                    ]
+                ]
+            ]
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function testGetBranchCustomersQuery()
+    {
+        $this->loginTestUserAndGetAuthHeaders();
+
+        $company = Company::first();
+        $branch = CompanyBranch::first();
+        $users = [];
+
+        for ($i = 0; $i < 3; $i++) {
+            $user = $this->createUser();
+
+            array_push($users, $user);
+        }
+
+        $response = $this->postGraphQL([
+            'query' => BranchQueriesAndMutations::getBranchCustomers(),
+            'variables' => [
+                'branch_id' => $branch->id
+            ],
+        ], $this->headers);
+
+        $response->assertJson([
+            'data' => [
+                'GetBranchCustomers' => [
+                    'data' => [
+                        ['id' => $users[0]['id']],
+                        ['id' => $users[1]['id']],
+                        ['id' => $users[2]['id']],
                     ]
                 ]
             ]

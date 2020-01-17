@@ -31,9 +31,10 @@ trait InteractsWithTestUsers
     /**
      * Create a new user.
      *
+     * @param array $roles
      * @return User
      */
-    public function createUser(): User {
+    public function createUser(array $roles = [UserRoles::CUSTOMER]): User {
         $company = Company::first();
         $branch = CompanyBranch::first();
 
@@ -46,6 +47,7 @@ trait InteractsWithTestUsers
         );
         $user->user_profile_id = $user->profile->id;
         $user->save();
+        $user->assignRole($roles);
 
         return $user;
     }

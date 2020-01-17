@@ -1,4 +1,8 @@
 extend type Query {
     """ Get a company branch by their ID """
     GetBranchById(id: ID! @eq): CompanyBranch @find(model: "App\\Models\\CompanyBranch")
+
+    """ Get all customers that belong to a branch """
+    GetBranchCustomers(branch_id: ID!): [User]!
+    @paginate(builder: "App\\GraphQL\\Queries\\GetBranchCustomers", defaultCount: 25)
 }
