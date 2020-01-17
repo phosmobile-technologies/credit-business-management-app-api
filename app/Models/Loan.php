@@ -4,7 +4,9 @@ namespace App\Models;
 
 use App\Models\Concerns\UsesUuid;
 use App\Models\Enums\LoanDefaultStatus;
+use App\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Spatie\Activitylog\Traits\LogsActivity;
 
 class Loan extends Model
@@ -41,4 +43,14 @@ class Loan extends Model
     public function transactions() {
         return $this->morphMany(Transaction::class, 'owner');
     }
+
+    /**
+     * The user who owns the loan.
+     *
+     * @return BelongsTo
+     */
+    public function user(): BelongsTo {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
 }

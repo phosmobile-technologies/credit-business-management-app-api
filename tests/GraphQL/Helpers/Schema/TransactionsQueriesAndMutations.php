@@ -49,4 +49,19 @@ class TransactionsQueriesAndMutations
             }
         ';
     }
+
+    /**
+     * Query for getting a transaction by ID.
+     *
+     * @return string
+     */
+    public static function GetTransactionById() {
+        return '
+            query GetTransactionById($id: ID!) {
+                GetTransactionById(id: $id) {
+                    id
+                }
+            }
+        ';
+    }
 }

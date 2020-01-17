@@ -13,11 +13,15 @@ trait InteractsWIthTestLoans
     /**
      * Create a test loan.
      *
+     * @param null $user
      * @return Loan
      */
-    public function createTestLoan(): Loan
+    public function createTestLoan($user = null): Loan
     {
-        $user = $this->createUser();
+        if(!$user) {
+            $user = $this->createUser();
+        }
+
         $loan = factory(Loan::class)->create([
             'application_status' => LoanApplicationStatus::PENDING(),
             'user_id' => $user->id

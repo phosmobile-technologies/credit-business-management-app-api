@@ -1,0 +1,4 @@
+extend type Query @middleware(checks: ["auth:api"]){
+    """ Get a transaction by its ID """
+    GetTransactionById(id: ID! @eq): Transaction @find(model: "App\\Models\\Transaction")
+}

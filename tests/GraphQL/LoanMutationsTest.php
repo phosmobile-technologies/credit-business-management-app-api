@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\GraphQL;
 
 use App\Models\Enums\DisbursementStatus;
 use App\Models\Enums\LoanApplicationStatus;

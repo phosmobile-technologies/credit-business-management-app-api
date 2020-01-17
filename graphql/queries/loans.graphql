@@ -1,0 +1,5 @@
+extend type Query @middleware(checks: ["auth:api"]){
+
+    """ Get a loan by its ID """
+    GetLoanById(id: ID! @eq): Loan @find(model: "App\\Models\\Loan")
+}

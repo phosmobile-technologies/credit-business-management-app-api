@@ -15,6 +15,9 @@ class CustomerQueriesAndMutations
             query GetCustomerById($id: ID!) {
                 GetCustomerById(id: $id) {
                     id
+                    loans {
+                      id
+                    }
                 }
             }
         ';

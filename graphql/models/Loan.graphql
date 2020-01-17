@@ -1,7 +1,7 @@
 """ A Loan for a customer """
 type Loan {
     id: ID!
-    user_id: ID!
+    user: User! @belongsTo
     loan_identifier: String! # unique number string to identify the loan seperate from the uuid
     loan_purpose: String!
     loan_repayment_source: String!

@@ -13,6 +13,10 @@ class GetBranchCustomers
      */
     private $branchService;
 
+    /**
+     * GetBranchCustomers constructor.
+     * @param BranchService $branchService
+     */
     public function __construct(BranchService $branchService)
     {
         $this->branchService = $branchService;
