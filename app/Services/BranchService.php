@@ -35,10 +35,32 @@ class BranchService
      * Get the query builder for customers that a belong to a branch.
      *
      * @param string $branch_id
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
      */
     public function getBranchCustomersQuery(string $branch_id)
     {
         return $this->branchRepository->findCustomersQuery($branch_id);
+    }
+
+    /**
+     * Get the loans that a belong to a branch.
+     *
+     * @param string $branch_id
+     * @return \Illuminate\Support\Collection
+     */
+    public function getBranchLoans(string $branch_id)
+    {
+        return $this->branchRepository->findLoans($branch_id);
+    }
+
+    /**
+     * Get the query builder for loans that a belong to a branch.
+     *
+     * @param string $branch_id
+     * @return \Illuminate\Support\Collection
+     */
+    public function getBranchLoansQuery(string $branch_id)
+    {
+        return $this->branchRepository->findLoansQuery($branch_id);
     }
 }

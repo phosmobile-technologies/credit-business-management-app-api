@@ -50,4 +50,30 @@ class CompanyBranchRepository implements CompanyBranchRepositoryInterface
 
         return $branch->customers()->role([UserRoles::CUSTOMER]);
     }
+
+    /**
+     * Find the loans that belong to a branch.
+     *
+     * @param string $branch_id
+     * @return Collection
+     */
+    public function findLoans(string $branch_id): Collection
+    {
+        $branch = $this->find($branch_id);
+
+        return $branch->loans()->get();
+    }
+
+    /**
+     * Get the eloquent query builder that can get loans that belong to a branch.
+     *
+     * @param string $branch_id
+     * @return HasManyThrough
+     */
+    public function findLoansQuery(string $branch_id): HasManyThrough
+    {
+        $branch = $this->find($branch_id);
+
+        return $branch->loans();
+    }
 }

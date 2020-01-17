@@ -6,6 +6,7 @@ use App\Models\Concerns\UsesUuid;
 use App\Models\Loan;
 use App\Models\UserProfile;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -84,7 +85,7 @@ class User extends Authenticatable
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function loans()
+    public function loans(): HasMany
     {
         return $this->hasMany(Loan::class, 'user_id', 'id');
     }

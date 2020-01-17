@@ -6,6 +6,7 @@ use App\Models\Concerns\UsesUuid;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class CompanyBranch extends Model
 {
@@ -18,14 +19,21 @@ class CompanyBranch extends Model
      *
      * @return BelongsTo
      */
-    public function company(): BelongsTo {
+    public function company(): BelongsTo
+    {
         return $this->belongsTo(Company::class);
     }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
      */
-    public function customers() {
+    public function customers(): HasManyThrough
+    {
         return $this->hasManyThrough(User::class, UserProfile::class, 'branch_id');
+    }
+
+    public function loans(): HasManyThrough
+    {
+        return $this->hasManyThrough(Loan::class, UserProfile::class, 'branch_id', 'user_id', 'id', 'user_id');
     }
 }

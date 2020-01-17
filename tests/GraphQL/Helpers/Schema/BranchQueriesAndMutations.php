@@ -48,4 +48,33 @@ class BranchQueriesAndMutations
             }
         ';
     }
+
+    /**
+     * Get the loans that belong to a branch.
+     *
+     * @return string
+     */
+    public static function getBranchLoans()
+    {
+        return '
+            query GetBranchLoans($branch_id: ID!) {
+                GetBranchLoans(branch_id: $branch_id) {
+                   paginatorInfo {
+                      count
+                      currentPage
+                      firstItem
+                      total
+                    }
+                    data {
+                      id
+                      loan_amount
+                      user {
+                        first_name
+                        last_name
+                      }
+                    }
+                  }
+            }
+        ';
+    }
 }
