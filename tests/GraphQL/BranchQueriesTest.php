@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Company;
 use App\Models\CompanyBranch;
+use App\Models\Enums\LoanConditionStatus;
 use App\Models\UserProfile;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -130,6 +131,36 @@ class BranchQueriesTest extends TestCase
 
         foreach ($testLoanIds as $testLoanId) {
             $this->assertContains($testLoanId, $loanIds);
+        }
+    }
+
+    /**
+     * @test
+     */
+    public function testGetBranchLoansQueryFiltersByLoanConditionStatus()
+    {
+        $this->loginTestUserAndGetAuthHeaders();
+        $branch = CompanyBranch::first();
+        $user = $this->createUser();
+        $testLoans = [];
+
+        for ($i = 0; $i < 30; $i++) {
+            $loan = $this->createTestLoan($user);
+            array_push($testLoans, $loan);
+        }
+
+        $response = $this->postGraphQL([
+            'query' => BranchQueriesAndMutations::getBranchLoans(),
+            'variables' => [
+                'branch_id' => $branch->id,
+                'loan_condition_status' => LoanConditionStatus::ACTIVE
+            ],
+        ], $this->headers);
+        
+        $loanStatuses = $response->json("data.GetBranchLoans.data.*.loan_condition_status");
+
+        foreach ($loanStatuses as $loanStatus) {
+            $this->assertEquals(LoanConditionStatus::ACTIVE, $loanStatus);
         }
     }
 }

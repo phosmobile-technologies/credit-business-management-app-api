@@ -7,6 +7,6 @@ extend type Query {
     @paginate(builder: "App\\GraphQL\\Queries\\GetBranchCustomers", defaultCount: 25)
 
     """ Get all loans that belong to a branch """
-    GetBranchLoans(branch_id: ID!): [Loan]!
+    GetBranchLoans(branch_id: ID!, loan_condition_status: LoanConditionStatus @where(operator: "=")): [Loan]!
     @paginate(builder: "App\\GraphQL\\Queries\\GetBranchLoans", defaultCount: 25)
 }
