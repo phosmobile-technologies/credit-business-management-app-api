@@ -6,6 +6,7 @@ scalar Date @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
 
 #import inputs/*.graphql
 #import models/*.graphql
+#import queries/*.graphql
 #import mutations/*.graphql
 
 type Query {
