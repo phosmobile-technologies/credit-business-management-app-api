@@ -2,16 +2,18 @@
 
 namespace Tests\GraphQL;
 
+use App\Models\enums\TransactionOwnerType;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\GraphQL\Helpers\Schema\CustomerQueriesAndMutations;
-use Tests\GraphQL\Helpers\Traits\InteractsWIthTestLoans;
+use Tests\GraphQL\Helpers\Traits\InteractsWithTestLoans;
+use Tests\GraphQL\Helpers\Traits\InteractsWithTestTransactions;
 use Tests\GraphQL\Helpers\Traits\InteractsWithTestUsers;
 use Tests\TestCase;
 
 class CustomerQueriesTest extends TestCase
 {
-    use RefreshDatabase, InteractsWithTestUsers, InteractsWIthTestLoans;
+    use RefreshDatabase, InteractsWithTestUsers, InteractsWithTestLoans, InteractsWithTestTransactions;
 
     protected function setUp(): void
     {
@@ -23,15 +25,12 @@ class CustomerQueriesTest extends TestCase
     /**
      * @test
      */
-    public function testGetClientByIdQuery() {
+    public function testGetClientByIdQuery()
+    {
         $this->loginTestUserAndGetAuthHeaders();
 
         $testUser = $this->createUser();
-        $testLoans = [];
-        for ($i = 0; $i < 3; $i++) {
-            $loan = $this->createTestLoan($testUser);
-            array_push($testLoans, $loan);
-        }
+        $testLoans = $this->createTestLoan($testUser, 3)->toArray();
 
         $response = $this->postGraphQL([
             'query' => CustomerQueriesAndMutations::getClientById(),
@@ -52,5 +51,53 @@ class CustomerQueriesTest extends TestCase
                 ]
             ]
         ]);
+    }
+
+    /**
+     * @test
+     */
+    public function testGetCustomerTransactionsByIdQuery()
+    {
+        $this->loginTestUserAndGetAuthHeaders();
+
+        $testUser = $this->createUser();
+        $testLoans = $this->createTestLoan($testUser, 3)->toArray();
+        $transactions = [];
+
+        foreach ($testLoans as $testLoan) {
+            $transaction = $this->createTransaction(TransactionOwnerType::LOAN, $testLoan['id'])->toArray();
+            array_push($transactions, $transaction);
+        }
+
+        $testTransactionIds = [
+            $transactions[0]['id'],
+            $transactions[1]['id'],
+            $transactions[2]['id'],
+        ];
+
+        $response = $this->postGraphQL([
+            'query' => CustomerQueriesAndMutations::GetCustomerTransactionsById(),
+            'variables' => [
+                'id' => $testUser->id
+            ],
+        ], $this->headers);
+
+        $response->assertJson([
+            'data' => [
+                'GetCustomerTransactionsById' => [
+                    'data' => [
+                        ['id' => $testLoans[0]['id']],
+                        ['id' => $testLoans[1]['id']],
+                        ['id' => $testLoans[2]['id']],
+                    ]
+                ]
+            ]
+        ]);
+
+        $transactionIds = $response->json("data.GetCustomerTransactionsById.data.*.id");
+
+        foreach ($transactionIds as $transactionId) {
+            $this->assertContains($transactionId, $testTransactionIds);
+        }
     }
 }

@@ -76,4 +76,17 @@ class CompanyBranchRepository implements CompanyBranchRepositoryInterface
 
         return $branch->loans();
     }
+
+    /**
+     * Get the eloquent query builder that can get loan applications that belong to a branch.
+     *
+     * @param string $branch_id
+     * @return HasManyThrough
+     */
+    public function findLoanApplicationsQuery(string $branch_id): HasManyThrough
+    {
+        $branch = $this->find($branch_id);
+
+        return $branch->loanApplications();
+    }
 }

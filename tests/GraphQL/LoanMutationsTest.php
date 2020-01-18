@@ -11,13 +11,13 @@ use App\Models\Loan;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\GraphQL\Helpers\Schema\LoanQueriesAndMutations;
-use Tests\GraphQL\Helpers\Traits\InteractsWIthTestLoans;
+use Tests\GraphQL\Helpers\Traits\InteractsWithTestLoans;
 use Tests\GraphQL\Helpers\Traits\InteractsWithTestUsers;
 use Tests\TestCase;
 
 class LoanMutationsTest extends TestCase
 {
-    use RefreshDatabase, InteractsWithTestUsers, InteractsWIthTestLoans;
+    use RefreshDatabase, InteractsWithTestUsers, InteractsWithTestLoans;
 
     protected function setUp(): void
     {

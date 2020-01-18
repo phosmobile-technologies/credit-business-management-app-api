@@ -58,6 +58,9 @@ class LoanQueriesAndMutations
             query GetLoanById($id: ID!) {
                 GetLoanById(id: $id) {
                     id
+                    transactions {
+                        id
+                    }
                 }
             }
         ';

@@ -9,4 +9,8 @@ extend type Query @middleware(checks: ["auth:api"]){
     """ Get all loans that belong to a branch """
     GetBranchLoans(branch_id: ID!, loan_condition_status: LoanConditionStatus @where(operator: "=")): [Loan]!
     @paginate(builder: "App\\GraphQL\\Queries\\GetBranchLoans", defaultCount: 25)
+
+    """ Get all loan applications that belong to a branch """
+    GetBranchLoanApplications(branch_id: ID!): [LoanApplication]!
+    @paginate(builder: "App\\GraphQL\\Queries\\GetBranchLoanApplications", defaultCount: 25)
 }

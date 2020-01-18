@@ -6,6 +6,7 @@ namespace App\Repositories;
 use App\Models\UserProfile;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use App\User;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class UserRepository implements UserRepositoryInterface
 {
@@ -52,5 +53,29 @@ class UserRepository implements UserRepositoryInterface
         $user->assignRole($roles);
 
         return $user;
+    }
+
+    /**
+     * Find a User by id.
+     *
+     * @param string $user_id
+     * @return User|null
+     */
+    public function find(string $user_id): ?User
+    {
+        return User::firstOrFail($user_id);
+    }
+
+    /**
+     * Get the eloquent query builder that can get transactions that belong to a customer.
+     *sss
+     * @param string $customer_id
+     * @return HasManyThrough
+     */
+    public function findTransactionsQuery(string $customer_id): HasManyThrough
+    {
+        $user = $this->userRepository->find($customer_id);
+
+        return $user->transactions();
     }
 }

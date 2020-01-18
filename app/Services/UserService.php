@@ -90,4 +90,14 @@ class UserService
 
         return $identifier;
     }
+
+    /**
+     * Get the query builder for transactions that a belong to a user.
+     *
+     * @param $customer_id
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     */
+    public function getCustomerTransactionsQuery($customer_id) {
+        return $this->userRepository->findTransactionsQuery($customer_id);
+    }
 }

@@ -21,6 +21,7 @@ type Loan {
     loan_condition_status: LoanConditionStatus!
     loan_default_status: LoanDefaultStatus!
     num_of_default_days: Int
+    transactions: [Transaction]! @morphMany
 }
 
 """ An application made by a customer requesting for a loan """

@@ -49,4 +49,12 @@ interface CompanyBranchRepositoryInterface
      * @return HasManyThrough
      */
     public function findLoansQuery(string $branch_id): HasManyThrough;
+
+    /**
+     * Get the eloquent query builder that can get loan applications that belong to a branch.
+     *
+     * @param string $branch_id
+     * @return HasManyThrough
+     */
+    public function findLoanApplicationsQuery(string $branch_id): HasManyThrough;
 }
