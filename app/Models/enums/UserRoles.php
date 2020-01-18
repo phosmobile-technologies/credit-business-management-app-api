@@ -18,5 +18,5 @@ abstract class UserRoles
     const ADMIN_MANAGER = "ADMIN_MANAGER";
     const SUPER_ADMIN = "SUPER_ADMIN";
     const BRANCH_MANAGER = "BRANCH_MANAGER";
-    const GLOBAL_MANAGER = "GLOBAL_MANAGER";
+    const BRANCH_ACCOUNTANT = "BRANCH_ACCOUNTANT";
 }

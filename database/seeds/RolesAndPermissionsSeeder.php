@@ -26,12 +26,22 @@ class RolesAndPermissionsSeeder extends Seeder
     /**
      * @var Role
      */
-    private $globalManager;
+    private $branchAccountant;
 
     /**
      * @var Role
      */
     private $adminAccountant;
+
+    /**
+     * @var
+     */
+    private $adminManager;
+
+    /**
+     * @var
+     */
+    private $superAdmin;
 
     /**
      * Run the database seeds.
@@ -45,21 +55,11 @@ class RolesAndPermissionsSeeder extends Seeder
         $this->createCustomerPermissions();
         $this->createAdminStaffPermissions();
         $this->createBranchManagerPermissions();
-        $this->createGlobalManagerPermissions();
+        $this->createBranchAccountantPermissions();
         $this->createAdminAccountantPermissions();
+        $this->createAdminManagerPermissions();
     }
 
-    /**
-     * Create the roles and permissions for admin users
-     */
-    private function createAdminRolesAndPermissions()
-    {
-//        $adminUser = Role::create(['name' => UserRoles::ADMIN_USER]);
-//
-//        $canCrudUsers = Permission::create(['name' => UserPermissions::CAN_CRUD_USERS]);
-//
-//        $adminUser->syncPermissions([$canCrudUsers]);
-    }
 
     /**
      * Create the permissions for customers
@@ -96,13 +96,13 @@ class RolesAndPermissionsSeeder extends Seeder
     }
 
     /**
-     * Create the permissions for global Manager
+     * Create the permissions for admin accountant
      */
-    private function createGlobalManagerPermissions()
+    private function createBranchAccountantPermissions()
     {
-        $updateLoanStatus = Permission::firstOrCreate(['name' => UserPermissions::CAN_UPDATE_LOAN_STATUS]);
+        $canDisburseLoan = Permission::firstOrCreate(['name' => UserPermissions::CAN_DISBURSE_LOAN]);
 
-        $this->globalManager->syncPermissions([$updateLoanStatus]);
+        $this->branchAccountant->syncPermissions([$canDisburseLoan]);
     }
 
     /**
@@ -116,6 +116,16 @@ class RolesAndPermissionsSeeder extends Seeder
     }
 
     /**
+     * Create the permissions for branch Manager
+     */
+    private function createAdminManagerPermissions()
+    {
+        $updateLoanStatus = Permission::firstOrCreate(['name' => UserPermissions::CAN_UPDATE_LOAN_STATUS]);
+
+        $this->adminManager->syncPermissions([$updateLoanStatus]);
+    }
+
+    /**
      * Create all the user roles for the application
      */
     private function createRoles()
@@ -123,9 +133,9 @@ class RolesAndPermissionsSeeder extends Seeder
         $this->customer = Role::create(['name' => UserRoles::CUSTOMER]);
         $this->adminStaff = Role::create(['name' => UserRoles::ADMIN_STAFF]);
         $this->branchManager = Role::create(['name' => UserRoles::BRANCH_MANAGER]);
-        $this->globalManager = Role::create(['name' => UserRoles::GLOBAL_MANAGER]);
+        $this->branchAccountant = Role::create(['name' => UserRoles::BRANCH_ACCOUNTANT]);
         $this->adminAccountant = Role::create(['name' => UserRoles::ADMIN_ACCOUNTANT]);
-        $adminManager = Role::create(['name' => UserRoles::ADMIN_MANAGER]);
-        $superAdmin = Role::create(['name' => UserRoles::SUPER_ADMIN]);
+        $this->adminManager = Role::create(['name' => UserRoles::ADMIN_MANAGER]);
+        $this->superAdmin = Role::create(['name' => UserRoles::SUPER_ADMIN]);
     }
 }

@@ -2,11 +2,27 @@
 
 namespace App\GraphQL\Queries;
 
+use App\Services\UserService;
 use GraphQL\Type\Definition\ResolveInfo;
 use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
 
 class GetCustomerTransactionsById
 {
+    /**
+     * @var UserService
+     */
+    private $userService;
+
+    /**
+     * GetCustomerTransactionsById constructor.
+     *
+     * @param UserService $userService
+     */
+    public function __construct(UserService $userService)
+    {
+        $this->userService = $userService;
+    }
+
     /**
      * Return a value for the field.
      *
@@ -18,6 +34,6 @@ class GetCustomerTransactionsById
      */
     public function __invoke($rootValue, array $args, GraphQLContext $context, ResolveInfo $resolveInfo)
     {
-        // TODO implement the resolver
+        return $this->userService->getCustomerTransactionsQuery($args['customer_id']);
     }
 }
