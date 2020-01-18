@@ -10,13 +10,13 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\Log;
 use Tests\GraphQL\Helpers\Schema\LoanDisbursementQueriesAndMutations;
-use Tests\GraphQL\Helpers\Traits\InteractsWIthTestLoans;
+use Tests\GraphQL\Helpers\Traits\InteractsWithTestLoans;
 use Tests\GraphQL\Helpers\Traits\InteractsWithTestUsers;
 use Tests\TestCase;
 
 class LoanDisbursementTest extends TestCase
 {
-    use InteractsWIthTestLoans, InteractsWithTestUsers, RefreshDatabase;
+    use InteractsWithTestLoans, InteractsWithTestUsers, RefreshDatabase;
 
     protected function setUp(): void
     {

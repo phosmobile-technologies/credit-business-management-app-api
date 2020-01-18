@@ -66,7 +66,8 @@ class User extends Authenticatable
      *
      * @param $value
      */
-    public function setPasswordAttribute($value) {
+    public function setPasswordAttribute($value)
+    {
         $this->attributes['password'] = Hash::make($value);
     }
 
@@ -88,6 +89,16 @@ class User extends Authenticatable
     public function loans(): HasMany
     {
         return $this->hasMany(Loan::class, 'user_id', 'id');
+    }
+
+    /**
+     * Relationship between a user and their transactions.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     */
+    public function transactions(): \Illuminate\Database\Eloquent\Relations\HasManyThrough
+    {
+        return $this->loans()->transactions();
     }
 
 }

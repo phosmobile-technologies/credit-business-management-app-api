@@ -25,6 +25,8 @@ class CompanyBranch extends Model
     }
 
     /**
+     * The customers that belong to a branch
+     *
      * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
      */
     public function customers(): HasManyThrough
@@ -32,8 +34,23 @@ class CompanyBranch extends Model
         return $this->hasManyThrough(User::class, UserProfile::class, 'branch_id');
     }
 
+    /**
+     * The loans that belong to a branch
+     *
+     * @return HasManyThrough
+     */
     public function loans(): HasManyThrough
     {
         return $this->hasManyThrough(Loan::class, UserProfile::class, 'branch_id', 'user_id', 'id', 'user_id');
+    }
+
+    /**
+     * The loan applications that belong to a branch
+     *
+     * @return HasManyThrough
+     */
+    public function loanApplications(): HasManyThrough
+    {
+        return $this->hasManyThrough(LoanApplication::class, UserProfile::class, 'branch_id', 'user_id', 'id', 'user_id');
     }
 }

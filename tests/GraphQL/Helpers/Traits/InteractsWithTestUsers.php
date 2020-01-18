@@ -1,6 +1,7 @@
 <?php
 
 namespace Tests\GraphQL\Helpers\Traits;
+
 use App\Models\Company;
 use App\Models\CompanyBranch;
 use App\Models\Enums\UserRoles;
@@ -31,18 +32,23 @@ trait InteractsWithTestUsers
     /**
      * Create a new user.
      *
+     * @param string|null $branch_id
      * @param array $roles
      * @return User
      */
-    public function createUser(array $roles = [UserRoles::CUSTOMER]): User {
+    public function createUser(string $branch_id = null, array $roles = [UserRoles::CUSTOMER]): User
+    {
         $company = Company::first();
-        $branch = CompanyBranch::first();
+        if (!$branch_id) {
+            $branch = CompanyBranch::first();
+            $branch_id = $branch->id;
+        }
 
         $user = factory(User::class)->create();
         $user->profile()->save(
             factory(UserProfile::class)->make([
                 'company_id' => $company->id,
-                'branch_id' => $branch->id
+                'branch_id' => $branch_id
             ])
         );
         $user->user_profile_id = $user->profile->id;
@@ -56,7 +62,8 @@ trait InteractsWithTestUsers
      * Create a test user, login, and get authentication headers
      * @param array $userRoles
      */
-    public function loginTestUserAndGetAuthHeaders(array $userRoles = [UserRoles::CUSTOMER]) {
+    public function loginTestUserAndGetAuthHeaders(array $userRoles = [UserRoles::CUSTOMER])
+    {
         $testUserDetails = $this->createLoginAndGetTestUserDetails($userRoles);
         $this->user = $testUserDetails['user'];
         $accessToken = $testUserDetails['access_token'];

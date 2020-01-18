@@ -9,13 +9,13 @@ use App\Models\Transaction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\GraphQL\Helpers\Schema\TransactionsQueriesAndMutations;
-use Tests\GraphQL\Helpers\Traits\InteractsWIthTestLoans;
+use Tests\GraphQL\Helpers\Traits\InteractsWithTestLoans;
 use Tests\GraphQL\Helpers\Traits\InteractsWithTestUsers;
 use Tests\TestCase;
 
 class TransactionQueriesTest extends TestCase
 {
-    use RefreshDatabase, InteractsWithTestUsers, InteractsWIthTestLoans, WithFaker;
+    use RefreshDatabase, InteractsWithTestUsers, InteractsWithTestLoans, WithFaker;
 
     protected function setUp(): void
     {

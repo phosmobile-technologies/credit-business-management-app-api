@@ -4,6 +4,7 @@ namespace App\Repositories\Interfaces;
 
 
 use App\User;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 interface UserRepositoryInterface
 {
@@ -34,4 +35,20 @@ interface UserRepositoryInterface
      * @return User
      */
     public function attachUserRoles(User $user, array $roles): User;
+
+    /**
+     * Find a User by id.
+     *
+     * @param string $user_id
+     * @return User|null
+     */
+    public function find(string $user_id): ?User;
+
+    /**
+     * Get the eloquent query builder that can get transactions that belong to a customer.
+     *sss
+     * @param string $customer_id
+     * @return HasManyThrough
+     */
+    public function findTransactionsQuery(string $customer_id): HasManyThrough;
 }
