@@ -4,6 +4,12 @@ input CreateLoanRepaymentTransactionInput {
     transaction_details: TransactionDetailsInput!
 }
 
+""" Input used in creating a Contribution Plan Transaction """
+input CreateContributionPlanTransactionInput {
+    contribution_plan_id: ID!
+    transaction_details: TransactionDetailsInput!
+}
+
 """ A subset of a transaction's input, used for creating transaaction mutations """
 input TransactionDetailsInput {
     transaction_date: DateTime!

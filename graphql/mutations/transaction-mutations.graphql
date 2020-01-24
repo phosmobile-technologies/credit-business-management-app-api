@@ -11,7 +11,20 @@ extend type Mutation @middleware(checks: ["auth:api"]){
         action: TransactionProcessingType!
         message: String
     ): Transaction!
-    @can(ability: "initiateRepayment", model: "App\\Models\\Loan", find: "loan_id")
+    @can(ability: "processRepayment", model: "App\\Models\\Loan", find: "loan_id")
+    @inject(context: "user", name: "user")
+
+    """ Initiate a contribution plan transaction """
+    InitiateContributionPlanTransaction(input: CreateContributionPlanTransactionInput! @spread): Transaction!
+    @can(ability: "initiateContributionPlanTransaction", model: "App\\Models\\ContributionPlan", find: "contribution_plan_id")
+
+    """ Process a transaction """
+    ProcessTransaction(
+        transaction_id: ID!
+        action: TransactionProcessingType!
+        message: String
+    ): Transaction!
+    @can(ability: "processTransaction", model: "App\\Models\\Transaction", find: "transaction_id")
     @inject(context: "user", name: "user")
 
 }

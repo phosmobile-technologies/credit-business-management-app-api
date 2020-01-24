@@ -127,4 +127,17 @@ class LoanPolicy
         return $user->can(UserPermissions::CAN_INITIATE_LOAN_REPAYMENT)
             || ($loan->user_id === $user->id);
     }
+
+    /**
+     * Determine whether the user can process a Loan repayment.
+     *
+     * @param User $user
+     * @param Loan $loan
+     * @return bool
+     */
+    public function processRepayment(User $user, Loan $loan)
+    {
+        return $user->can(UserPermissions::CAN_INITIATE_LOAN_REPAYMENT)
+            || ($loan->user_id === $user->id);
+    }
 }

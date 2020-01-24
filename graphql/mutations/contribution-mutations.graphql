@@ -6,11 +6,11 @@ extend type Mutation @middleware(checks: ["auth:api"]){
 
     """ Update a member contribution """
     UpdateContribution(input: UpdateContributionInput! @spread): ContributionPlan!
-    @can(ability: "update", model: "App\\Models\\ContributionPlan")
+    @can(ability: "update", model: "App\\Models\\ContributionPlan", find: "id")
 
     """ Delete a contribution """
     DeleteContribution(contribution_id: ID!): ContributionPlan!
     @delete(model: "App\\Models\\ContributionPlan")
-    @can(ability: "delete", model: "App\\Models\\ContributionPlan")
+    @can(ability: "delete", model: "App\\Models\\ContributionPlan", find: "contribution_id")
 
 }

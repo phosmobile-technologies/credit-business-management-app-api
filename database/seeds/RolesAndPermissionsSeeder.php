@@ -66,10 +66,10 @@ class RolesAndPermissionsSeeder extends Seeder
      */
     private function createCustomerPermissions()
     {
-        $createLoanApplication = Permission::create(['name' => UserPermissions::CAN_CREATE_LOAN_APPLICATIONS]);
-        $createContribution = Permission::create(['name' => UserPermissions::CAN_CREATE_CONTRIBUTION]);
-
-        $this->customer->syncPermissions([$createLoanApplication, $createContribution]);
+        $this->customer->syncPermissions([
+            Permission::create(['name' => UserPermissions::CAN_CREATE_LOAN_APPLICATIONS]),
+            Permission::create(['name' => UserPermissions::CAN_CREATE_CONTRIBUTION])
+        ]);
     }
 
     /**
@@ -77,12 +77,11 @@ class RolesAndPermissionsSeeder extends Seeder
      */
     private function createAdminStaffPermissions()
     {
-        $createLoan = Permission::firstOrCreate(['name' => UserPermissions::CAN_CREATE_LOANS]);
-        $updateContribution = Permission::firstOrCreate(['name' => UserPermissions::CAN_UPDATE_CONTRIBUTION]);
-        $deleteContribution = Permission::firstOrCreate(['name' => UserPermissions::CAN_DELETE_CONTRIBUTION]);
-        $initiateLoanRepayment = Permission::firstOrCreate(['name' => UserPermissions::CAN_INITIATE_LOAN_REPAYMENT]);
-
-        $this->adminStaff->syncPermissions([$createLoan, $updateContribution, $deleteContribution, $initiateLoanRepayment]);
+        $this->adminStaff->syncPermissions([
+            Permission::firstOrCreate(['name' => UserPermissions::CAN_CREATE_LOANS]),
+            Permission::firstOrCreate(['name' => UserPermissions::CAN_UPDATE_CONTRIBUTION]),
+            Permission::firstOrCreate(['name' => UserPermissions::CAN_DELETE_CONTRIBUTION]),
+        ]);
     }
 
     /**
@@ -90,9 +89,9 @@ class RolesAndPermissionsSeeder extends Seeder
      */
     private function createBranchManagerPermissions()
     {
-        $updateLoanStatus = Permission::firstOrCreate(['name' => UserPermissions::CAN_UPDATE_LOAN_STATUS]);
-
-        $this->branchManager->syncPermissions([$updateLoanStatus]);
+        $this->branchManager->syncPermissions([
+            Permission::firstOrCreate(['name' => UserPermissions::CAN_UPDATE_LOAN_STATUS])
+        ]);
     }
 
     /**
@@ -100,9 +99,12 @@ class RolesAndPermissionsSeeder extends Seeder
      */
     private function createBranchAccountantPermissions()
     {
-        $canDisburseLoan = Permission::firstOrCreate(['name' => UserPermissions::CAN_DISBURSE_LOAN]);
-
-        $this->branchAccountant->syncPermissions([$canDisburseLoan]);
+        $this->branchAccountant->syncPermissions([
+            Permission::firstOrCreate(['name' => UserPermissions::CAN_DISBURSE_LOAN]),
+            Permission::firstOrCreate(['name' => UserPermissions::CAN_INITIATE_LOAN_REPAYMENT]),
+            Permission::firstOrCreate(['name' => UserPermissions::CAN_INITIATE_CONTRIBUTION_PLAN_TRANSACTION]),
+            Permission::firstOrCreate(['name' => UserPermissions::CAN_APPROVE_CONTRIBUTION_PLAN_TRANSACTION]),
+        ]);
     }
 
     /**
@@ -110,9 +112,12 @@ class RolesAndPermissionsSeeder extends Seeder
      */
     private function createAdminAccountantPermissions()
     {
-        $canDisburseLoan = Permission::firstOrCreate(['name' => UserPermissions::CAN_DISBURSE_LOAN]);
-
-        $this->adminAccountant->syncPermissions([$canDisburseLoan]);
+        $this->adminAccountant->syncPermissions([
+            Permission::firstOrCreate(['name' => UserPermissions::CAN_DISBURSE_LOAN]),
+            Permission::firstOrCreate(['name' => UserPermissions::CAN_INITIATE_LOAN_REPAYMENT]),
+            Permission::firstOrCreate(['name' => UserPermissions::CAN_INITIATE_CONTRIBUTION_PLAN_TRANSACTION]),
+            Permission::firstOrCreate(['name' => UserPermissions::CAN_APPROVE_CONTRIBUTION_PLAN_TRANSACTION]),
+        ]);
     }
 
     /**
@@ -120,9 +125,9 @@ class RolesAndPermissionsSeeder extends Seeder
      */
     private function createAdminManagerPermissions()
     {
-        $updateLoanStatus = Permission::firstOrCreate(['name' => UserPermissions::CAN_UPDATE_LOAN_STATUS]);
-
-        $this->adminManager->syncPermissions([$updateLoanStatus]);
+        $this->adminManager->syncPermissions([
+            Permission::firstOrCreate(['name' => UserPermissions::CAN_UPDATE_LOAN_STATUS])
+        ]);
     }
 
     /**
