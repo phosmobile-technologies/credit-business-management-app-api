@@ -63,7 +63,7 @@ class UserRepository implements UserRepositoryInterface
      */
     public function find(string $user_id): ?User
     {
-        return User::firstOrFail($user_id);
+        return User::findOrFail($user_id);
     }
 
     /**
@@ -74,8 +74,8 @@ class UserRepository implements UserRepositoryInterface
      */
     public function findTransactionsQuery(string $customer_id): HasManyThrough
     {
-        $user = $this->userRepository->find($customer_id);
+        $user = $this->find($customer_id);
 
-        return $user->transactions();
+        return $user->loanTransactions();
     }
 }

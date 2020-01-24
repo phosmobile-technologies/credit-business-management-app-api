@@ -64,4 +64,51 @@ class TransactionsQueriesAndMutations
             }
         ';
     }
+
+    /**
+     * Mutation for initiating a contribution plan transaction.
+     *
+     * @return string
+     */
+    public static function initiateContributionPlanTransaction()
+    {
+        return '
+            mutation InitiateContributionPlanTransaction($input: CreateContributionPlanTransactionInput!) {
+                InitiateContributionPlanTransaction(input: $input) {
+                     id
+                     transaction_amount
+                }
+            }
+        ';
+    }
+
+    /**
+     * Mutation for processing (approving/disapproving) a transaction.
+     *
+     * @return string
+     */
+    public static function processTransaction()
+    {
+        return '
+            mutation ProcessTransaction(
+                $transaction_id: ID!
+                $action: TransactionProcessingType!
+                $message: String
+            ) {
+                ProcessTransaction(
+                    transaction_id: $transaction_id
+                    action: $action
+                    message: $message
+                ) {
+                    id
+                    transaction_date
+                    transaction_type
+                    transaction_amount
+                    transaction_medium
+                    transaction_purpose
+                    transaction_status
+                }
+            }
+        ';
+    }
 }

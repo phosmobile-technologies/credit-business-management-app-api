@@ -2,25 +2,22 @@
 
 namespace Tests\GraphQL;
 
-use App\Models\Enums\LoanConditionStatus;
+use App\Models\ContributionPlan;
 use App\Models\enums\TransactionOwnerType;
 use App\Models\enums\TransactionProcessingActions;
 use App\Models\enums\TransactionStatus;
 use App\Models\enums\TransactionType;
 use App\Models\Enums\UserRoles;
-use App\Models\Loan;
 use App\Models\ProcessedTransaction;
 use App\Models\Transaction;
-use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\GraphQL\Helpers\Schema\TransactionsQueriesAndMutations;
 use Tests\GraphQL\Helpers\Traits\InteractsWithTestUsers;
 use Tests\TestCase;
 
-class LoanRepaymentTransactionsTest extends TestCase
+class ContributionPlanTransactionsTest extends TestCase
 {
-
     use RefreshDatabase, InteractsWithTestUsers, WithFaker;
 
     protected function setUp(): void
@@ -33,28 +30,29 @@ class LoanRepaymentTransactionsTest extends TestCase
     /**
      * @test
      */
-    public function testItInitiatesLoanRepaymentTransactionSuccessfully()
+    public function testItInitiatesContributionPlanPaymentTransactionSuccessfully()
     {
         $this->loginTestUserAndGetAuthHeaders();
 
-        $loan = factory(Loan::class)->create([
+        $contributionPlan = factory(ContributionPlan::class)->create([
             'id' => $this->faker->uuid,
             'user_id' => $this->user['id'],
-            'loan_balance' => 2000
+            'contribution_amount' => 2000,
+            'contribution_balance' => 1000,
         ]);
 
         $transactionDetails = factory(Transaction::class)->make([
             'transaction_amount' => 500,
-            'transaction_type' => TransactionType::LOAN_REPAYMENT,
+            'transaction_type' => TransactionType::CONTRIBUTION_PAYMENT,
         ])->toArray();
 
         $transactionData = [
-            'loan_id' => $loan->id,
+            'contribution_plan_id' => $contributionPlan->id,
             'transaction_details' => $transactionDetails
         ];
 
         $response = $this->postGraphQL([
-            'query' => TransactionsQueriesAndMutations::initiateLoanRepaymentTransaction(),
+            'query' => TransactionsQueriesAndMutations::initiateContributionPlanTransaction(),
             'variables' => [
                 'input' => $transactionData
             ],
@@ -62,13 +60,15 @@ class LoanRepaymentTransactionsTest extends TestCase
 
         $response->assertJson([
             'data' => [
-                'InitiateLoanRepaymentTransaction' => [
+                'InitiateContributionPlanTransaction' => [
                     'transaction_amount' => 500,
                 ]
             ]
         ]);
 
         $this->assertDatabaseHas(with(new Transaction)->getTable(), [
+            'owner_type' => TransactionOwnerType::CONTRIBUTION_PLAN,
+            'owner_id' => $contributionPlan->id,
             'transaction_amount' => $transactionDetails['transaction_amount'],
             'transaction_type' => $transactionDetails['transaction_type'],
             'transaction_purpose' => $transactionDetails['transaction_purpose'],
@@ -77,39 +77,37 @@ class LoanRepaymentTransactionsTest extends TestCase
 
     /**
      * @test
-     * @group
      */
-    public function testItCorrectlyApprovesALoanRepaymentRequest()
+    public function testItCorrectlyApprovesAContributionPaymentTransaction()
     {
-        $this->loginTestUserAndGetAuthHeaders();
+        $this->loginTestUserAndGetAuthHeaders([UserRoles::BRANCH_ACCOUNTANT]);
 
         /**
-         * Create a loan
-         * Create a loan repayment transaction for the loan (ensure it's pending)
+         * Create a contribution plan
+         * Create a contribution plan transaction for the loan (ensure it's pending)
          * Try to approve it, ensure that it's approved
          */
 
-        $loan = factory(Loan::class)->create([
+        $contributionPlan = factory(ContributionPlan::class)->create([
             'id' => $this->faker->uuid,
             'user_id' => $this->user['id'],
-            'loan_balance' => 2000,
-            'loan_condition_status' => LoanConditionStatus::ACTIVE
+            'contribution_amount' => 2000,
+            'contribution_balance' => 1000,
         ]);
 
         $transaction = factory(Transaction::class)->create([
             'transaction_amount' => 500,
-            'transaction_type' => TransactionType::LOAN_REPAYMENT,
+            'transaction_type' => TransactionType::CONTRIBUTION_PAYMENT,
             'transaction_status' => TransactionStatus::PENDING,
-            'owner_id' => $loan->id,
-            'owner_type' => TransactionOwnerType::LOAN
+            'owner_id' => $contributionPlan->id,
+            'owner_type' => TransactionOwnerType::CONTRIBUTION_PLAN
         ]);
         $message = $this->faker->realText();
 
         $response = $this->postGraphQL([
-            'query' => TransactionsQueriesAndMutations::processLoanRepaymentTransaction(),
+            'query' => TransactionsQueriesAndMutations::processTransaction(),
             'variables' => [
                 'transaction_id' => $transaction->id,
-                'loan_id' => $loan->id,
                 'action' => TransactionProcessingActions::APPROVE,
                 'message' => $message,
             ],
@@ -117,7 +115,7 @@ class LoanRepaymentTransactionsTest extends TestCase
 
         $response->assertJson([
             'data' => [
-                'ProcessLoanRepaymentTransaction' => [
+                'ProcessTransaction' => [
                     'id' => $transaction->id,
                     'transaction_amount' => 500,
                     'transaction_status' => TransactionStatus::COMPLETED
@@ -133,12 +131,6 @@ class LoanRepaymentTransactionsTest extends TestCase
             'transaction_purpose' => $transaction->transaction_purpose,
         ]);
 
-        $this->assertDatabaseHas(with(new Loan)->getTable(), [
-            'id' => $loan->id,
-            'loan_balance' => 1500,
-            'loan_condition_status' => LoanConditionStatus::ACTIVE
-        ]);
-
         $this->assertDatabaseHas(with(new ProcessedTransaction())->getTable(), [
             'causer_id' => $this->user['id'],
             'transaction_id' => $transaction->id,
@@ -149,110 +141,38 @@ class LoanRepaymentTransactionsTest extends TestCase
 
     /**
      * @test
-     * @group
+     * @group active
      */
-    public function testItCorrectlyCompletesALoanWhenTheTotalRepaymentIsMade()
+    public function testItCorrectlyDisapprovesAContributionPlanPaymentTransaction()
     {
-        $this->loginTestUserAndGetAuthHeaders();
+        $this->loginTestUserAndGetAuthHeaders([UserRoles::BRANCH_ACCOUNTANT]);
 
         /**
-         * Create a loan
-         * Create a loan repayment transaction for the loan (ensure it's pending)
+         * Create a contribution plan
+         * Create a contribution plan transaction for the loan (ensure it's pending)
          * Try to approve it, ensure that it's approved
          */
 
-        $loan = factory(Loan::class)->create([
+        $contributionPlan = factory(ContributionPlan::class)->create([
             'id' => $this->faker->uuid,
             'user_id' => $this->user['id'],
-            'loan_balance' => 2000,
-            'loan_condition_status' => LoanConditionStatus::ACTIVE
-        ]);
-
-        $transaction = factory(Transaction::class)->create([
-            'transaction_amount' => 2000,
-            'transaction_type' => TransactionType::LOAN_REPAYMENT,
-            'transaction_status' => TransactionStatus::PENDING,
-            'owner_id' => $loan->id,
-            'owner_type' => TransactionOwnerType::LOAN
-        ]);
-        $message = $this->faker->realText();
-
-        $response = $this->postGraphQL([
-            'query' => TransactionsQueriesAndMutations::processLoanRepaymentTransaction(),
-            'variables' => [
-                'transaction_id' => $transaction->id,
-                'loan_id' => $loan->id,
-                'action' => TransactionProcessingActions::APPROVE,
-                'message' => $message,
-            ],
-        ], $this->headers);
-
-        $response->assertJson([
-            'data' => [
-                'ProcessLoanRepaymentTransaction' => [
-                    'id' => $transaction->id,
-                    'transaction_amount' => 2000,
-                    'transaction_status' => TransactionStatus::COMPLETED
-                ]
-            ]
-        ]);
-
-        $this->assertDatabaseHas(with(new Transaction)->getTable(), [
-            'id' => $transaction->id,
-            'transaction_status' => TransactionStatus::COMPLETED,
-            'transaction_amount' => $transaction->transaction_amount,
-            'transaction_type' => $transaction->transaction_type,
-            'transaction_purpose' => $transaction->transaction_purpose,
-        ]);
-
-        $this->assertDatabaseHas(with(new Loan)->getTable(), [
-            'id' => $loan->id,
-            'loan_balance' => 0,
-            'loan_condition_status' => LoanConditionStatus::COMPLETED
-        ]);
-
-        $this->assertDatabaseHas(with(new ProcessedTransaction())->getTable(), [
-            'causer_id' => $this->user['id'],
-            'transaction_id' => $transaction->id,
-            'processing_type' => TransactionProcessingActions::APPROVE,
-            'message' => $message
-        ]);
-    }
-
-    /**
-     * @test
-     */
-    public function testItCorrectlyDisapprovesALoanRepaymentRequest()
-    {
-        $this->loginTestUserAndGetAuthHeaders();
-
-        /**
-         * Create a loan
-         * Create a loan repayment transaction for the loan (ensure it's pending)
-         * Try to approve it, ensure that it's approved
-         */
-
-        $loan = factory(Loan::class)->create([
-            'id' => $this->faker->uuid,
-            'user_id' => $this->user['id'],
-            'loan_balance' => 2000,
-            'loan_condition_status' => LoanConditionStatus::ACTIVE
+            'contribution_amount' => 2000,
+            'contribution_balance' => 1000,
         ]);
 
         $transaction = factory(Transaction::class)->create([
             'transaction_amount' => 500,
-            'transaction_type' => TransactionType::LOAN_REPAYMENT,
+            'transaction_type' => TransactionType::CONTRIBUTION_PAYMENT,
             'transaction_status' => TransactionStatus::PENDING,
-            'owner_id' => $loan->id,
-            'owner_type' => TransactionOwnerType::LOAN
+            'owner_id' => $contributionPlan->id,
+            'owner_type' => TransactionOwnerType::CONTRIBUTION_PLAN
         ]);
         $message = $this->faker->realText();
 
         $response = $this->postGraphQL([
-            'query' => TransactionsQueriesAndMutations::processLoanRepaymentTransaction(),
+            'query' => TransactionsQueriesAndMutations::processTransaction(),
             'variables' => [
                 'transaction_id' => $transaction->id,
-                'loan_id' => $loan->id,
                 'action' => TransactionProcessingActions::DISAPPROVE,
                 'message' => $message,
             ],
@@ -260,7 +180,7 @@ class LoanRepaymentTransactionsTest extends TestCase
 
         $response->assertJson([
             'data' => [
-                'ProcessLoanRepaymentTransaction' => [
+                'ProcessTransaction' => [
                     'id' => $transaction->id,
                     'transaction_amount' => 500,
                     'transaction_status' => TransactionStatus::FAILED
@@ -274,12 +194,6 @@ class LoanRepaymentTransactionsTest extends TestCase
             'transaction_amount' => $transaction->transaction_amount,
             'transaction_type' => $transaction->transaction_type,
             'transaction_purpose' => $transaction->transaction_purpose,
-        ]);
-
-        $this->assertDatabaseHas(with(new Loan)->getTable(), [
-            'id' => $loan->id,
-            'loan_balance' => 2000,
-            'loan_condition_status' => LoanConditionStatus::ACTIVE
         ]);
 
         $this->assertDatabaseHas(with(new ProcessedTransaction())->getTable(), [

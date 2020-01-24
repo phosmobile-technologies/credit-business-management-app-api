@@ -4,6 +4,7 @@ namespace App\Repositories\Interfaces;
 
 
 use App\Models\ContributionPlan;
+use App\Models\Transaction;
 
 /**
  * Interface ContributionRepositoryInterface
@@ -35,4 +36,13 @@ interface ContributionRepositoryInterface
      * @return ContributionPlan|null
      */
     public function find(string $contribution_id): ?ContributionPlan;
+
+    /**
+     * Add a payment to a contribution plan.
+     *
+     * @param ContributionPlan $contribution
+     * @param Transaction $transaction
+     * @return ContributionPlan
+     */
+    public function addPayment(ContributionPlan $contribution, Transaction $transaction): ContributionPlan;
 }

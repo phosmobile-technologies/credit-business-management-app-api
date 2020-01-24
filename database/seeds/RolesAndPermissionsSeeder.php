@@ -26,12 +26,22 @@ class RolesAndPermissionsSeeder extends Seeder
     /**
      * @var Role
      */
-    private $globalManager;
+    private $branchAccountant;
 
     /**
      * @var Role
      */
     private $adminAccountant;
+
+    /**
+     * @var
+     */
+    private $adminManager;
+
+    /**
+     * @var
+     */
+    private $superAdmin;
 
     /**
      * Run the database seeds.
@@ -45,31 +55,21 @@ class RolesAndPermissionsSeeder extends Seeder
         $this->createCustomerPermissions();
         $this->createAdminStaffPermissions();
         $this->createBranchManagerPermissions();
-        $this->createGlobalManagerPermissions();
+        $this->createBranchAccountantPermissions();
         $this->createAdminAccountantPermissions();
+        $this->createAdminManagerPermissions();
     }
 
-    /**
-     * Create the roles and permissions for admin users
-     */
-    private function createAdminRolesAndPermissions()
-    {
-//        $adminUser = Role::create(['name' => UserRoles::ADMIN_USER]);
-//
-//        $canCrudUsers = Permission::create(['name' => UserPermissions::CAN_CRUD_USERS]);
-//
-//        $adminUser->syncPermissions([$canCrudUsers]);
-    }
 
     /**
      * Create the permissions for customers
      */
     private function createCustomerPermissions()
     {
-        $createLoanApplication = Permission::create(['name' => UserPermissions::CAN_CREATE_LOAN_APPLICATIONS]);
-        $createContribution = Permission::create(['name' => UserPermissions::CAN_CREATE_CONTRIBUTION]);
-
-        $this->customer->syncPermissions([$createLoanApplication, $createContribution]);
+        $this->customer->syncPermissions([
+            Permission::create(['name' => UserPermissions::CAN_CREATE_LOAN_APPLICATIONS]),
+            Permission::create(['name' => UserPermissions::CAN_CREATE_CONTRIBUTION])
+        ]);
     }
 
     /**
@@ -77,12 +77,11 @@ class RolesAndPermissionsSeeder extends Seeder
      */
     private function createAdminStaffPermissions()
     {
-        $createLoan = Permission::firstOrCreate(['name' => UserPermissions::CAN_CREATE_LOANS]);
-        $updateContribution = Permission::firstOrCreate(['name' => UserPermissions::CAN_UPDATE_CONTRIBUTION]);
-        $deleteContribution = Permission::firstOrCreate(['name' => UserPermissions::CAN_DELETE_CONTRIBUTION]);
-        $initiateLoanRepayment = Permission::firstOrCreate(['name' => UserPermissions::CAN_INITIATE_LOAN_REPAYMENT]);
-
-        $this->adminStaff->syncPermissions([$createLoan, $updateContribution, $deleteContribution, $initiateLoanRepayment]);
+        $this->adminStaff->syncPermissions([
+            Permission::firstOrCreate(['name' => UserPermissions::CAN_CREATE_LOANS]),
+            Permission::firstOrCreate(['name' => UserPermissions::CAN_UPDATE_CONTRIBUTION]),
+            Permission::firstOrCreate(['name' => UserPermissions::CAN_DELETE_CONTRIBUTION]),
+        ]);
     }
 
     /**
@@ -90,19 +89,22 @@ class RolesAndPermissionsSeeder extends Seeder
      */
     private function createBranchManagerPermissions()
     {
-        $updateLoanStatus = Permission::firstOrCreate(['name' => UserPermissions::CAN_UPDATE_LOAN_STATUS]);
-
-        $this->branchManager->syncPermissions([$updateLoanStatus]);
+        $this->branchManager->syncPermissions([
+            Permission::firstOrCreate(['name' => UserPermissions::CAN_UPDATE_LOAN_STATUS])
+        ]);
     }
 
     /**
-     * Create the permissions for global Manager
+     * Create the permissions for admin accountant
      */
-    private function createGlobalManagerPermissions()
+    private function createBranchAccountantPermissions()
     {
-        $updateLoanStatus = Permission::firstOrCreate(['name' => UserPermissions::CAN_UPDATE_LOAN_STATUS]);
-
-        $this->globalManager->syncPermissions([$updateLoanStatus]);
+        $this->branchAccountant->syncPermissions([
+            Permission::firstOrCreate(['name' => UserPermissions::CAN_DISBURSE_LOAN]),
+            Permission::firstOrCreate(['name' => UserPermissions::CAN_INITIATE_LOAN_REPAYMENT]),
+            Permission::firstOrCreate(['name' => UserPermissions::CAN_INITIATE_CONTRIBUTION_PLAN_TRANSACTION]),
+            Permission::firstOrCreate(['name' => UserPermissions::CAN_APPROVE_CONTRIBUTION_PLAN_TRANSACTION]),
+        ]);
     }
 
     /**
@@ -110,9 +112,22 @@ class RolesAndPermissionsSeeder extends Seeder
      */
     private function createAdminAccountantPermissions()
     {
-        $canDisburseLoan = Permission::firstOrCreate(['name' => UserPermissions::CAN_DISBURSE_LOAN]);
+        $this->adminAccountant->syncPermissions([
+            Permission::firstOrCreate(['name' => UserPermissions::CAN_DISBURSE_LOAN]),
+            Permission::firstOrCreate(['name' => UserPermissions::CAN_INITIATE_LOAN_REPAYMENT]),
+            Permission::firstOrCreate(['name' => UserPermissions::CAN_INITIATE_CONTRIBUTION_PLAN_TRANSACTION]),
+            Permission::firstOrCreate(['name' => UserPermissions::CAN_APPROVE_CONTRIBUTION_PLAN_TRANSACTION]),
+        ]);
+    }
 
-        $this->adminAccountant->syncPermissions([$canDisburseLoan]);
+    /**
+     * Create the permissions for branch Manager
+     */
+    private function createAdminManagerPermissions()
+    {
+        $this->adminManager->syncPermissions([
+            Permission::firstOrCreate(['name' => UserPermissions::CAN_UPDATE_LOAN_STATUS])
+        ]);
     }
 
     /**
@@ -123,9 +138,9 @@ class RolesAndPermissionsSeeder extends Seeder
         $this->customer = Role::create(['name' => UserRoles::CUSTOMER]);
         $this->adminStaff = Role::create(['name' => UserRoles::ADMIN_STAFF]);
         $this->branchManager = Role::create(['name' => UserRoles::BRANCH_MANAGER]);
-        $this->globalManager = Role::create(['name' => UserRoles::GLOBAL_MANAGER]);
+        $this->branchAccountant = Role::create(['name' => UserRoles::BRANCH_ACCOUNTANT]);
         $this->adminAccountant = Role::create(['name' => UserRoles::ADMIN_ACCOUNTANT]);
-        $adminManager = Role::create(['name' => UserRoles::ADMIN_MANAGER]);
-        $superAdmin = Role::create(['name' => UserRoles::SUPER_ADMIN]);
+        $this->adminManager = Role::create(['name' => UserRoles::ADMIN_MANAGER]);
+        $this->superAdmin = Role::create(['name' => UserRoles::SUPER_ADMIN]);
     }
 }

@@ -4,7 +4,11 @@ namespace App\Services;
 
 
 use App\Models\ContributionPlan;
+use App\Models\enums\TransactionOwnerType;
+use App\Models\enums\TransactionStatus;
+use App\Models\Transaction;
 use App\Repositories\Interfaces\ContributionRepositoryInterface;
+use App\Repositories\Interfaces\TransactionRepositoryInterface;
 
 /**
  * Class ContributionService
@@ -21,12 +25,19 @@ class ContributionService
     private $contributionRepository;
 
     /**
+     * @var TransactionService
+     */
+    private $transactionService;
+
+    /**
      * ContributionService constructor.
      * @param ContributionRepositoryInterface $contributionRepository
+     * @param TransactionService $transactionService
      */
-    public function __construct(ContributionRepositoryInterface $contributionRepository)
+    public function __construct(ContributionRepositoryInterface $contributionRepository, TransactionService $transactionService)
     {
         $this->contributionRepository = $contributionRepository;
+        $this->transactionService = $transactionService;
     }
 
     /**
@@ -53,5 +64,17 @@ class ContributionService
         $data = $contributionData->except(['id'])->toArray();
 
         return $this->contributionRepository->update($id, $data);
+    }
+
+    /**
+     * Initiate a new contribution plan transaction
+     *
+     * @param string $contribution_plan_id
+     * @param array $transactionDetails
+     * @return Transaction
+     */
+    public function initiateTransaction(string $contribution_plan_id, array $transactionDetails): Transaction
+    {
+        return $this->transactionService->initiateContributionPlanTransaction($contribution_plan_id, $transactionDetails);
     }
 }

@@ -4,4 +4,5 @@ extend type Query @middleware(checks: ["auth:api"]){
 
     """ Get a customers transactions """
     GetCustomerTransactionsById(customer_id: ID!): [Transaction]!
+    @paginate(builder: "App\\GraphQL\\Queries\\GetCustomerTransactionsById", defaultCount: 25)
 }

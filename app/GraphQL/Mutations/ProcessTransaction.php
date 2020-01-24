@@ -1,26 +1,26 @@
 <?php
 
-namespace App\GraphQL\Queries;
+namespace App\GraphQL\Mutations;
 
-use App\Services\UserService;
+use App\Services\TransactionService;
 use GraphQL\Type\Definition\ResolveInfo;
 use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
 
-class GetCustomerTransactionsById
+class ProcessTransaction
 {
     /**
-     * @var UserService
+     * @var TransactionService
      */
-    private $userService;
+    private $transactionService;
 
     /**
-     * GetCustomerTransactionsById constructor.
+     * ProcessTransaction constructor.
      *
-     * @param UserService $userService
+     * @param TransactionService $transactionService
      */
-    public function __construct(UserService $userService)
+    public function __construct(TransactionService $transactionService)
     {
-        $this->userService = $userService;
+        $this->transactionService = $transactionService;
     }
 
     /**
@@ -34,6 +34,11 @@ class GetCustomerTransactionsById
      */
     public function __invoke($rootValue, array $args, GraphQLContext $context, ResolveInfo $resolveInfo)
     {
-        return $this->userService->getCustomerTransactionsQuery($args['customer_id']);
+        return $this->transactionService->processTransaction(
+            $args['user'],
+            $args['transaction_id'],
+            $args['action'],
+            $args['message']
+        );
     }
 }
