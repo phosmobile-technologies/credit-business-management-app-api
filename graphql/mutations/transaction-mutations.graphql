@@ -4,16 +4,6 @@ extend type Mutation @middleware(checks: ["auth:api"]){
     InitiateLoanRepaymentTransaction(input: CreateLoanRepaymentTransactionInput! @spread): Transaction!
     @can(ability: "initiateRepayment", model: "App\\Models\\Loan", find: "loan_id")
 
-    """ Process a loan repayment transaction """
-    ProcessLoanRepaymentTransaction(
-        transaction_id: ID!
-        loan_id: ID!
-        action: TransactionProcessingType!
-        message: String
-    ): Transaction!
-    @can(ability: "processRepayment", model: "App\\Models\\Loan", find: "loan_id")
-    @inject(context: "user", name: "user")
-
     """ Initiate a contribution plan transaction """
     InitiateContributionPlanTransaction(input: CreateContributionPlanTransactionInput! @spread): Transaction!
     @can(ability: "initiateContributionPlanTransaction", model: "App\\Models\\ContributionPlan", find: "contribution_plan_id")

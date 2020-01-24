@@ -7,8 +7,10 @@ use App\Models\enums\TransactionOwnerType;
 use App\Models\enums\TransactionProcessingActions;
 use App\Models\enums\TransactionStatus;
 use App\Models\enums\TransactionType;
+use App\Models\Loan;
 use App\Models\Transaction;
 use App\Repositories\Interfaces\ContributionRepositoryInterface;
+use App\Repositories\Interfaces\LoanRepositoryInterface;
 use App\Repositories\Interfaces\TransactionRepositoryInterface;
 use App\User;
 use Illuminate\Support\Facades\DB;
@@ -24,17 +26,23 @@ class TransactionService
      * @var ContributionRepositoryInterface
      */
     private $contributionRepository;
+    /**
+     * @var LoanRepositoryInterface
+     */
+    private $loanRepository;
 
     /**
      * TransactionService constructor.
      *
      * @param TransactionRepositoryInterface $transactionRepository
      * @param ContributionRepositoryInterface $contributionRepository
+     * @param LoanRepositoryInterface $loanRepository
      */
-    public function __construct(TransactionRepositoryInterface $transactionRepository, ContributionRepositoryInterface $contributionRepository)
+    public function __construct(TransactionRepositoryInterface $transactionRepository, ContributionRepositoryInterface $contributionRepository, LoanRepositoryInterface $loanRepository)
     {
         $this->transactionRepository = $transactionRepository;
         $this->contributionRepository = $contributionRepository;
+        $this->loanRepository = $loanRepository;
     }
 
     /**
@@ -47,6 +55,17 @@ class TransactionService
     public function initiateContributionPlanTransaction(string $contribution_plan_id, array $transactionDetails): Transaction
     {
         return $this->createTransaction(TransactionOwnerType::CONTRIBUTION_PLAN, $contribution_plan_id, $transactionDetails);
+    }
+
+    /**
+     * Create a loan repayment transaction.
+     *
+     * @param Loan $loan
+     * @param array $transactionDetails
+     * @return Transaction
+     */
+    public function initiateLoanRepaymentTransaction(Loan $loan, array $transactionDetails) {
+        return $this->createTransaction(TransactionOwnerType::LOAN, $loan->id, $transactionDetails);
     }
 
     /**
@@ -92,6 +111,10 @@ class TransactionService
             case (TransactionType::CONTRIBUTION_PAYMENT):
                 return $this->processContributionPaymentTransaction($user, $transaction, $action, $message);
                 break;
+
+            case (TransactionType::LOAN_REPAYMENT):
+                return $this->processLoanRepaymentTransaction($user, $transaction, $action, $message);
+                break;
         }
     }
 
@@ -106,12 +129,39 @@ class TransactionService
      */
     private function processContributionPaymentTransaction(User $user, Transaction $transaction, string $action, ?string $message)
     {
-        $contributionPlan = $this->contributionRepository->find($transaction->owner_id);
-
-        DB::transaction(function () use ($contributionPlan, $transaction, $action, $user, $message) {
+        DB::transaction(function () use ($transaction, $action, $user, $message) {
             switch ($action) {
                 case TransactionProcessingActions::APPROVE:
+                    $contributionPlan = $this->contributionRepository->find($transaction->owner_id);
                     $this->contributionRepository->addPayment($contributionPlan, $transaction);
+                    $this->transactionRepository->updateTransactionStatus($transaction, TransactionStatus::COMPLETED);
+                    break;
+
+                case TransactionProcessingActions::DISAPPROVE:
+                    $this->transactionRepository->updateTransactionStatus($transaction, TransactionStatus::FAILED);
+                    break;
+            }
+
+            $this->transactionRepository->storeProcessedTransaction($transaction, $user->id, $action, $message);
+        });
+
+        return $transaction;
+    }
+
+    /**
+     * @param User $user The user processing the transaction
+     * @param Transaction $transaction
+     * @param string $action
+     * @param null|string $message
+     * @return Transaction|null
+     */
+    private function processLoanRepaymentTransaction(User $user, Transaction $transaction, string $action, ?string $message)
+    {
+        DB::transaction(function () use ($transaction, $action, $user, $message) {
+            switch ($action) {
+                case TransactionProcessingActions::APPROVE:
+                    $loan = $this->loanRepository->find($transaction->owner_id);
+                    $this->loanRepository->repayLoan($loan, $transaction->transaction_amount);
                     $this->transactionRepository->updateTransactionStatus($transaction, TransactionStatus::COMPLETED);
                     break;
 

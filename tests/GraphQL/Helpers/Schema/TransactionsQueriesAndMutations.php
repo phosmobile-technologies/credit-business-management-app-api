@@ -22,33 +22,6 @@ class TransactionsQueriesAndMutations
         ';
     }
 
-    /**
-     * Mutation for processing (approving/disapproving) a loan repayment transaction.
-     *
-     * @return string
-     */
-    public static function processLoanRepaymentTransaction()
-    {
-        return '
-            mutation ProcessLoanRepaymentTransaction(
-                $transaction_id: ID!
-                $loan_id: ID!
-                $action: TransactionProcessingType!
-                $message: String
-            ) {
-                ProcessLoanRepaymentTransaction(
-                    transaction_id: $transaction_id
-                    loan_id: $loan_id
-                    action: $action
-                    message: $message
-                ) {
-                    id
-                    transaction_amount
-                    transaction_status
-                }
-            }
-        ';
-    }
 
     /**
      * Query for getting a transaction by ID.
