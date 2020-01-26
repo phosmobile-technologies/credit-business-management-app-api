@@ -45,4 +45,13 @@ interface ContributionRepositoryInterface
      * @return ContributionPlan
      */
     public function addPayment(ContributionPlan $contribution, Transaction $transaction): ContributionPlan;
+
+    /**
+     * Withdraw funds from a contribution plan.
+     *
+     * @param ContributionPlan $contribution
+     * @param Transaction $transaction
+     * @return ContributionPlan
+     */
+    public function withdraw(ContributionPlan $contribution, Transaction $transaction): ContributionPlan;
 }

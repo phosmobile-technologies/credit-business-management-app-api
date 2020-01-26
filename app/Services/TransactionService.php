@@ -55,6 +55,38 @@ class TransactionService
             case TransactionType::CONTRIBUTION_PAYMENT:
                 return $this->initiateContributionPlanPaymentTransaction($owner_id, $transactionDetails);
                 break;
+
+            case TransactionType::CONTRIBUTION_WITHDRAWAL:
+                return $this->initiateContributionPlanWithdrawalTransaction($owner_id, $transactionDetails);
+                break;
+        }
+    }
+
+    /**
+     * Process (approve or disapprove) a transaction.
+     *
+     * @param User $user
+     * @param string $transaction_id
+     * @param string $action
+     * @param null|string $message
+     * @return Transaction
+     */
+    public function processTransaction(User $user, string $transaction_id, string $action, ?string $message): Transaction
+    {
+        $transaction = $this->transactionRepository->find($transaction_id);
+
+        switch ($transaction->transaction_type) {
+            case (TransactionType::CONTRIBUTION_PAYMENT):
+                return $this->processContributionPaymentTransaction($user, $transaction, $action, $message);
+                break;
+
+            case (TransactionType::CONTRIBUTION_WITHDRAWAL):
+                return $this->processContributionWithdrawalTransaction($user, $transaction, $action, $message);
+                break;
+
+            case (TransactionType::LOAN_REPAYMENT):
+                return $this->processLoanRepaymentTransaction($user, $transaction, $action, $message);
+                break;
         }
     }
 
@@ -66,6 +98,18 @@ class TransactionService
      * @return Transaction
      */
     public function initiateContributionPlanPaymentTransaction(string $contribution_plan_id, array $transactionDetails): Transaction
+    {
+        return $this->createTransaction(TransactionOwnerType::CONTRIBUTION_PLAN, $contribution_plan_id, $transactionDetails);
+    }
+
+    /**
+     * Initiate a contribution plan withdrawal transaction.
+     *
+     * @param string $contribution_plan_id
+     * @param array $transactionDetails
+     * @return Transaction
+     */
+    public function initiateContributionPlanWithdrawalTransaction(string $contribution_plan_id, array $transactionDetails): Transaction
     {
         return $this->createTransaction(TransactionOwnerType::CONTRIBUTION_PLAN, $contribution_plan_id, $transactionDetails);
     }
@@ -109,30 +153,6 @@ class TransactionService
     }
 
     /**
-     * Process (approve or disapprove) a transaction.
-     *
-     * @param User $user
-     * @param string $transaction_id
-     * @param string $action
-     * @param null|string $message
-     * @return Transaction
-     */
-    public function processTransaction(User $user, string $transaction_id, string $action, ?string $message): Transaction
-    {
-        $transaction = $this->transactionRepository->find($transaction_id);
-
-        switch ($transaction->transaction_type) {
-            case (TransactionType::CONTRIBUTION_PAYMENT):
-                return $this->processContributionPaymentTransaction($user, $transaction, $action, $message);
-                break;
-
-            case (TransactionType::LOAN_REPAYMENT):
-                return $this->processLoanRepaymentTransaction($user, $transaction, $action, $message);
-                break;
-        }
-    }
-
-    /**
      * Process (approve or disapprove) a contribution payment transaction.
      *
      * @param User $user
@@ -148,6 +168,36 @@ class TransactionService
                 case TransactionProcessingActions::APPROVE:
                     $contributionPlan = $this->contributionRepository->find($transaction->owner_id);
                     $this->contributionRepository->addPayment($contributionPlan, $transaction);
+                    $this->transactionRepository->updateTransactionStatus($transaction, TransactionStatus::COMPLETED);
+                    break;
+
+                case TransactionProcessingActions::DISAPPROVE:
+                    $this->transactionRepository->updateTransactionStatus($transaction, TransactionStatus::FAILED);
+                    break;
+            }
+
+            $this->transactionRepository->storeProcessedTransaction($transaction, $user->id, $action, $message);
+        });
+
+        return $transaction;
+    }
+
+    /**
+     * Process (approve or disapprove) a contribution withdrawal transaction.
+     *
+     * @param User $user
+     * @param Transaction $transaction
+     * @param string $action
+     * @param null|string $message
+     * @return Transaction
+     */
+    private function processContributionWithdrawalTransaction(User $user, Transaction $transaction, string $action, ?string $message)
+    {
+        DB::transaction(function () use ($transaction, $action, $user, $message) {
+            switch ($action) {
+                case TransactionProcessingActions::APPROVE:
+                    $contributionPlan = $this->contributionRepository->find($transaction->owner_id);
+                    $this->contributionRepository->withdraw($contributionPlan, $transaction);
                     $this->transactionRepository->updateTransactionStatus($transaction, TransactionStatus::COMPLETED);
                     break;
 
