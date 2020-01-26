@@ -70,4 +70,24 @@ class ContributionRepository implements ContributionRepositoryInterface
 
         return $contribution;
     }
+
+    /**
+     * Withdraw funds from a contribution plan.
+     *
+     * @param ContributionPlan $contribution
+     * @param Transaction $transaction
+     * @return ContributionPlan
+     * @throws GraphqlError
+     */
+    public function withdraw(ContributionPlan $contribution, Transaction $transaction): ContributionPlan
+    {
+        if ($transaction->transaction_amount > $contribution->contribution_balance) {
+            throw new GraphqlError("Insufficient Contribution plan balance to make this withdrawal");
+        }
+
+        $contribution->contribution_balance = $contribution->contribution_balance - $transaction->transaction_amount;
+        $contribution->save();
+
+        return $contribution;
+    }
 }

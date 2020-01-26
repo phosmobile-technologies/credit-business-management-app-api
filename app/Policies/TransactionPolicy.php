@@ -101,6 +101,16 @@ class TransactionPolicy
      * @return bool
      */
     public function processTransaction(User $user, Transaction $transaction) {
-        return $user->can(UserPermissions::CAN_APPROVE_CONTRIBUTION_PLAN_TRANSACTION);
+        return $user->can(UserPermissions::CAN_PROCESS_TRANSACTION);
+    }
+
+    /**
+     * Determine if the user can initiate a transaction.
+     *
+     * @param User $user
+     * @return bool
+     */
+    public function initiateTransaction(User $user) {
+        return true;
     }
 }

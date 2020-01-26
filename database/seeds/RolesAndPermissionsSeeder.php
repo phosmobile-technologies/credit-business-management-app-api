@@ -90,7 +90,8 @@ class RolesAndPermissionsSeeder extends Seeder
     private function createBranchManagerPermissions()
     {
         $this->branchManager->syncPermissions([
-            Permission::firstOrCreate(['name' => UserPermissions::CAN_UPDATE_LOAN_STATUS])
+            Permission::firstOrCreate(['name' => UserPermissions::CAN_UPDATE_LOAN_STATUS]),
+            Permission::firstOrCreate(['name' => UserPermissions::CAN_PROCESS_TRANSACTION]),
         ]);
     }
 
@@ -103,7 +104,7 @@ class RolesAndPermissionsSeeder extends Seeder
             Permission::firstOrCreate(['name' => UserPermissions::CAN_DISBURSE_LOAN]),
             Permission::firstOrCreate(['name' => UserPermissions::CAN_INITIATE_LOAN_REPAYMENT]),
             Permission::firstOrCreate(['name' => UserPermissions::CAN_INITIATE_CONTRIBUTION_PLAN_TRANSACTION]),
-            Permission::firstOrCreate(['name' => UserPermissions::CAN_APPROVE_CONTRIBUTION_PLAN_TRANSACTION]),
+            Permission::firstOrCreate(['name' => UserPermissions::CAN_PROCESS_TRANSACTION]),
         ]);
     }
 
@@ -116,7 +117,7 @@ class RolesAndPermissionsSeeder extends Seeder
             Permission::firstOrCreate(['name' => UserPermissions::CAN_DISBURSE_LOAN]),
             Permission::firstOrCreate(['name' => UserPermissions::CAN_INITIATE_LOAN_REPAYMENT]),
             Permission::firstOrCreate(['name' => UserPermissions::CAN_INITIATE_CONTRIBUTION_PLAN_TRANSACTION]),
-            Permission::firstOrCreate(['name' => UserPermissions::CAN_APPROVE_CONTRIBUTION_PLAN_TRANSACTION]),
+            Permission::firstOrCreate(['name' => UserPermissions::CAN_PROCESS_TRANSACTION]),
         ]);
     }
 

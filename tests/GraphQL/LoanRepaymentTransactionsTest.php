@@ -35,7 +35,7 @@ class LoanRepaymentTransactionsTest extends TestCase
      */
     public function testItInitiatesLoanRepaymentTransactionSuccessfully()
     {
-        $this->loginTestUserAndGetAuthHeaders();
+        $this->loginTestUserAndGetAuthHeaders([UserRoles::BRANCH_ACCOUNTANT]);
 
         $loan = factory(Loan::class)->create([
             'id' => $this->faker->uuid,
@@ -49,12 +49,12 @@ class LoanRepaymentTransactionsTest extends TestCase
         ])->toArray();
 
         $transactionData = [
-            'loan_id' => $loan->id,
+            'owner_id' => $loan->id,
             'transaction_details' => $transactionDetails
         ];
 
         $response = $this->postGraphQL([
-            'query' => TransactionsQueriesAndMutations::initiateLoanRepaymentTransaction(),
+            'query' => TransactionsQueriesAndMutations::initiateTransaction(),
             'variables' => [
                 'input' => $transactionData
             ],
@@ -62,7 +62,7 @@ class LoanRepaymentTransactionsTest extends TestCase
 
         $response->assertJson([
             'data' => [
-                'InitiateLoanRepaymentTransaction' => [
+                'InitiateTransaction' => [
                     'transaction_amount' => 500,
                 ]
             ]
@@ -81,7 +81,7 @@ class LoanRepaymentTransactionsTest extends TestCase
      */
     public function testItCorrectlyApprovesALoanRepaymentRequest()
     {
-        $this->loginTestUserAndGetAuthHeaders();
+        $this->loginTestUserAndGetAuthHeaders([UserRoles::BRANCH_MANAGER]);
 
         /**
          * Create a loan
@@ -106,10 +106,9 @@ class LoanRepaymentTransactionsTest extends TestCase
         $message = $this->faker->realText();
 
         $response = $this->postGraphQL([
-            'query' => TransactionsQueriesAndMutations::processLoanRepaymentTransaction(),
+            'query' => TransactionsQueriesAndMutations::processTransaction(),
             'variables' => [
                 'transaction_id' => $transaction->id,
-                'loan_id' => $loan->id,
                 'action' => TransactionProcessingActions::APPROVE,
                 'message' => $message,
             ],
@@ -117,7 +116,7 @@ class LoanRepaymentTransactionsTest extends TestCase
 
         $response->assertJson([
             'data' => [
-                'ProcessLoanRepaymentTransaction' => [
+                'ProcessTransaction' => [
                     'id' => $transaction->id,
                     'transaction_amount' => 500,
                     'transaction_status' => TransactionStatus::COMPLETED
@@ -153,7 +152,7 @@ class LoanRepaymentTransactionsTest extends TestCase
      */
     public function testItCorrectlyCompletesALoanWhenTheTotalRepaymentIsMade()
     {
-        $this->loginTestUserAndGetAuthHeaders();
+        $this->loginTestUserAndGetAuthHeaders([UserRoles::BRANCH_MANAGER]);
 
         /**
          * Create a loan
@@ -178,10 +177,9 @@ class LoanRepaymentTransactionsTest extends TestCase
         $message = $this->faker->realText();
 
         $response = $this->postGraphQL([
-            'query' => TransactionsQueriesAndMutations::processLoanRepaymentTransaction(),
+            'query' => TransactionsQueriesAndMutations::processTransaction(),
             'variables' => [
                 'transaction_id' => $transaction->id,
-                'loan_id' => $loan->id,
                 'action' => TransactionProcessingActions::APPROVE,
                 'message' => $message,
             ],
@@ -189,7 +187,7 @@ class LoanRepaymentTransactionsTest extends TestCase
 
         $response->assertJson([
             'data' => [
-                'ProcessLoanRepaymentTransaction' => [
+                'ProcessTransaction' => [
                     'id' => $transaction->id,
                     'transaction_amount' => 2000,
                     'transaction_status' => TransactionStatus::COMPLETED
@@ -224,7 +222,7 @@ class LoanRepaymentTransactionsTest extends TestCase
      */
     public function testItCorrectlyDisapprovesALoanRepaymentRequest()
     {
-        $this->loginTestUserAndGetAuthHeaders();
+        $this->loginTestUserAndGetAuthHeaders([UserRoles::BRANCH_MANAGER]);
 
         /**
          * Create a loan
@@ -249,10 +247,9 @@ class LoanRepaymentTransactionsTest extends TestCase
         $message = $this->faker->realText();
 
         $response = $this->postGraphQL([
-            'query' => TransactionsQueriesAndMutations::processLoanRepaymentTransaction(),
+            'query' => TransactionsQueriesAndMutations::processTransaction(),
             'variables' => [
                 'transaction_id' => $transaction->id,
-                'loan_id' => $loan->id,
                 'action' => TransactionProcessingActions::DISAPPROVE,
                 'message' => $message,
             ],
@@ -260,7 +257,7 @@ class LoanRepaymentTransactionsTest extends TestCase
 
         $response->assertJson([
             'data' => [
-                'ProcessLoanRepaymentTransaction' => [
+                'ProcessTransaction' => [
                     'id' => $transaction->id,
                     'transaction_amount' => 500,
                     'transaction_status' => TransactionStatus::FAILED

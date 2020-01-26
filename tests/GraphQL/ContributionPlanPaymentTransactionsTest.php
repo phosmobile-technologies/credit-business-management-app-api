@@ -13,12 +13,13 @@ use App\Models\Transaction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\GraphQL\Helpers\Schema\TransactionsQueriesAndMutations;
+use Tests\GraphQL\Helpers\Traits\InteractsWithTestContributionPlans;
 use Tests\GraphQL\Helpers\Traits\InteractsWithTestUsers;
 use Tests\TestCase;
 
-class ContributionPlanTransactionsTest extends TestCase
+class ContributionPlanPaymentTransactionsTest extends TestCase
 {
-    use RefreshDatabase, InteractsWithTestUsers, WithFaker;
+    use RefreshDatabase, InteractsWithTestUsers, InteractsWithTestContributionPlans, WithFaker;
 
     protected function setUp(): void
     {
@@ -32,27 +33,12 @@ class ContributionPlanTransactionsTest extends TestCase
      */
     public function testItInitiatesContributionPlanPaymentTransactionSuccessfully()
     {
-        $this->loginTestUserAndGetAuthHeaders();
-
-        $contributionPlan = factory(ContributionPlan::class)->create([
-            'id' => $this->faker->uuid,
-            'user_id' => $this->user['id'],
-            'contribution_amount' => 2000,
-            'contribution_balance' => 1000,
-        ]);
-
-        $transactionDetails = factory(Transaction::class)->make([
-            'transaction_amount' => 500,
-            'transaction_type' => TransactionType::CONTRIBUTION_PAYMENT,
-        ])->toArray();
-
-        $transactionData = [
-            'contribution_plan_id' => $contributionPlan->id,
-            'transaction_details' => $transactionDetails
-        ];
-
+        $contributionData = $this->createContributionPlanAndTransactionData(TransactionType::CONTRIBUTION_PAYMENT);
+        $contributionPlan = $contributionData['contributionPlan'];
+        $transactionDetails = $contributionData['transactionDetails'];
+        $transactionData = $contributionData['transactionData'];
         $response = $this->postGraphQL([
-            'query' => TransactionsQueriesAndMutations::initiateContributionPlanTransaction(),
+            'query' => TransactionsQueriesAndMutations::initiateTransaction(),
             'variables' => [
                 'input' => $transactionData
             ],
@@ -60,7 +46,7 @@ class ContributionPlanTransactionsTest extends TestCase
 
         $response->assertJson([
             'data' => [
-                'InitiateContributionPlanTransaction' => [
+                'InitiateTransaction' => [
                     'transaction_amount' => 500,
                 ]
             ]
