@@ -59,7 +59,7 @@ class CustomerQueriesTest extends TestCase
      */
     public function testGetCustomerTransactionsByIdQuery()
     {
-        $this->markTestSkipped('Skipped until a way to get all transactions for a user can be gotten.');
+//        $this->markTestSkipped('Skipped until a way to get all transactions for a user can be gotten.');
         $this->loginTestUserAndGetAuthHeaders();
 
         $testUser = $this->createUser();

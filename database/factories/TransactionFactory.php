@@ -37,7 +37,7 @@ $factory->define(\App\Models\Transaction::class, function (Faker $faker) {
         'transaction_type' => $transactionTypes[array_rand($transactionTypes)],
         'transaction_amount' => $faker->randomFloat(2, 1000, 1000000),
         'transaction_medium' => $transactionMediums[array_rand($transactionMediums)],
-        'transaction_purpose' => $faker->realText(),
+        'transaction_purpose' => $faker->realText()
 //        'owner_id' => '',
 //        'owner_type' => ''
     ];
