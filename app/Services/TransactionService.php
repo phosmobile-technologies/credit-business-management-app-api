@@ -45,14 +45,27 @@ class TransactionService
         $this->loanRepository = $loanRepository;
     }
 
+    public function initiateTransaction(string $owner_id, array $transactionDetails)
+    {
+        switch ($transactionDetails['transaction_type']) {
+            case TransactionType::LOAN_REPAYMENT:
+                return $this->initiateLoanRepaymentTransaction($owner_id, $transactionDetails);
+                break;
+
+            case TransactionType::CONTRIBUTION_PAYMENT:
+                return $this->initiateContributionPlanPaymentTransaction($owner_id, $transactionDetails);
+                break;
+        }
+    }
+
     /**
-     * Initiate a contribution plan transaction.
+     * Initiate a contribution plan payment transaction.
      *
      * @param string $contribution_plan_id
      * @param array $transactionDetails
      * @return Transaction
      */
-    public function initiateContributionPlanTransaction(string $contribution_plan_id, array $transactionDetails): Transaction
+    public function initiateContributionPlanPaymentTransaction(string $contribution_plan_id, array $transactionDetails): Transaction
     {
         return $this->createTransaction(TransactionOwnerType::CONTRIBUTION_PLAN, $contribution_plan_id, $transactionDetails);
     }
@@ -60,12 +73,13 @@ class TransactionService
     /**
      * Create a loan repayment transaction.
      *
-     * @param Loan $loan
+     * @param string $loan_id
      * @param array $transactionDetails
      * @return Transaction
      */
-    public function initiateLoanRepaymentTransaction(Loan $loan, array $transactionDetails) {
-        return $this->createTransaction(TransactionOwnerType::LOAN, $loan->id, $transactionDetails);
+    public function initiateLoanRepaymentTransaction(string $loan_id, array $transactionDetails)
+    {
+        return $this->createTransaction(TransactionOwnerType::LOAN, $loan_id, $transactionDetails);
     }
 
     /**

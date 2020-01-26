@@ -2,25 +2,25 @@
 
 namespace App\GraphQL\Mutations;
 
-use App\Services\ContributionService;
+use App\Services\TransactionService;
 use GraphQL\Type\Definition\ResolveInfo;
 use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
 
-class InitiateContributionPlanTransaction
+class InitiateTransaction
 {
-    /**
-     * @var ContributionService
-     */
-    private $contributionService;
 
     /**
-     * InitiateContributionPlanTransaction constructor.
-     *
-     * @param ContributionService $contributionService
+     * @var TransactionService
      */
-    public function __construct(ContributionService $contributionService)
+    private $transactionService;
+
+    /**
+     * InitiateTransaction constructor.
+     * @param TransactionService $transactionService
+     */
+    public function __construct(TransactionService $transactionService)
     {
-        $this->contributionService = $contributionService;
+        $this->transactionService = $transactionService;
     }
 
     /**
@@ -34,6 +34,6 @@ class InitiateContributionPlanTransaction
      */
     public function __invoke($rootValue, array $args, GraphQLContext $context, ResolveInfo $resolveInfo)
     {
-        return $this->contributionService->initiateTransaction($args['contribution_plan_id'], $args['transaction_details']);
+        return $this->transactionService->initiateTransaction($args['owner_id'], $args['transaction_details']);
     }
 }

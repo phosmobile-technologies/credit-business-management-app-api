@@ -49,12 +49,12 @@ class LoanRepaymentTransactionsTest extends TestCase
         ])->toArray();
 
         $transactionData = [
-            'loan_id' => $loan->id,
+            'owner_id' => $loan->id,
             'transaction_details' => $transactionDetails
         ];
 
         $response = $this->postGraphQL([
-            'query' => TransactionsQueriesAndMutations::initiateLoanRepaymentTransaction(),
+            'query' => TransactionsQueriesAndMutations::initiateTransaction(),
             'variables' => [
                 'input' => $transactionData
             ],
@@ -62,7 +62,7 @@ class LoanRepaymentTransactionsTest extends TestCase
 
         $response->assertJson([
             'data' => [
-                'InitiateLoanRepaymentTransaction' => [
+                'InitiateTransaction' => [
                     'transaction_amount' => 500,
                 ]
             ]

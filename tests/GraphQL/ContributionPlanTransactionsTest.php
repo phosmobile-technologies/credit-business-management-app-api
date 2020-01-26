@@ -47,12 +47,12 @@ class ContributionPlanTransactionsTest extends TestCase
         ])->toArray();
 
         $transactionData = [
-            'contribution_plan_id' => $contributionPlan->id,
+            'owner_id' => $contributionPlan->id,
             'transaction_details' => $transactionDetails
         ];
 
         $response = $this->postGraphQL([
-            'query' => TransactionsQueriesAndMutations::initiateContributionPlanTransaction(),
+            'query' => TransactionsQueriesAndMutations::initiateTransaction(),
             'variables' => [
                 'input' => $transactionData
             ],
@@ -60,7 +60,7 @@ class ContributionPlanTransactionsTest extends TestCase
 
         $response->assertJson([
             'data' => [
-                'InitiateContributionPlanTransaction' => [
+                'InitiateTransaction' => [
                     'transaction_amount' => 500,
                 ]
             ]

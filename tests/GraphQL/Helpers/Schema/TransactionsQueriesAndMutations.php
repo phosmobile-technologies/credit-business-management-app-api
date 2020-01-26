@@ -84,4 +84,21 @@ class TransactionsQueriesAndMutations
             }
         ';
     }
+
+    /**
+     * Mutation for initiating a transaction request.
+     *
+     * @return string
+     */
+    public static function initiateTransaction()
+    {
+        return '
+            mutation InitiateTransaction($input: CreateTransactionInput!) {
+                InitiateTransaction(input: $input) {
+                     id
+                     transaction_amount
+                }
+            }
+        ';
+    }
 }

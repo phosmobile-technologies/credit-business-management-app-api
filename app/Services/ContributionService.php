@@ -75,6 +75,6 @@ class ContributionService
      */
     public function initiateTransaction(string $contribution_plan_id, array $transactionDetails): Transaction
     {
-        return $this->transactionService->initiateContributionPlanTransaction($contribution_plan_id, $transactionDetails);
+        return $this->transactionService->initiateContributionPlanPaymentTransaction($contribution_plan_id, $transactionDetails);
     }
 }
