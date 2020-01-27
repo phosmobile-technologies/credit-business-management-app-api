@@ -24,14 +24,17 @@ class CustomerQueriesAndMutations
     }
 
     /**
-     * Query for getting a customer's transactions.
+     * Query for getting a customer's loan transactions.
      *
      * @return string
      */
     public static function GetCustomerTransactionsById() {
         return '
-            query GetCustomerTransactionsById($customer_id: ID!) {
-                GetCustomerTransactionsById(customer_id: $customer_id) {
+            query GetCustomerTransactionsById(
+            $customer_id: ID!, 
+            $transaction_type: TransactionOwnerType!
+            ) {
+                GetCustomerTransactionsById(customer_id: $customer_id, transaction_type: $transaction_type) {
                     data {
                         id
                     }

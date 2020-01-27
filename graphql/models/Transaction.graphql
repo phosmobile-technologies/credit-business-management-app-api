@@ -33,6 +33,12 @@ enum TransactionType {
     BRANCH_FUND_DISBURSEMENT
 }
 
+""" The owner type of a financial transaction """
+enum TransactionOwnerType {
+    LOAN
+    CONTRIBUTION_PLAN
+}
+
 """ The medium via which a transaction is made """
 enum TransactionMedium {
     CASH

@@ -4,6 +4,7 @@ namespace App\Services;
 
 
 use App\Events\NewUserRegistered;
+use App\Models\enums\TransactionOwnerType;
 use App\Models\UserProfile;
 use App\Repositories\Interfaces\UserProfileRepositoryInterface;
 use App\Repositories\Interfaces\UserRepositoryInterface;
@@ -94,10 +95,20 @@ class UserService
     /**
      * Get the query builder for transactions that a belong to a user.
      *
-     * @param $customer_id
+     * @param string $customer_id
+     * @param string $transactionType
      * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
      */
-    public function getCustomerTransactionsQuery($customer_id) {
-        return $this->userRepository->findTransactionsQuery($customer_id);
+    public function getCustomerTransactionsQuery(string $customer_id, string $transactionType)
+    {
+        switch ($transactionType) {
+            case TransactionOwnerType::LOAN:
+                return $this->userRepository->findLoanTransactionsQuery($customer_id);
+                break;
+
+            case TransactionOwnerType::CONTRIBUTION_PLAN:
+                return $this->userRepository->findContributionPlanTransactionsQuery($customer_id);
+                break;
+        }
     }
 }

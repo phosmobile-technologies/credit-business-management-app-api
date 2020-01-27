@@ -12,6 +12,6 @@ namespace App\Models\enums;
  */
 class TransactionOwnerType
 {
-    const LOAN = "loan";
-    const CONTRIBUTION_PLAN = "contribution_plan";
+    const LOAN = "LOAN";
+    const CONTRIBUTION_PLAN = "CONTRIBUTION_PLAN";
 }
