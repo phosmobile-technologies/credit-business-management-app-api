@@ -13,6 +13,7 @@
         "bref/bref": "^0.5.11",
         "fideloper/proxy": "^4.0",
         "guzzlehttp/guzzle": "^6.4",
+        "itsgoingd/clockwork": "^4.0",
         "joselfonseca/lighthouse-graphql-passport-auth": "^2.0",
         "laravel/framework": "^6.0",
         "laravel/passport": "^7.5",

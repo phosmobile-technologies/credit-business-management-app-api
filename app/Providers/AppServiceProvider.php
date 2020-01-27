@@ -51,7 +51,7 @@ class AppServiceProvider extends ServiceProvider
          * @for-serverless
          */
         if (! is_dir(config('view.compiled'))) {
-            mkdir(config('view.compiled'), 0755, true);
+            mkdir(config('view.compiled'), 0777, true);
         }
 
         $this->registerMorphMap();

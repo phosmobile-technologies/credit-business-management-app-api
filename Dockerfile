@@ -30,5 +30,7 @@ RUN composer install --prefer-dist && rm -rf /root/.composer
 RUN composer dump-autoload
 
 RUN chmod -R 777 /var/www/storage/
+RUN chmod -R 777 /var/www/tmp/
+RUN chmod -R 777 /tmp/
 
 EXPOSE 80
