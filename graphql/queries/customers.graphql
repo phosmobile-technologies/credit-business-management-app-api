@@ -3,6 +3,10 @@ extend type Query @middleware(checks: ["auth:api"]){
     GetCustomerById(id: ID! @eq): User @find(model: "App\\User")
 
     """ Get a customers transactions """
-    GetCustomerTransactionsById(customer_id: ID!, transaction_type: TransactionOwnerType!): [Transaction]!
+    GetCustomerTransactionsById(
+        customer_id: ID!,
+        transaction_type: TransactionOwnerType!,
+        orderBy: [OrderByClause!] @orderBy(columns: ["created_at"])
+    ): [Transaction]!
     @paginate(builder: "App\\GraphQL\\Queries\\GetCustomerTransactionsById", defaultCount: 25)
 }

@@ -22,6 +22,8 @@ type Loan {
     loan_default_status: LoanDefaultStatus!
     num_of_default_days: Int
     transactions: [Transaction]! @morphMany
+    created_at: DateTime!
+    updated_at: DateTime!
 }
 
 """ An application made by a customer requesting for a loan """
