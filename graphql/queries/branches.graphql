@@ -3,14 +3,24 @@ extend type Query @middleware(checks: ["auth:api"]){
     GetBranchById(id: ID! @eq): CompanyBranch @find(model: "App\\Models\\CompanyBranch")
 
     """ Get all customers that belong to a branch """
-    GetBranchCustomers(branch_id: ID!): [User]!
-    @paginate(builder: "App\\GraphQL\\Queries\\GetBranchCustomers", defaultCount: 25)
+    GetBranchCustomers(
+        branch_id: ID!,
+        orderBy: [OrderByClause!] @orderBy(columns: ["created_at"])
+    ): [User]!
+    @paginate(builder: "App\\GraphQL\\Queries\\GetBranchCustomers", defaultCount: 10)
 
     """ Get all loans that belong to a branch """
-    GetBranchLoans(branch_id: ID!, loan_condition_status: LoanConditionStatus @where(operator: "=")): [Loan]!
-    @paginate(builder: "App\\GraphQL\\Queries\\GetBranchLoans", defaultCount: 25)
+    GetBranchLoans(
+        branch_id: ID!,
+        loan_condition_status: LoanConditionStatus @where(operator: "="),
+        orderBy: [OrderByClause!] @orderBy(columns: ["created_at"])
+    ): [Loan]!
+    @paginate(builder: "App\\GraphQL\\Queries\\GetBranchLoans", defaultCount: 10)
 
     """ Get all loan applications that belong to a branch """
-    GetBranchLoanApplications(branch_id: ID!): [LoanApplication]!
-    @paginate(builder: "App\\GraphQL\\Queries\\GetBranchLoanApplications", defaultCount: 25)
+    GetBranchLoanApplications(
+        branch_id: ID!,
+        orderBy: [OrderByClause!] @orderBy(columns: ["created_at"])
+    ): [LoanApplication]!
+    @paginate(builder: "App\\GraphQL\\Queries\\GetBranchLoanApplications", defaultCount: 10)
 }

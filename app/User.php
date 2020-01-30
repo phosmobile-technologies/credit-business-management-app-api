@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Models\Concerns\UsesUuid;
+use App\Models\ContributionPlan;
 use App\Models\Loan;
 use App\Models\Transaction;
 use App\Models\UserProfile;
@@ -100,12 +101,20 @@ class User extends Authenticatable
     }
 
     /**
-     * Relationship between a user and their transactions.
+     * Relationship between a user and their contribution plans.
      *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function contributionPlans(): HasMany
+    {
+        return $this->hasMany(ContributionPlan::class, 'user_id', 'id');
+    }
+
+    /**
      * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
      */
-    public function transactions(): \Illuminate\Database\Eloquent\Relations\HasManyThrough
-    {
+    public function contributionPlansTransactions() {
+        return $this->hasManyThrough(Transaction::class, ContributionPlan::class, 'user_id', 'owner_id', 'id', 'id');
     }
 
 }

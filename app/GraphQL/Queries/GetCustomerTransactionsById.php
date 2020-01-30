@@ -34,6 +34,6 @@ class GetCustomerTransactionsById
      */
     public function __invoke($rootValue, array $args, GraphQLContext $context, ResolveInfo $resolveInfo)
     {
-        return $this->userService->getCustomerTransactionsQuery($args['customer_id']);
+        return $this->userService->getCustomerTransactionsQuery($args['customer_id'], $args['transaction_type']);
     }
 }

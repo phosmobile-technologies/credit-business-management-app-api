@@ -72,10 +72,23 @@ class UserRepository implements UserRepositoryInterface
      * @param string $customer_id
      * @return HasManyThrough
      */
-    public function findTransactionsQuery(string $customer_id): HasManyThrough
+    public function findLoanTransactionsQuery(string $customer_id): HasManyThrough
     {
         $user = $this->find($customer_id);
 
         return $user->loanTransactions();
+    }
+
+    /**
+     * Get the eloquent query builder that can get contribution plan transactions that belong to a customer.
+     *sss
+     * @param string $customer_id
+     * @return HasManyThrough
+     */
+    public function findContributionPlanTransactionsQuery(string $customer_id): HasManyThrough
+    {
+        $user = $this->find($customer_id);
+
+        return $user->contributionPlansTransactions();
     }
 }

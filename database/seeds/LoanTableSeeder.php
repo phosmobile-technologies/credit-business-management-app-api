@@ -38,7 +38,7 @@ class LoanTableSeeder extends Seeder
     {
         $this->users->each(function ($user) {
             $user->loans()->createMany(
-                factory(Loan::class, 10)->state('disbursed_loan')->make()->toArray()
+                factory(Loan::class, 2)->state('disbursed_loan')->make()->toArray()
             );
         });
     }
@@ -49,7 +49,7 @@ class LoanTableSeeder extends Seeder
     private function seedNotDisbursedLoans() {
         $this->users->each(function ($user) {
             $user->loans()->createMany(
-                factory(Loan::class, 10)->state('not_disbursed_loan')->make()->toArray()
+                factory(Loan::class, 2)->state('not_disbursed_loan')->make()->toArray()
             );
         });
     }
@@ -60,7 +60,7 @@ class LoanTableSeeder extends Seeder
     private function seedDefaultingLoans() {
         $this->users->each(function ($user) {
             $user->loans()->createMany(
-                factory(Loan::class, 10)->state('defaulting_loan')->make()->toArray()
+                factory(Loan::class, 2)->state('defaulting_loan')->make()->toArray()
             );
         });
     }
@@ -71,7 +71,7 @@ class LoanTableSeeder extends Seeder
     private function seedNoneDefaultingLoans() {
         $this->users->each(function ($user) {
             $user->loans()->createMany(
-                factory(Loan::class, 10)->state('non_defaulting_loan')->make()->toArray()
+                factory(Loan::class, 2)->state('non_defaulting_loan')->make()->toArray()
             );
         });
     }
