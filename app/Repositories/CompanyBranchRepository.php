@@ -104,7 +104,7 @@ class CompanyBranchRepository implements CompanyBranchRepositoryInterface
     {
         $branch = $this->find($branch_id);
 
-        return $branch->customers()->where(function ($query) use ($search_query, $start_date, $end_date) {
+        return $branch->customers()->role([UserRoles::CUSTOMER])->where(function ($query) use ($search_query, $start_date, $end_date) {
 
             if(isset($search_query)) {
                 $query->where('first_name', 'like', "%{$search_query}%")
