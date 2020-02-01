@@ -163,4 +163,8 @@ class BranchQueriesTest extends TestCase
             $this->assertEquals(LoanConditionStatus::ACTIVE, $loanStatus);
         }
     }
+
+    public function testSearchBranchCustomersQuery() {
+        $this->markTestSkipped("The test for searching a branch's customers needs to be implemented");
+    }
 }

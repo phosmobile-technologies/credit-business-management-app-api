@@ -23,4 +23,14 @@ extend type Query @middleware(checks: ["auth:api"]){
         orderBy: [OrderByClause!] @orderBy(columns: ["created_at"])
     ): [LoanApplication]!
     @paginate(builder: "App\\GraphQL\\Queries\\GetBranchLoanApplications", defaultCount: 10)
+
+    """ Search/Filter a branch's customers """
+    SearchBranchCustomers(
+        branch_id: ID!
+        search_query: String
+        start_date: Date
+        end_date: Date
+        orderBy: [OrderByClause!] @orderBy(columns: ["created_at"])
+    ): [User]!
+    @paginate(builder: "App\\GraphQL\\Queries\\SearchBranchCustomers", defaultCount: 10)
 }

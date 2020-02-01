@@ -9,6 +9,7 @@ use App\Repositories\Interfaces\CompanyBranchRepositoryInterface;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Date;
 
 class CompanyBranchRepository implements CompanyBranchRepositoryInterface
 {
@@ -88,5 +89,36 @@ class CompanyBranchRepository implements CompanyBranchRepositoryInterface
         $branch = $this->find($branch_id);
 
         return $branch->loanApplications();
+    }
+
+    /**
+     * Search/Filter the customers for a branch.
+     *
+     * @param string $branch_id
+     * @param null|string $search_query
+     * @param Date|null $start_date
+     * @param Date|null $end_date
+     * @return HasManyThrough
+     */
+    public function searchBranchCustomers(string $branch_id, ?string $search_query, ?Date $start_date, ?Date $end_date): HasManyThrough
+    {
+        $branch = $this->find($branch_id);
+
+        return $branch->customers()->role([UserRoles::CUSTOMER])->where(function ($query) use ($search_query, $start_date, $end_date) {
+
+            if(isset($search_query)) {
+                $query->where('first_name', 'like', "%{$search_query}%")
+                    ->orWhere('last_name', 'like', "%{$search_query}%");
+            }
+
+            if(isset($start_date)) {
+                $query->whereDate('created_at', '>=', $start_date);
+            }
+
+            if(isset($end_date)) {
+                $query->whereDate('created_at', '<=', $end_date);
+            }
+
+        });
     }
 }
