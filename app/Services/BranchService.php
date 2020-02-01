@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
+use App\Models\CompanyBranch;
 use App\Repositories\Interfaces\CompanyBranchRepositoryInterface;
+use Illuminate\Support\Facades\Date;
 
 /**
  * Class BranchService
@@ -73,5 +75,18 @@ class BranchService
     public function getBranchLoanApplicationsQuery(string $branch_id)
     {
         return $this->branchRepository->findLoanApplicationsQuery($branch_id);
+    }
+
+    /**
+     * Search/Filter the branch customers.
+     *
+     * @param string $branch_id
+     * @param null|string $search_query
+     * @param Date|null $start_date
+     * @param Date|null $end_date
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     */
+    public function searchBranchCustomersQuery(string $branch_id, ?string $search_query, ?Date $start_date, ?Date $end_date) {
+        return $this->branchRepository->searchBranchCustomers($branch_id, $search_query, $start_date, $end_date);
     }
 }

@@ -7,6 +7,7 @@ use App\Models\CompanyBranch;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Date;
 
 interface CompanyBranchRepositoryInterface
 {
@@ -57,4 +58,15 @@ interface CompanyBranchRepositoryInterface
      * @return HasManyThrough
      */
     public function findLoanApplicationsQuery(string $branch_id): HasManyThrough;
+
+    /**
+     * Search/Filter the customers for a branch.
+     *
+     * @param string $branch_id
+     * @param null|string $search_query
+     * @param Date|null $start_date
+     * @param Date|null $end_date
+     * @return HasManyThrough
+     */
+    public function searchBranchCustomers(string $branch_id, ?string $search_query, ?Date $start_date, ?Date $end_date): HasManyThrough;
 }
