@@ -6,19 +6,19 @@ input CreateLoanInput {
     loan_amount: Float!
     interest_rate: Float! # In percentage
     loan_repayment_frequency: LoanRepaymentFrequency!
-    loan_balance: Float!
-    next_due_payment: Date!
-    due_date: Date!
+    # loan_balance: Float!
+    # next_due_payment: Date!
+    # due_date: Date!
     service_charge: Float! # (percent of the loan / static amount)
-    default_amount: Float! # (static amount to be set for defaults on loans, defaults count when due date is exceeded)
-    tenure: Int # In Months
-    disbursement_status: DisbursementStatus!
-    disbursement_date: Date
-    amount_disbursed: Float
-    application_status: LoanApplicationStatus!
-    loan_condition_status: LoanConditionStatus!
-    loan_default_status: LoanDefaultStatus!
-    num_of_default_days: Int
+    # default_amount: Float! # (static amount to be set for defaults on loans, defaults count when due date is exceeded)
+    # tenure: Int # In Months
+    # disbursement_status: DisbursementStatus!
+    # disbursement_date: Date
+    # amount_disbursed: Float
+    # application_status: LoanApplicationStatus!
+    # loan_condition_status: LoanConditionStatus!
+    # loan_default_status: LoanDefaultStatus!
+    # num_of_default_days: Int
 }
 
 """ Input which allows customers apply for a loan """
