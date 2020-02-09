@@ -6,7 +6,7 @@ type User {
     phone_number: String!
     email: String!
     profile: UserProfile @hasOne
-    loans: [Loan]! @hasMany
+    loans: [Loan]! @hasOne
     contribution_plans: [ContributionPlan]! @hasMany(relation: "contributionPlans")
     roles: [Role!]! @morphMany
     created_at: DateTime!
