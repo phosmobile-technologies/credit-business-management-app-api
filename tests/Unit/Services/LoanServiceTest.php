@@ -84,7 +84,6 @@ class LoanServiceTest extends TestCase
             'id' => $this->faker->uuid,
             'loan_balance' => 1000
         ]);
-        $loanID = $this->faker->uuid;
 
         $transactionDetails = factory(Transaction::class)->make([
             'transaction_amount' => 500,
@@ -102,13 +101,13 @@ class LoanServiceTest extends TestCase
     /**
      * @test
      * @throws GraphqlError
+     * @group active
      */
     public function testItCorrectlyInitiatesALoanRepayment() {
         $loan = factory(Loan::class)->make([
             'id' => $this->faker->uuid,
             'loan_balance' => 1000
         ]);
-        $loanID = $this->faker->uuid;
 
         $transactionDetails = factory(Transaction::class)->make([
             'transaction_amount' => 500,
@@ -120,7 +119,10 @@ class LoanServiceTest extends TestCase
             ->andReturn($loan);
 
         $this->transactionService->shouldReceive('initiateLoanRepaymentTransaction')
-            ->withArgs([$loan, $transactionDetails]);
+            ->andReturnUsing(function ($loanArgument, $transactionDetailsArgument) use ($loan, $transactionDetails) {
+                $this->assertEquals($loan, $loanArgument);
+                $this->assertEquals($transactionDetails, $transactionDetailsArgument);
+            });
 
         $this->loanService->initiateLoanRepayment($loan->id, $transactionDetails);
     }

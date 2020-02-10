@@ -57,11 +57,17 @@ class TransactionsServiceTest extends TestCase
             'transaction_amount' => 500,
             'transaction_type' => TransactionType::LOAN_REPAYMENT,
             'transaction_status' => TransactionStatus::PENDING
-        ])->toArray();
+        ]);
 
         $this->transactionRepository->shouldReceive('create')
-            ->with($transactionDetails);
+            ->andReturnUsing(function ($arg1) use ($transactionDetails) {
+                $this->assertEquals($transactionDetails->toArray(), $arg1);
 
-        $this->transactionsService->initiateLoanRepaymentTransaction($loan, $transactionDetails);
+                // Since the factory created an instance of Transaction
+                $transaction = $transactionDetails;
+                return $transaction;
+            });
+
+        $this->transactionsService->initiateLoanRepaymentTransaction($loan->id, $transactionDetails->toArray());
     }
 }
