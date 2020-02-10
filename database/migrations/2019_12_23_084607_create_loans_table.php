@@ -31,9 +31,9 @@ class CreateLoansTable extends Migration
                 LoanRepaymentFrequency::WEEKLY,
                 LoanRepaymentFrequency::MONTHLY
             ]);
-            $table->float('loan_balance'); //
-            $table->date('next_due_payment');
-            $table->date('due_date');
+            $table->float('loan_balance')->nullable(); //
+            $table->date('next_due_payment')->nullable();
+            $table->date('due_date')->nullable();
             $table->float('service_charge')
                 ->comment("percent of the loan / static amount");
             $table->float("default_amount")

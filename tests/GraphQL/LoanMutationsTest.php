@@ -33,7 +33,7 @@ class LoanMutationsTest extends TestCase
     {
         $this->loginTestUserAndGetAuthHeaders([UserRoles::ADMIN_STAFF]);
 
-        $loanData = collect(factory(Loan::class)->state('not_disbursed_loan')->make())
+        $loanData = collect(factory(Loan::class)->make())
             ->except(['loan_identifier'])
             ->toArray();
         $loanData['user_id'] = $this->user['id'];

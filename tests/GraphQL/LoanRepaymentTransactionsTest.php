@@ -37,7 +37,7 @@ class LoanRepaymentTransactionsTest extends TestCase
     {
         $this->loginTestUserAndGetAuthHeaders([UserRoles::BRANCH_ACCOUNTANT]);
 
-        $loan = factory(Loan::class)->create([
+        $loan = factory(Loan::class)->states('with_default_values')->create([
             'id' => $this->faker->uuid,
             'user_id' => $this->user['id'],
             'loan_balance' => 2000
@@ -89,7 +89,7 @@ class LoanRepaymentTransactionsTest extends TestCase
          * Try to approve it, ensure that it's approved
          */
 
-        $loan = factory(Loan::class)->create([
+        $loan = factory(Loan::class)->states('with_default_values')->create([
             'id' => $this->faker->uuid,
             'user_id' => $this->user['id'],
             'loan_balance' => 2000,
@@ -160,7 +160,7 @@ class LoanRepaymentTransactionsTest extends TestCase
          * Try to approve it, ensure that it's approved
          */
 
-        $loan = factory(Loan::class)->create([
+        $loan = factory(Loan::class)->states('with_default_values')->create([
             'id' => $this->faker->uuid,
             'user_id' => $this->user['id'],
             'loan_balance' => 2000,
@@ -230,7 +230,7 @@ class LoanRepaymentTransactionsTest extends TestCase
          * Try to approve it, ensure that it's approved
          */
 
-        $loan = factory(Loan::class)->create([
+        $loan = factory(Loan::class)->states('with_default_values')->create([
             'id' => $this->faker->uuid,
             'user_id' => $this->user['id'],
             'loan_balance' => 2000,

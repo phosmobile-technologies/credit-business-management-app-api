@@ -57,6 +57,12 @@ class LoanService
         $loanData['application_status'] = LoanApplicationStatus::PENDING;
         $loanData['loan_condition_status'] = LoanConditionStatus::INACTIVE;
         $loanData['loan_default_status'] = LoanDefaultStatus::NOT_DEFAULTING;
+        $loanData['disbursement_date'] = null;
+        $loanData['amount_disbursed'] = 0;
+        $loanData['num_of_default_days'] = null;
+        $loanData['loan_balance'] = null;
+        $loanData['next_due_payment'] = null;
+        $loanData['due_date'] = null;
 
         $loan = $this->loanRepository->create($loanData);
 

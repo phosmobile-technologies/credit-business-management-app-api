@@ -24,13 +24,13 @@ trait InteractsWithTestLoans
         }
 
         if (!$numberOfLoans) {
-            return factory(Loan::class)->create([
+            return factory(Loan::class)->states('with_default_values')->create([
                 'application_status' => LoanApplicationStatus::PENDING(),
                 'user_id' => $user->id
             ]);
         }
 
-        return factory(Loan::class, $numberOfLoans)->create([
+        return factory(Loan::class, $numberOfLoans)->states('with_default_values')->create([
             'application_status' => LoanApplicationStatus::PENDING(),
             'user_id' => $user->id
         ]);
