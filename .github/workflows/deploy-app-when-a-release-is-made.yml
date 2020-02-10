@@ -9,7 +9,8 @@ on:
   pull_request:
     types: [closed]
     branches:
-      - dev
+    # Intentionally putting a wrong branch name, so this workflow doesn't run until the issue with serverless deployment is resolved.
+      - dev-wrong
 
 jobs:
   # Job used to setup the app and run unit tests
