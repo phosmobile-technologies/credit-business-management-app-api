@@ -3,6 +3,7 @@
 namespace App\Services;
 
 
+use App\Events\LoanApplicationStatusChanged;
 use App\Events\LoanApprovedByBranchManager;
 use App\Events\LoanApprovedByGlobalManager;
 use App\Events\LoanDisApprovedByBranchManager;
@@ -17,6 +18,7 @@ use App\Models\enums\TransactionType;
 use App\Models\Loan;
 use App\Repositories\Interfaces\LoanRepositoryInterface;
 use App\Repositories\Interfaces\UserRepositoryInterface;
+use Illuminate\Support\Facades\Auth;
 
 class LoanService
 {
@@ -114,24 +116,11 @@ class LoanService
     public function updateLoanApplicationStatus(string $loanID, string $loanApplicationStatus, ?string $message)
     {
         $loan = $this->loanRepository->find($loanID);
+        $oldLoanApplicationStatus = $loan->application_status;
 
         $this->loanRepository->updateApplicationState($loan, $loanApplicationStatus);
 
-        switch ($loanApplicationStatus) {
-            case LoanApplicationStatus::APPROVED_BY_BRANCH_MANAGER():
-                event(new LoanApprovedByBranchManager($loan, $message));
-                break;
-            case LoanApplicationStatus::DISAPPROVED_BY_BRANCH_MANAGER():
-                event(new LoanDisApprovedByBranchManager($loan, $message));
-                break;
-            case LoanApplicationStatus::APPROVED_BY_GLOBAL_MANAGER():
-                event(new LoanApprovedByGlobalManager($loan, $message));
-                break;
-            case LoanApplicationStatus::DISAPPROVED_BY_GLOBAL_MANAGER():
-                event(new LoanDisApprovedByBranchManager($loan, $message));
-                break;
-        }
-
+        event(new LoanApplicationStatusChanged($loan, $oldLoanApplicationStatus, Auth::user(), $message));
         return $loan;
     }
 

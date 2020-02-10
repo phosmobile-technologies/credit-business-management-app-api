@@ -7,11 +7,13 @@ use App\Models\Enums\LoanDefaultStatus;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Spatie\Activitylog\Models\Activity;
 use Spatie\Activitylog\Traits\LogsActivity;
 
 class Loan extends Model
 {
-    use UsesUuid, LogsActivity;
+    use UsesUuid;
 
     /**
      * @var string
@@ -51,6 +53,15 @@ class Loan extends Model
      */
     public function user(): BelongsTo {
         return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    /**
+     * Loan Activities
+     *
+     * @return HasMany
+     */
+    public function activities(): HasMany {
+        return $this->hasMany(Activity::class, 'subject_id', 'id');
     }
 
 }
