@@ -44,12 +44,6 @@ class LogLoanApplicationStatusChange
             ->causedBy($causer)
             ->performedOn($loan)
             ->withProperties($extraProperties)
-//            ->tap(function(Activity $activity) use ($description, $message) {
-//                $activity[ActivityLogProperties::ACTIVITY_DESCRIPTION] = $description;
-//                if($message) {
-//                    $activity[ActivityLogProperties::ACTIVITY_MESSAGE] = $message;
-//                }
-//            })
             ->log('Loan application status updated');
     }
 }

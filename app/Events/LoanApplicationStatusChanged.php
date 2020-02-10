@@ -43,7 +43,6 @@ class LoanApplicationStatusChanged
      */
     public function __construct(Loan $loan, string $oldApplicationStatus, $causer, ?string $message)
     {
-        //
         $this->loan = $loan;
         $this->oldApplicationStatus = $oldApplicationStatus;
         $this->causer = $causer;
