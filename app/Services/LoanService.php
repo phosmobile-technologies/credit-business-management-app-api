@@ -16,6 +16,7 @@ use App\Models\Enums\LoanDefaultStatus;
 use App\Models\enums\TransactionType;
 use App\Models\Loan;
 use App\Repositories\Interfaces\LoanRepositoryInterface;
+use App\Repositories\Interfaces\UserRepositoryInterface;
 
 class LoanService
 {
@@ -30,15 +31,22 @@ class LoanService
     private $transactionService;
 
     /**
+     * @var UserRepositoryInterface
+     */
+    private $userRepository;
+
+    /**
      * LoanService constructor.
      *
      * @param LoanRepositoryInterface $loanRepository
      * @param TransactionService $transactionService
+     * @param UserRepositoryInterface $userRepository
      */
-    public function __construct(LoanRepositoryInterface $loanRepository, TransactionService $transactionService)
+    public function __construct(LoanRepositoryInterface $loanRepository, TransactionService $transactionService, UserRepositoryInterface $userRepository)
     {
         $this->loanRepository = $loanRepository;
         $this->transactionService = $transactionService;
+        $this->userRepository = $userRepository;
     }
 
     /**
@@ -46,9 +54,16 @@ class LoanService
      *
      * @param array $loanData
      * @return Loan
+     * @throws GraphqlError
      */
     public function create(array $loanData): Loan
     {
+        // Check to ensure that a user can only have one active loan at a time
+        $user = $this->userRepository->find($loanData['user_id']);
+        if (count($user->activeLoans()) > 0) {
+            throw new GraphqlError('This user already has an active loan and cannot take a new loan');
+        }
+
         // We need to generate a unique (app specified) identifier for each loan
         $loanData['loan_identifier'] = $this->generateLoanIdentifier();
 

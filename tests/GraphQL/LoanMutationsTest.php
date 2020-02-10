@@ -2,6 +2,7 @@
 
 namespace Tests\GraphQL;
 
+use App\GraphQL\Errors\GraphqlError;
 use App\Models\Enums\DisbursementStatus;
 use App\Models\Enums\LoanApplicationStatus;
 use App\Models\Enums\LoanConditionStatus;
@@ -83,6 +84,40 @@ class LoanMutationsTest extends TestCase
                 'UpdateLoanApplicationStatus' => [
                     'application_status' => LoanApplicationStatus::APPROVED_BY_BRANCH_MANAGER()
                 ]
+            ]
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function testItThrowsErrorWhenTryingToCreateALoanForAUserWithAnExistingActiveLoan() {
+        $this->loginTestUserAndGetAuthHeaders([UserRoles::ADMIN_STAFF]);
+
+        $loan = factory(Loan::class)->states('with_default_values')->create([
+            'application_status' => LoanApplicationStatus::APPROVED_BY_GLOBAL_MANAGER(),
+            "loan_condition_status" => LoanConditionStatus::ACTIVE,
+            'user_id' => $this->user['id'],
+            'loan_amount' => 1000,
+            'loan_balance' => 1000,
+            'amount_disbursed' => 0
+        ]);
+
+        $loanData = collect(factory(Loan::class)->make())
+            ->except(['loan_identifier'])
+            ->toArray();
+        $loanData['user_id'] = $this->user['id'];
+
+        $response = $this->postGraphQL([
+            'query' => LoanQueriesAndMutations::CreateLoanMutation(),
+            'variables' => [
+                'input' => $loanData
+            ],
+        ], $this->headers);
+
+        $response->assertJson([
+            'errors' => [
+                ['message' => 'This user already has an active loan and cannot take a new loan']
             ]
         ]);
     }

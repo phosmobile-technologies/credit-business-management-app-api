@@ -4,6 +4,7 @@ namespace App;
 
 use App\Models\Concerns\UsesUuid;
 use App\Models\ContributionPlan;
+use App\Models\Enums\LoanConditionStatus;
 use App\Models\Loan;
 use App\Models\Transaction;
 use App\Models\UserProfile;
@@ -12,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Passport\HasApiTokens;
 use Spatie\Activitylog\Traits\CausesActivity;
@@ -91,6 +93,16 @@ class User extends Authenticatable
     public function loans(): HasMany
     {
         return $this->hasMany(Loan::class, 'user_id', 'id');
+    }
+
+    /**
+     * A user's currently active loans
+     *
+     * @return Collection
+     */
+    public function activeLoans(): Collection
+    {
+        return $this->loans()->where('loan_condition_status', "!=", LoanConditionStatus::COMPLETED)->get();
     }
 
     /**
