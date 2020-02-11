@@ -32,7 +32,7 @@ class LoanDisbursementTest extends TestCase
     {
         $this->loginTestUserAndGetAuthHeaders([UserRoles::ADMIN_ACCOUNTANT]);
 
-        $loan = factory(Loan::class)->create([
+        $loan = factory(Loan::class)->states('with_default_values')->create([
             'application_status' => LoanApplicationStatus::APPROVED_BY_GLOBAL_MANAGER(),
             'user_id' => $this->user['id'],
             'loan_amount' => 1000,
@@ -72,7 +72,7 @@ class LoanDisbursementTest extends TestCase
     {
         $this->loginTestUserAndGetAuthHeaders([UserRoles::ADMIN_ACCOUNTANT]);
 
-        $loan = factory(Loan::class)->create([
+        $loan = factory(Loan::class)->states('with_default_values')->create([
             'application_status' => LoanApplicationStatus::APPROVED_BY_GLOBAL_MANAGER(),
             'user_id' => $this->user['id'],
             'loan_amount' => 1000,
@@ -105,7 +105,7 @@ class LoanDisbursementTest extends TestCase
     {
         $this->loginTestUserAndGetAuthHeaders([UserRoles::ADMIN_ACCOUNTANT]);
 
-        $loan = factory(Loan::class)->create([
+        $loan = factory(Loan::class)->states('with_default_values')->create([
             'application_status' => LoanApplicationStatus::PENDING(),
             'user_id' => $this->user['id'],
             'loan_amount' => 1000,
@@ -138,7 +138,7 @@ class LoanDisbursementTest extends TestCase
     {
         $this->loginTestUserAndGetAuthHeaders([UserRoles::CUSTOMER]);
 
-        $loan = factory(Loan::class)->create([
+        $loan = factory(Loan::class)->states('with_default_values')->create([
             'application_status' => LoanApplicationStatus::APPROVED_BY_GLOBAL_MANAGER(),
             'user_id' => $this->user['id'],
             'loan_amount' => 1000,

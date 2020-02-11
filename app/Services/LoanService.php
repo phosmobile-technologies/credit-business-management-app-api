@@ -3,6 +3,7 @@
 namespace App\Services;
 
 
+use App\Events\LoanApplicationStatusChanged;
 use App\Events\LoanApprovedByBranchManager;
 use App\Events\LoanApprovedByGlobalManager;
 use App\Events\LoanDisApprovedByBranchManager;
@@ -16,6 +17,8 @@ use App\Models\Enums\LoanDefaultStatus;
 use App\Models\enums\TransactionType;
 use App\Models\Loan;
 use App\Repositories\Interfaces\LoanRepositoryInterface;
+use App\Repositories\Interfaces\UserRepositoryInterface;
+use Illuminate\Support\Facades\Auth;
 
 class LoanService
 {
@@ -30,15 +33,22 @@ class LoanService
     private $transactionService;
 
     /**
+     * @var UserRepositoryInterface
+     */
+    private $userRepository;
+
+    /**
      * LoanService constructor.
      *
      * @param LoanRepositoryInterface $loanRepository
      * @param TransactionService $transactionService
+     * @param UserRepositoryInterface $userRepository
      */
-    public function __construct(LoanRepositoryInterface $loanRepository, TransactionService $transactionService)
+    public function __construct(LoanRepositoryInterface $loanRepository, TransactionService $transactionService, UserRepositoryInterface $userRepository)
     {
         $this->loanRepository = $loanRepository;
         $this->transactionService = $transactionService;
+        $this->userRepository = $userRepository;
     }
 
     /**
@@ -46,9 +56,16 @@ class LoanService
      *
      * @param array $loanData
      * @return Loan
+     * @throws GraphqlError
      */
     public function create(array $loanData): Loan
     {
+        // Check to ensure that a user can only have one active loan at a time
+        $user = $this->userRepository->find($loanData['user_id']);
+        if (count($user->activeLoans()) > 0) {
+            throw new GraphqlError('This user already has an active loan and cannot take a new loan');
+        }
+
         // We need to generate a unique (app specified) identifier for each loan
         $loanData['loan_identifier'] = $this->generateLoanIdentifier();
 
@@ -57,6 +74,12 @@ class LoanService
         $loanData['application_status'] = LoanApplicationStatus::PENDING;
         $loanData['loan_condition_status'] = LoanConditionStatus::INACTIVE;
         $loanData['loan_default_status'] = LoanDefaultStatus::NOT_DEFAULTING;
+        $loanData['disbursement_date'] = null;
+        $loanData['amount_disbursed'] = 0;
+        $loanData['num_of_default_days'] = null;
+        $loanData['loan_balance'] = null;
+        $loanData['next_due_payment'] = null;
+        $loanData['due_date'] = null;
 
         $loan = $this->loanRepository->create($loanData);
 
@@ -93,24 +116,11 @@ class LoanService
     public function updateLoanApplicationStatus(string $loanID, string $loanApplicationStatus, ?string $message)
     {
         $loan = $this->loanRepository->find($loanID);
+        $oldLoanApplicationStatus = $loan->application_status;
 
         $this->loanRepository->updateApplicationState($loan, $loanApplicationStatus);
 
-        switch ($loanApplicationStatus) {
-            case LoanApplicationStatus::APPROVED_BY_BRANCH_MANAGER():
-                event(new LoanApprovedByBranchManager($loan, $message));
-                break;
-            case LoanApplicationStatus::DISAPPROVED_BY_BRANCH_MANAGER():
-                event(new LoanDisApprovedByBranchManager($loan, $message));
-                break;
-            case LoanApplicationStatus::APPROVED_BY_GLOBAL_MANAGER():
-                event(new LoanApprovedByGlobalManager($loan, $message));
-                break;
-            case LoanApplicationStatus::DISAPPROVED_BY_GLOBAL_MANAGER():
-                event(new LoanDisApprovedByBranchManager($loan, $message));
-                break;
-        }
-
+        event(new LoanApplicationStatusChanged($loan, $oldLoanApplicationStatus, Auth::user(), $message));
         return $loan;
     }
 

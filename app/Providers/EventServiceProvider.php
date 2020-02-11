@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Events\LoanApplicationStatusChanged;
 use App\Events\NewLoanCreated;
 use App\Events\NewUserRegistered;
 use Illuminate\Auth\Events\Registered;
@@ -27,7 +28,11 @@ class EventServiceProvider extends ServiceProvider
 
         NewLoanCreated::class => [
             "App\Listeners\SendLoanCreatedEmail"
-        ]
+        ],
+
+        LoanApplicationStatusChanged::class => [
+            "App\Listeners\LogLoanApplicationStatusChange"
+        ],
     ];
 
     /**

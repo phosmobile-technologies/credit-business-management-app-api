@@ -9,7 +9,7 @@ extend type Mutation @middleware(checks: ["auth:api"]){
         application_status: LoanApplicationStatus!
         message: String
     ): Loan!
-    @can(ability: "updateStatus", model: "App\\Models\\Loan")
+#    @can(ability: "updateStatus", model: "App\\Models\\Loan")
 
     """ Allow customers create a loan application """
     CreateLoanApplication(input: CreateLoanApplicationInput! @spread): LoanApplication!
