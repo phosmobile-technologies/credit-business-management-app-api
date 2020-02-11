@@ -43,7 +43,7 @@ class CreateLoansTable extends Migration
             $table->enum("disbursement_status", [
                 DisbursementStatus::DISBURSED,
                 DisbursementStatus::NOT_DISBURSED
-            ]); //
+            ])->default(DisbursementStatus::NOT_DISBURSED); //
             $table->date("disbursement_date")->nullable(); //
             $table->float("amount_disbursed")->nullable(); //
             $table->enum("application_status", [
@@ -52,17 +52,17 @@ class CreateLoansTable extends Migration
                 LoanApplicationStatus::DISAPPROVED_BY_GLOBAL_MANAGER(),
                 LoanApplicationStatus::APPROVED_BY_GLOBAL_MANAGER(),
                 LoanApplicationStatus::PENDING()
-            ]);
+            ])->default(LoanApplicationStatus::PENDING);
             $table->enum("loan_condition_status", [
                 LoanConditionStatus::ACTIVE,
                 LoanConditionStatus::INACTIVE,
                 LoanConditionStatus::COMPLETED,
                 LoanConditionStatus::NONPERFORMING
-            ]);
+            ])->default(LoanConditionStatus::INACTIVE);
             $table->enum("loan_default_status", [
                LoanDefaultStatus::DEFAULTING,
                 LoanDefaultStatus::NOT_DEFAULTING
-            ]); //
+            ])->nullable(); //
             $table->integer("num_of_default_days")
                 ->nullable()
                 ->comment("Number of days the loan has been defaulted on"); //
