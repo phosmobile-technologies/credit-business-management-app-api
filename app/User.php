@@ -65,6 +65,11 @@ class User extends Authenticatable
             ->first();
     }
 
+    public function setEmailAttribute($value)
+    {
+        $this->attributes['email'] = strtolower($value);
+    }
+
     /**
      * Encrypt the user password when setting it.
      *
