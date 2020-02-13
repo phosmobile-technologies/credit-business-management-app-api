@@ -65,6 +65,11 @@ class User extends Authenticatable
             ->first();
     }
 
+    /**
+     * Converts the user email to lowercase when setting it.
+     *
+     * @param $value
+     */
     public function setEmailAttribute($value)
     {
         $this->attributes['email'] = strtolower($value);
