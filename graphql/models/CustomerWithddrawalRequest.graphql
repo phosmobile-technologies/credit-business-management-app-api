@@ -1,0 +1,26 @@
+# Withdrawal request for customers
+
+type CustomerWithdrawalRequest {
+    id: ID!
+    user_id: ID! @belongsTo
+    request_amount: Float!
+    request_status: RequestStatus!
+    request_type: RequestType!
+    request_date: Date!
+    created_at: Date
+    updated_at: Date
+}
+enum RequestStatus {
+    APPROVED
+    DISAPPROVED
+    PENDING
+    DISBURSED
+}
+
+enum RequestType {
+    BRANCH_FUND
+    BRANCH_EXTRA_FUND
+    DEFAULT_CANCELLATION
+    VENDOR_PAYOUT
+    CONTRIBUTION_WITHDRAWAL
+}
