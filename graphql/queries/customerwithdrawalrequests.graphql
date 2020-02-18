@@ -1,0 +1,7 @@
+extend type Query @middleware(checks: ["auth:api"]) {
+    """
+     Get a request by its ID
+    """
+    GetCustomerWithdrawalRequestById(id: ID! @eq): CustomerWithdrawalRequest
+        @find(model: "App\\Models\\CustomerWithdrawalRequest")
+}
