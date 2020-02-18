@@ -11,17 +11,16 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class CustomerWithdrawalRequestDisApprovedByBranchManager
+class NewCustomerWithdrawalRequestCreated
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
      * Create a new event instance.
      *
-     * @param CustomerWithdrawalRequest $customerwithdrawalrequest
-     * @param null|string $message
+     * @return void
      */
-    public function __construct(CustomerWithdrawalRequest $customerwithdrawalrequest, ?string $message)
+    public function __construct(CustomerWithdrawalRequest $customerWithdrawalRequest)
     {
         //
     }

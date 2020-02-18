@@ -11,7 +11,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class CustomerWithdrawalRequestDisApprovedByBranchManager
+class RequestDisbursed
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -19,9 +19,10 @@ class CustomerWithdrawalRequestDisApprovedByBranchManager
      * Create a new event instance.
      *
      * @param CustomerWithdrawalRequest $customerwithdrawalrequest
+     * @param float $requestAmount
      * @param null|string $message
      */
-    public function __construct(CustomerWithdrawalRequest $customerwithdrawalrequest, ?string $message)
+    public function __construct(CustomerWithdrawalRequest $customerwithdrawalrequest, float $requestAmount, ?string $message)
     {
         //
     }

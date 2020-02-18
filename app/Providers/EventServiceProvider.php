@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Events\NewCustomerWithdrawalRequestCreated;
+use App\Events\RequestStatusChanged;
 use App\Events\LoanApplicationStatusChanged;
 use App\Events\NewLoanCreated;
 use App\Events\NewUserRegistered;
@@ -30,8 +32,16 @@ class EventServiceProvider extends ServiceProvider
             "App\Listeners\SendLoanCreatedEmail"
         ],
 
+        NewCustomerWithdrawalRequestCreated::class => [
+            "App\Listeners\SendCustomerWithdrawalRequestCreatedEmail"
+        ],
+
         LoanApplicationStatusChanged::class => [
             "App\Listeners\LogLoanApplicationStatusChange"
+        ],
+
+        RequestStatusChanged::class => [
+            "App\Listeners\LogRequestStatusChange"
         ],
     ];
 

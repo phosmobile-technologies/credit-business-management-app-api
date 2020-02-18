@@ -4,7 +4,6 @@ namespace App\Repositories;
 
 
 use App\GraphQL\Errors\GraphqlError;
-use App\Models\Enums\DisbursementStatus;
 use App\Models\Enums\RequestStatus;
 use App\Models\Enums\RequestType;
 use App\Models\CustomerWithdrawalRequest;
@@ -16,27 +15,27 @@ class CustomerWithdrawalRequestRepository implements CustomerWithdrawalRequestRe
     /**
      * Insert a CustomerWithdrawalRequest in the database
      *
-     * @param array $CustomerWithdrawalRequestData
+     * @param array $customerwithdrawalrequestData
      * @return CustomerWithdrawalRequest
      */
-    public function create(array $CustomerWithdrawalRequestData): CustomerWithdrawalRequest
+    public function create(array $customerwithdrawalrequestData): CustomerWithdrawalRequest
     {
-        return CustomerWithdrawalRequest::create($CustomerWithdrawalRequestData);
+        return CustomerWithdrawalRequest::create($customerwithdrawalrequestData);
     }
 
     /**
      * Update a CustomerWithdrawalRequest in the database.
      *
      * @param string $id
-     * @param array $CustomerWithdrawalRequestData
+     * @param array $customerwithdrawalrequestData
      * @return CustomerWithdrawalRequest
      */
-    public function update(string $id, array $CustomerWithdrawalRequestData): CustomerWithdrawalRequest
+    public function update(string $id, array $customerwithdrawalrequestData): CustomerWithdrawalRequest
     {
-        $CustomerWithdrawalRequest = $this->find($id);
+        $customerwithdrawalrequest = $this->find($id);
 
-        $CustomerWithdrawalRequest->update($CustomerWithdrawalRequestData);
-        return $CustomerWithdrawalRequest;
+        $customerwithdrawalrequest->update($customerwithdrawalrequestData);
+        return $customerwithdrawalrequest;
     }
 
     /**
@@ -47,14 +46,30 @@ class CustomerWithdrawalRequestRepository implements CustomerWithdrawalRequestRe
      */
     public function find(string $user_id): CustomerWithdrawalRequest
     {
-        $CustomerWithdrawalRequest = CustomerWithdrawalRequest::findOrFail($user_id);
-        return $CustomerWithdrawalRequest;
+        $customerwithdrawalrequest = CustomerWithdrawalRequest::findOrFail($user_id);
+        return $customerwithdrawalrequest;
+    }
+
+    /**
+     * Store a customer withdrawal request disbursement action in the database.
+     *
+     * @param CustomerWithdrawalRequest $customerwithdrawalrequest
+     * @param float $requestAmount
+     * @return CustomerWithdrawalRequest
+     */
+    public function disburseCustomerWithdrawalRequest(CustomerWithdrawalRequest $customerwithdrawalrequest, float $requestAmount): CustomerWithdrawalRequest
+    {
+        $customerwithdrawalrequest->request_status = RequestStatus::DISBURSED;
+        $customerwithdrawalrequest->request_amount = $customerwithdrawalrequest->$requestAmount;
+        $customerwithdrawalrequest->save();
+
+        return $customerwithdrawalrequest;
     }
 
     /**
      * Update the request_state of a CustomerWithdrawalRequest in the database.
      *
-     * @param CustomerWithdrawalRequest $CustomerWithdrawalRequest
+     * @param CustomerWithdrawalRequest $customerwithdrawalrequest
      * @param string $requestState
      * @return CustomerWithdrawalRequest
      */
@@ -70,7 +85,7 @@ class CustomerWithdrawalRequestRepository implements CustomerWithdrawalRequestRe
     /**
      * Update the request_type of a CustomerWithdrawalRequest in the database.
      *
-     * @param CustomerWithdrawalRequest $CustomerWithdrawalRequest
+     * @param CustomerWithdrawalRequest $customerwithdrawalrequest
      * @param string $requestType
      * @return CustomerWithdrawalRequest
      */

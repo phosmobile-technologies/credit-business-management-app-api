@@ -2,14 +2,14 @@
 
 namespace App\Listeners;
 
-use App\Events\LoanApplicationStatusChanged;
+use App\Events\RequestStatusChanged;
 use App\Models\enums\ActivityLogProperties;
-use App\Models\Enums\LoanApplicationStatus;
+use App\Models\Enums\RequestStatus;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Spatie\Activitylog\Models\Activity;
 
-class LogLoanApplicationStatusChange
+class LogRequestStatusChange
 {
     /**
      * Create the event listener.
@@ -20,21 +20,21 @@ class LogLoanApplicationStatusChange
     {
         //
     }
-
+    
     /**
      * Handle the event.
      *
-     * @param  LoanApplicationStatusChanged  $event
+     * @param  RequestStatusChanged  $event
      * @return void
      */
-    public function handle(LoanApplicationStatusChanged $event)
+    public function handle(RequestStatusChanged $event)
     {
-        $loan = $event->loan;
-        $oldApplicationStatus = $event->oldApplicationStatus;
+        $customerwithdrawalrequest = $event->customerwithdrawalrequest;
+        $oldRequestStatus = $event->oldRequestStatus;
         $causer = $event->causer;
         $message = $event->message;
 
-        $description = "The Loan Application status was set to {$loan->application_status} by {$causer->last_name} {$causer->first_name}";
+        $description = "The Request status was set to {$customerwithdrawalrequest->request_status} by {$causer->last_name} {$causer->first_name}";
         $extraProperties = [ActivityLogProperties::ACTIVITY_DESCRIPTION => $description];
         if ($message) {
             $extraProperties[ActivityLogProperties::ACTIVITY_MESSAGE] = $message;
@@ -42,8 +42,8 @@ class LogLoanApplicationStatusChange
 
         activity()
             ->causedBy($causer)
-            ->performedOn($loan)
+            ->performedOn($customerwithdrawalrequest)
             ->withProperties($extraProperties)
-            ->log('Loan application status updated');
+            ->log('Request status updated');
     }
 }

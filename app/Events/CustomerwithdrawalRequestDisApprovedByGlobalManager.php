@@ -11,7 +11,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class CustomerwithdrawalRequestDisApprovedByGlobalManager
+class CustomerWithdrawalRequestDisApprovedByGlobalManager
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 

@@ -2,13 +2,17 @@
 
 namespace App\Providers;
 
-use App\Models\ContributionPlan;
+use App\Events\NewLoanCreated;
+use App\Events\NewCustomerWithdrawalRequestCreated;
 use App\Models\enums\TransactionOwnerType;
 use App\Models\Loan;
+use App\Models\CustomerWithdrawalRequest;
 use App\Models\Transaction;
 use App\Repositories\CompanyBranchRepository;
 use App\Repositories\ContributionRepository;
+use App\Repositories\CustomerWithdrawalRequestRepository;
 use App\Repositories\Interfaces\CompanyBranchRepositoryInterface;
+use App\Repositories\Interfaces\CustomerWithdrawalRequestRepositoryInterface;
 use App\Repositories\Interfaces\ContributionRepositoryInterface;
 use App\Repositories\Interfaces\LoanApplicationRepositoryInterface;
 use App\Repositories\Interfaces\LoanRepositoryInterface;
@@ -67,6 +71,7 @@ class AppServiceProvider extends ServiceProvider
             UserRepositoryInterface::class => UserRepository::class,
             UserProfileRepositoryInterface::class => UserProfileRepository::class,
             LoanRepositoryInterface::class => LoanRepository::class,
+            CustomerWithdrawalRequestRepositoryInterface::class => CustomerWithdrawalRequestRepository::class,
             LoanApplicationRepositoryInterface::class => LoanApplicationRepository::class,
             ContributionRepositoryInterface::class => ContributionRepository::class,
             TransactionRepositoryInterface::class => TransactionRepository::class,
