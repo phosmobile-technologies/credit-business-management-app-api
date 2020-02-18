@@ -28,12 +28,15 @@ class CustomerWithdrawalRequestTableSeeder extends Seeder
                 RequestType::BRANCH_FUND,
                 RequestType::BRANCH_EXTRA_FUND,
                 RequestType::DEFAULT_CANCELLATION,
-                RequestType::VENDOR_PAYOUTT
+                RequestType::VENDOR_PAYOUT,
+                RequestType::CONTRIBUTION_WITHDRAWAL
             ];
 
             $RequestStatuses = [
-                RequestStatus::APPROVED,
-                RequestStatus::DECLINED,
+                RequestStatus::APPROVED_BY_BRANCH_MANAGER,
+                RequestStatus::DISAPPROVED_BY_BRANCH_MANAGER,
+                RequestStatus::DISAPPROVED_BY_GLOBAL_MANAGER,
+                RequestStatus::APPROVED_BY_GLOBAL_MANAGER,
                 RequestStatus::PENDING,
                 RequestStatus::DISBURSED,
             ];
