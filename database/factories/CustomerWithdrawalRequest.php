@@ -13,8 +13,10 @@ use Faker\Generator as Faker;
  */
 $factory->define(CustomerWithdrawalRequest::class, function (Faker $faker) {
     $RequestStatuses = [
-        RequestStatus::APPROVED,
-        RequestStatus::DISAPPROVED,
+        RequestStatus::APPROVED_BY_BRANCH_MANAGER,
+        RequestStatus::DISAPPROVED_BY_BRANCH_MANAGER,
+        RequestStatus::DISAPPROVED_BY_GLOBAL_MANAGER,
+        RequestStatus::APPROVED_BY_GLOBAL_MANAGER,
         RequestStatus::PENDING,
         RequestStatus::DISBURSED
     ];
