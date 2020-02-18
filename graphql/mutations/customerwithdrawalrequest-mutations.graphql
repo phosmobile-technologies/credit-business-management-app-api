@@ -1,0 +1,14 @@
+extend type Mutation @middleware(checks: ["auth:api"]){
+    """ Create a new customer withdrawal request """
+    CreateCustomerWithdrawalRequest(input: CreateCustomerWithdrawalRequestInput! @spread): CustomerWithdrawalRequest!
+    @can(ability: "create", model: "App\\Models\\CustomerWithdrawalRequest")
+
+    """ Update a customer withdrawal request """
+    UpdateCustomerWithdrawalRequest(input: UpdateCustomerWithdrawalRequestInput! @spread): CustomerWithdrawalRequest!
+    @can(ability: "update", model: "App\\Models\\CustomerWithdrawalRequest", find: "id")
+
+    """ Delete a  customer withdrawal request """
+    DeleteCustomerWithdrawalRequest(user_id: ID!): CustomerWithdrawalRequest!
+    @delete(model: "App\\Models\\CustomerWithdrawalRequest")
+    @can(ability: "delete", model: "App\\Models\\CustomerWithdrawalRequest", find: "user_id")
+}
