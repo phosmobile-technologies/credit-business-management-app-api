@@ -2,6 +2,7 @@
 input CreateCustomerWithdrawalRequestInput {
     user_id: ID! @belongsTo
     request_amount: Float!
+    request_balance: Float!
     request_status: RequestStatus!
     request_type: RequestType!
     request_date: Date!
@@ -11,6 +12,7 @@ input CreateCustomerWithdrawalRequestInput {
 input UpdateCustomerWithdrawalRequestInput {
     id: ID!
     request_amount: Float!
+    request_balance: Float!
     request_status: RequestStatus!
     request_type: RequestType!
     request_date: Date!

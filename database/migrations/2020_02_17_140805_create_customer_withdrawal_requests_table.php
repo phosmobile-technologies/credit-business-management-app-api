@@ -19,6 +19,7 @@ class CreateCustomerWithdrawalRequestsTable extends Migration
             $table->uuid('id');
             $table->uuid('user_id');
             $table->float('request_amount');
+            $table->float('request_balance')->nullable();
             $table->enum("request_status", [
                 RequestStatus::APPROVED_BY_BRANCH_MANAGER(),
                 RequestStatus::DISAPPROVED_BY_BRANCH_MANAGER(),

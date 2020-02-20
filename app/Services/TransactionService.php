@@ -7,9 +7,13 @@ use App\Models\enums\TransactionOwnerType;
 use App\Models\enums\TransactionProcessingActions;
 use App\Models\enums\TransactionStatus;
 use App\Models\enums\TransactionType;
+use App\Models\enums\RequestType;
+use App\Models\enums\RequestStatus;
+use App\Models\CustomerWithdrawalRequest;
 use App\Models\Loan;
 use App\Models\Transaction;
 use App\Repositories\Interfaces\ContributionRepositoryInterface;
+use App\Repositories\Interfaces\CustomerWithdrawalRequestRepositoryInterface;
 use App\Repositories\Interfaces\LoanRepositoryInterface;
 use App\Repositories\Interfaces\TransactionRepositoryInterface;
 use App\User;
@@ -21,6 +25,11 @@ class TransactionService
      * @var TransactionRepositoryInterface
      */
     private $transactionRepository;
+
+    /**
+     * @var CustomerWithdrawalRequestRepositoryInterface
+     */
+    private $customerwithdrawalrequestRepository;
 
     /**
      * @var ContributionRepositoryInterface
@@ -37,12 +46,14 @@ class TransactionService
      * @param TransactionRepositoryInterface $transactionRepository
      * @param ContributionRepositoryInterface $contributionRepository
      * @param LoanRepositoryInterface $loanRepository
+     * @param CustomerWithdrawalRequestRepositoryInterface $customerwithdrawalrequestRepository
      */
-    public function __construct(TransactionRepositoryInterface $transactionRepository, ContributionRepositoryInterface $contributionRepository, LoanRepositoryInterface $loanRepository)
+    public function __construct(TransactionRepositoryInterface $transactionRepository, ContributionRepositoryInterface $contributionRepository, LoanRepositoryInterface $loanRepository, CustomerWithdrawalRequestRepositoryInterface $customerwithdrawalrequestRepository)
     {
         $this->transactionRepository = $transactionRepository;
         $this->contributionRepository = $contributionRepository;
         $this->loanRepository = $loanRepository;
+        $this->customerwithdrawalrequestRepository = $customerwithdrawalrequestRepository;
     }
 
     public function initiateTransaction(string $owner_id, array $transactionDetails)

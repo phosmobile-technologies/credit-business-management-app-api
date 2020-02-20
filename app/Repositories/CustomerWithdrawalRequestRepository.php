@@ -2,7 +2,8 @@
 
 namespace App\Repositories;
 
-
+use App\Models\ProcessedTransaction;
+use App\Models\Transaction;
 use App\GraphQL\Errors\GraphqlError;
 use App\Models\Enums\RequestStatus;
 use App\Models\Enums\RequestType;
@@ -60,6 +61,7 @@ class CustomerWithdrawalRequestRepository implements CustomerWithdrawalRequestRe
     public function disburseCustomerWithdrawalRequest(CustomerWithdrawalRequest $customerwithdrawalrequest, float $requestAmount): CustomerWithdrawalRequest
     {
         $customerwithdrawalrequest->request_status = RequestStatus::DISBURSED;
+        $customerwithdrawalrequest->request_balance = $customerwithdrawalrequest->request_amount;
         $customerwithdrawalrequest->request_amount = $customerwithdrawalrequest->$requestAmount;
         $customerwithdrawalrequest->save();
 
@@ -73,7 +75,7 @@ class CustomerWithdrawalRequestRepository implements CustomerWithdrawalRequestRe
      * @param string $requestState
      * @return CustomerWithdrawalRequest
      */
-    public function updateRequestState(CustomerWithdrawalRequest $customerwithdrawalrequest, string $requestState): CustomerWithdrawalRequest
+    public function updateRequestStatus(CustomerWithdrawalRequest $customerwithdrawalrequest, string $requestState): CustomerWithdrawalRequest
     {
         $customerwithdrawalrequest->request_status = $requestState;
         $customerwithdrawalrequest->save();
@@ -95,5 +97,24 @@ class CustomerWithdrawalRequestRepository implements CustomerWithdrawalRequestRe
         $customerwithdrawalrequest->save();
 
         return $customerwithdrawalrequest;
+    }
+
+    /**
+     * Store a processed transaction for record keeping.
+     *
+     * @param Transaction $transaction
+     * @param string $processor_id
+     * @param string $action
+     * @param null|string $message
+     * @return ProcessedTransaction
+     */
+    public function storeProcessedTransaction(Transaction $transaction, string $processor_id, string $action, ?string $message): ProcessedTransaction
+    {
+        return ProcessedTransaction::create([
+            'causer_id' => $processor_id,
+            'transaction_id' => $transaction->id,
+            'processing_type' => $action,
+            'message' => $message
+        ]);
     }
 }

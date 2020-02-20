@@ -5,6 +5,8 @@ namespace App\Services;
 
 use App\Events\NewUserRegistered;
 use App\Models\enums\TransactionOwnerType;
+use App\Models\enums\RequestStatus;
+use App\Models\enums\RequestType;
 use App\Models\UserProfile;
 use App\Repositories\Interfaces\UserProfileRepositoryInterface;
 use App\Repositories\Interfaces\UserRepositoryInterface;
@@ -108,6 +110,38 @@ class UserService
 
             case TransactionOwnerType::CONTRIBUTION_PLAN:
                 return $this->userRepository->findContributionPlanTransactionsQuery($customer_id);
+                break;
+        }
+    }
+
+    /**
+     * Get the query builder for requests that a belong to a user.
+     *
+     * @param string $customer_id
+     * @param string $transactionType
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     */
+    public function getCustomerWithdrawalRequestsQuery(string $user_id, string $requestType)
+    {
+        switch ($requestType) {
+            case RequestType::BRANCH_FUND:
+                return $this->userRepository->findCustomerWithdrawalRequestsQuery($user_id);
+                break;
+
+            case RequestType::BRANCH_EXTRA_FUND:
+                return $this->userRepository->findCustomerWithdrawalRequestsQuery($user_id);
+                break;
+
+            case RequestType::DEFAULT_CANCELLATION:
+                return $this->userRepository->findCustomerWithdrawalRequestsQuery($user_id);
+                break;
+
+            case RequestType::VENDOR_PAYOUT:
+                return $this->userRepository->findCustomerWithdrawalRequestsQuery($user_id);
+                break;
+
+            case RequestType::CONTRIBUTION_WITHDRAWAL:
+                return $this->userRepository->findCustomerWithdrawalRequestsQuery($user_id);
                 break;
         }
     }

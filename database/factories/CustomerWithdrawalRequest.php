@@ -32,9 +32,11 @@ $factory->define(CustomerWithdrawalRequest::class, function (Faker $faker) {
         RequestType::CONTRIBUTION_WITHDRAWAL
     ];
     $requestAmount =  $faker->randomFloat(2, 10000, 10000000);
+    $amountPaid = $faker->randomFloat(2, 10000, 5000000);
 
     return [
-        'request_balance' => $requestAmount,
+        'request_amount' => $requestAmount,
+        'request_balance' => $requestAmount - $amountPaid,
         'request_status' => $RequestStatuses[array_rand($RequestStatuses)],
         'request_type' => $RequestTypes[array_rand($RequestTypes)],
         'request_date' => $faker->date(),
