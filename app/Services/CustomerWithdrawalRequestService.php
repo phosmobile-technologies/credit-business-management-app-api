@@ -207,15 +207,15 @@ class CustomerWithdrawalRequestService
      */
     public function create(array $customerwithdrawalrequestData):CustomerWithdrawalRequest
     {
-        // Check to ensure that a user can only have one activeCustomerWithdrawalRequest at a time
-        $user = $this->userRepository->find($customerwithdrawalrequestData['user_id']);
-        if (count($user->activeCustomerWithdrawalRequests()) > 0) {
-            throw new GraphqlError('This user already has an active CustomerWithdrawalRequest and cannot take a new CustomerWithdrawalRequest');
-        }
+        // // Check to ensure that a user can only have one activeCustomerWithdrawalRequest at a time
+        // $user = $this->userRepository->find($customerwithdrawalrequestData['user_id']);
+        // if (count($user->activeCustomerWithdrawalRequests()) > 0) {
+        //     throw new GraphqlError('This user already has an active CustomerWithdrawalRequest and cannot take a new CustomerWithdrawalRequest');
+        // }
 
         // Ensure that the default values when creating a request are set
         $customerwithdrawalrequestData['request_status'] = RequestStatus::PENDING;
-        $customerwithdrawalrequestData['request_balance'] = null;
+        // $customerwithdrawalrequestData['request_balance'] = null;
 
         $customerwithdrawalrequest = $this->customerwithdrawalrequestRepository->create($customerwithdrawalrequestData);
 

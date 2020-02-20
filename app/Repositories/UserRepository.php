@@ -91,4 +91,18 @@ class UserRepository implements UserRepositoryInterface
 
         return $user->contributionPlansTransactions();
     }
+
+    /**
+     * Get the eloquent query builder that can get contribution plan transactions that belong to a customer.
+     *sss
+     * @param string $customer_withdrawal_request_id
+     * @return HasManyThrough
+     */
+    public function findCustomerWithdrawalRequestsQuery(string $customer_withdrawal_request_id): HasManyThrough
+    {
+        $user = $this->find($customer_withdrawal_request_id);
+
+        return $user->CustomerWithdrawalRequestsQuery();
+    }
+    
 }

@@ -121,27 +121,27 @@ class UserService
      * @param string $transactionType
      * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
      */
-    public function getCustomerWithdrawalRequestsQuery(string $user_id, string $requestType)
+    public function getCustomerWithdrawalRequestsQuery(string $customer_withdrawal_request_id, string $requestType)
     {
         switch ($requestType) {
             case RequestType::BRANCH_FUND:
-                return $this->userRepository->findCustomerWithdrawalRequestsQuery($user_id);
+                return $this->userRepository->findCustomerWithdrawalRequestsQuery($customer_withdrawal_request_id);
                 break;
 
             case RequestType::BRANCH_EXTRA_FUND:
-                return $this->userRepository->findCustomerWithdrawalRequestsQuery($user_id);
+                return $this->userRepository->findCustomerWithdrawalRequestsQuery($customer_withdrawal_request_id);
                 break;
 
             case RequestType::DEFAULT_CANCELLATION:
-                return $this->userRepository->findCustomerWithdrawalRequestsQuery($user_id);
+                return $this->userRepository->findCustomerWithdrawalRequestsQuery($customer_withdrawal_request_id);
                 break;
 
             case RequestType::VENDOR_PAYOUT:
-                return $this->userRepository->findCustomerWithdrawalRequestsQuery($user_id);
+                return $this->userRepository->findCustomerWithdrawalRequestsQuery($customer_withdrawal_request_id);
                 break;
 
             case RequestType::CONTRIBUTION_WITHDRAWAL:
-                return $this->userRepository->findCustomerWithdrawalRequestsQuery($user_id);
+                return $this->userRepository->findCustomerWithdrawalRequestsQuery($customer_withdrawal_request_id);
                 break;
         }
     }

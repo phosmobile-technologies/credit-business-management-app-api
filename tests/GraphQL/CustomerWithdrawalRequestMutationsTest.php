@@ -5,6 +5,7 @@ namespace Tests\GraphQL;
 use App\Models\enums\RequestStatus;
 use App\Models\enums\RequestType;
 use App\Models\Enums\UserRoles;
+use App\User;
 use App\Models\CustomerWithdrawalRequest;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -25,9 +26,9 @@ class CustomerWithdrawalRequestMutationsTest extends TestCase
 
     public function testCreateCustomerWithdrawalRequestMutation()
     {
-        $this->loginTestUserAndGetAuthHeaders();
+        $this->loginTestUserAndGetAuthHeaders([UserRoles::CUSTOMER]);
 
-        $customerwithdrawalrequestData = factory(CustomerWithdrawalRequest::class)->make()->toArray();
+        $customerwithdrawalrequestData = factory(CustomerWithdrawalRequest::class)->make();
         $customerwithdrawalrequestData['user_id'] = $this->user['id'];
 
         $response = $this->postGraphQL([
@@ -40,11 +41,17 @@ class CustomerWithdrawalRequestMutationsTest extends TestCase
         $response->assertJson([
             'data' => [
                 'CreateCustomerWithdrawalRequest' => [
-                    'request_type' => $customerwithdrawalrequestData['request_type'],
-                    'request_status' => $customerwithdrawalrequestData['request_status'],
-                    'request_amount' => $customerwithdrawalrequestData['request_amount'],
+                    'request' => $customerwithdrawalrequestData['request'],
+                    'user' => [
+                        "id" => $this->user['id']
+                    ]
                 ]
             ]
+        ]);
+
+        $this->assertDatabaseHas('customer_withdrawal_requests', [
+            "user_id" => $this->user['id'],
+            "request" => $customerwithdrawalrequestData['request']
         ]);
     }
 

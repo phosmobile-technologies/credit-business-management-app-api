@@ -6,6 +6,8 @@ use App\Models\Loan;
 use App\Models\LoanApplication;
 use App\Models\ContributionPlan;
 use App\Models\Transaction;
+use App\Models\CustomerWithdrawalRequest;
+use App\Policies\CustomerWithdrawalRequestPolicy;
 use App\Policies\LoanApplicationPolicy;
 use App\Policies\LoanPolicy;
 use App\Policies\ContributionPlanPolicy;
@@ -27,6 +29,7 @@ class AuthServiceProvider extends ServiceProvider
         LoanApplication::class => LoanApplicationPolicy::class,
         ContributionPlan::class => ContributionPlanPolicy::class,
         Transaction::class => TransactionPolicy::class,
+        CustomerWithdrawalRequest::class => CustomerWithdrawalRequestPolicy::class,
     ];
 
     /**
