@@ -10,12 +10,27 @@ use Illuminate\Database\Seeder;
 class CustomerWithdrawalRequestTableSeeder extends Seeder
 {
     /**
+     * @var \App\User
+     */
+    private $users;
+
+    /**
      * Run the database seeds.
      *
      * @return void
      */
     public function run()
     {
+        $springVerse = Company::first();
+        $this->users = (User::whereHas('profile')->with('profile')->get())->filter(function ($user) use ($springVerse) {
+            return $user->profile->user_id === $springVerse->id;
+        });
+
+        $this->users->each(function ($user) {
+            $user->customerwithdrawalrequests()->createMany(
+                factory(CustomerWithdrawalRequest::class, 2)->make()->toArray()
+            );
+        });
         $this->seedCustomerWithdrawalRequests();
     }
 
@@ -42,9 +57,9 @@ class CustomerWithdrawalRequestTableSeeder extends Seeder
             ];
 
             factory(CustomerWithdrawalRequest::class, 2)->create([
-                'Request_type' => $RequestTypes[array_rand($RequestTypes)],
-                'owner_id' => $customerwithdrawalrequest->id,
-                'Request_status' => $RequestStatuses[array_rand($RequestStatuses)]
+                'request_type' => $RequestTypes[array_rand($RequestTypes)],
+                'user_id' => $customerwithdrawalrequest->id,
+                'request_status' => $RequestStatuses[array_rand($RequestStatuses)]
             ]);
         }
     }

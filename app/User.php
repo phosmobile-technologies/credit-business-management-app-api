@@ -4,6 +4,7 @@ namespace App;
 
 use App\Models\Concerns\UsesUuid;
 use App\Models\ContributionPlan;
+use App\Models\CustomerWithdrawalRequest;
 use App\Models\Enums\LoanConditionStatus;
 use App\Models\Loan;
 use App\Models\Transaction;
@@ -130,6 +131,16 @@ class User extends Authenticatable
     public function contributionPlans(): HasMany
     {
         return $this->hasMany(ContributionPlan::class, 'user_id', 'id');
+    }
+
+    /**
+     * Relationship between a user and their customer withdrawal requests.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\CustomerWithdrawalRequest
+     */
+    public function customerwithdrawalrequests(): HasMany
+    {
+        return $this->hasMany(CustomerWithdrawalRequest::class, 'user_id', 'id');
     }
 
     /**

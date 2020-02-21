@@ -69,7 +69,7 @@ class RolesAndPermissionsSeeder extends Seeder
         $this->customer->syncPermissions([
             Permission::create(['name' => UserPermissions::CAN_CREATE_LOAN_APPLICATIONS]),
             Permission::create(['name' => UserPermissions::CAN_CREATE_CONTRIBUTION]),
-            Permission::create(['name' => UserPermissions::CAN_CREATE_CUSTOMER_WITHDRAWAL_REQUESTS])
+            Permission::create(['name' => UserPermissions::CAN_CREATE_CUSTOMER_WITHDRAWAL_REQUEST])
         ]);
     }
 
@@ -82,8 +82,8 @@ class RolesAndPermissionsSeeder extends Seeder
             Permission::firstOrCreate(['name' => UserPermissions::CAN_CREATE_LOANS]),
             Permission::firstOrCreate(['name' => UserPermissions::CAN_UPDATE_CONTRIBUTION]),
             Permission::firstOrCreate(['name' => UserPermissions::CAN_DELETE_CONTRIBUTION]),
-            Permission::firstOrCreate(['name' => UserPermissions::CAN_UPDATE_CUSTOMER_WITHDRAWAL_REQUESTS]),
-            Permission::firstOrCreate(['name' => UserPermissions::CAN_DELETE_CUSTOMER_WITHDRAWAL_REQUESTS]),
+            Permission::firstOrCreate(['name' => UserPermissions::CAN_UPDATE_CUSTOMER_WITHDRAWAL_REQUEST]),
+            Permission::firstOrCreate(['name' => UserPermissions::CAN_DELETE_CUSTOMER_WITHDRAWAL_REQUEST]),
         ]);
     }
 
@@ -95,6 +95,7 @@ class RolesAndPermissionsSeeder extends Seeder
         $this->branchManager->syncPermissions([
             Permission::firstOrCreate(['name' => UserPermissions::CAN_UPDATE_LOAN_STATUS]),
             Permission::firstOrCreate(['name' => UserPermissions::CAN_UPDATE_REQUEST_STATUS]),
+            Permission::firstOrCreate(['name' => UserPermissions::CAN_UPDATE_REQUEST_TYPE]),
             Permission::firstOrCreate(['name' => UserPermissions::CAN_PROCESS_TRANSACTION]),
         ]);
     }

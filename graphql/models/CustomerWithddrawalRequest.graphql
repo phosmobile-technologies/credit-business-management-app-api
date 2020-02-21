@@ -2,7 +2,7 @@
 
 type CustomerWithdrawalRequest {
     id: ID!
-    user_id: ID! @belongsTo
+    user_id: ID!
     request_amount: Float!
     request_balance: Float!
     request_status: RequestStatus!

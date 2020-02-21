@@ -31,25 +31,19 @@ class CustomerWithdrawalRequestQueriesTest extends TestCase
     {
         $this->loginTestUserAndGetAuthHeaders();
 
-        $testUser = $this->createUser();
-        $testCustomerWithdrawalRequests = $this->createTestCustomerWithdrawalRequest($testUser, 3)->toArray();
+        $customerwithdrawalrequest = $this->createTestCustomerWithdrawalRequest();
 
         $response = $this->postGraphQL([
-            'query' => CustomerWithdrawalRequestQueriesAndMutations::getCustomerWithdrawalRequestById(),
+            'query' => CustomerWithdrawalRequestQueriesAndMutations::GetCustomerWithdrawalRequestById(),
             'variables' => [
-                'id' => $testUser->id
+                'id' => $customerwithdrawalrequest->id
             ],
         ], $this->headers);
 
         $response->assertJson([
             'data' => [
                 'GetCustomerWithdrawalRequestById' => [
-                    'id' => $testUser->id,
-                    'customerwithdrawalrequests' => [
-                        ['id' => $testCustomerWithdrawalRequests[0]['id']],
-                        ['id' => $testCustomerWithdrawalRequests[1]['id']],
-                        ['id' => $testCustomerWithdrawalRequests[2]['id']],
-                    ]
+                    'id' => $customerwithdrawalrequest->id,
                 ]
             ]
         ]);

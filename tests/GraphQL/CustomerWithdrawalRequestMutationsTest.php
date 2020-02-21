@@ -2,6 +2,7 @@
 
 namespace Tests\GraphQL;
 
+use App\GraphQL\Errors\GraphqlError;
 use App\Models\enums\RequestStatus;
 use App\Models\enums\RequestType;
 use App\Models\Enums\UserRoles;
@@ -10,12 +11,13 @@ use App\Models\CustomerWithdrawalRequest;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\GraphQL\Helpers\Schema\CustomerWithdrawalRequestQueriesAndMutations;
+use Tests\GraphQL\Helpers\Traits\InteractsWithTestCustomerWithdrawalRequests;
 use Tests\GraphQL\Helpers\Traits\InteractsWithTestUsers;
 use Tests\TestCase;
 
 class CustomerWithdrawalRequestMutationsTest extends TestCase
 {
-    use RefreshDatabase, InteractsWithTestUsers;
+    use RefreshDatabase, InteractsWithTestUsers, InteractsWithTestCustomerWithdrawalRequests;
 
     protected function setUp(): void
     {
@@ -24,6 +26,9 @@ class CustomerWithdrawalRequestMutationsTest extends TestCase
         $this->seed('TestDatabaseSeeder');
     }
 
+    /**
+     * @test
+     */
     public function testCreateCustomerWithdrawalRequestMutation()
     {
         $this->loginTestUserAndGetAuthHeaders([UserRoles::CUSTOMER]);
@@ -41,17 +46,14 @@ class CustomerWithdrawalRequestMutationsTest extends TestCase
         $response->assertJson([
             'data' => [
                 'CreateCustomerWithdrawalRequest' => [
-                    'request' => $customerwithdrawalrequestData['request'],
-                    'user' => [
-                        "id" => $this->user['id']
-                    ]
+                    'request_amount' => $customerwithdrawalrequestData['request_amount'],
                 ]
             ]
         ]);
 
         $this->assertDatabaseHas('customer_withdrawal_requests', [
             "user_id" => $this->user['id'],
-            "request" => $customerwithdrawalrequestData['request']
+            "request_amount" => $customerwithdrawalrequestData['request_amount']
         ]);
     }
 
@@ -139,9 +141,6 @@ class CustomerWithdrawalRequestMutationsTest extends TestCase
             'data' => [
                 'CreateCustomerWithdrawalRequest' => [
                     'request_amount' => $customerwithdrawalrequestData['request_amount'],
-                    'user' => [
-                        "id" => $this->user['id']
-                    ]
                 ]
             ]
         ]);

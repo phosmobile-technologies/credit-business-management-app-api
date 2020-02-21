@@ -6,6 +6,7 @@ use App\Models\Concerns\UsesUuid;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Spatie\Activitylog\Traits\LogsActivity;
 
 /**
@@ -18,10 +19,16 @@ use Spatie\Activitylog\Traits\LogsActivity;
 
 class CustomerWithdrawalRequest extends Model
 {
-    use UsesUuid, LogsActivity;
+    use UsesUuid;
 
+    /**
+     * @var string
+     */
     protected $table = "customer_withdrawal_requests";
 
+    /**
+     * @var array
+     */
     protected $guarded = [];
 
     /**

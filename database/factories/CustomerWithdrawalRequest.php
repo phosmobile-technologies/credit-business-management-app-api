@@ -42,3 +42,27 @@ $factory->define(CustomerWithdrawalRequest::class, function (Faker $faker) {
         'request_date' => $faker->date(),
     ];
 });
+
+/**
+ * Factory state for a customer withdrawal request that includes all default values that cannot be passed when creating a loan
+ */
+$factory->state(CustomerWithdrawalRequest::class, 'with_default_values', function ($faker) {
+    $RequestStatuses = [
+        RequestStatus::APPROVED_BY_BRANCH_MANAGER,
+        RequestStatus::DISAPPROVED_BY_BRANCH_MANAGER,
+        RequestStatus::DISAPPROVED_BY_GLOBAL_MANAGER,
+        RequestStatus::APPROVED_BY_GLOBAL_MANAGER,
+        RequestStatus::PENDING,
+        RequestStatus::DISBURSED
+    ];
+    $requestAmount =  $faker->randomFloat(2, 10000, 10000000);
+    $amountPaid = $faker->randomFloat(2, 10000, 5000000);
+
+    return [
+        'request_amount' => $requestAmount,
+        'request_balance' => $requestAmount - $amountPaid,
+        'request_status' => RequestStatus::PENDING,
+        'request_status' => $RequestStatuses[array_rand($RequestStatuses)],
+        'request_date' => $faker->date(),
+    ];
+});

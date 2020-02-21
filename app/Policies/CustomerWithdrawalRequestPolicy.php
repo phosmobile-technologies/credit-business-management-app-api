@@ -12,7 +12,7 @@ class CustomerWithdrawalRequestPolicy
     use HandlesAuthorization;
 
     /**
-     * Determine whether the user can view any contribution plans.
+     * Determine whether the user can view any customer withdrawal requests.
      *
      * @param  \App\User  $user
      * @return mixed
@@ -23,7 +23,7 @@ class CustomerWithdrawalRequestPolicy
     }
 
     /**
-     * Determine whether the user can view the contribution plan.
+     * Determine whether the user can view the customer withdrawal request.
      *
      * @param  \App\User $user
      * @param CustomerWithdrawalRequest $customerwithdrawalrequest
@@ -35,18 +35,18 @@ class CustomerWithdrawalRequestPolicy
     }
 
     /**
-     * Determine whether the user can create contribution plans.
+     * Determine whether the user can create customer withdrawal requests.
      *
      * @param  \App\User  $user
      * @return mixed
      */
     public function create(User $user)
     {
-        return $user->can(UserPermissions::CAN_CREATE_CUSTOMER_WITHDRAWAL_REQUESTS);
+        return $user->can(UserPermissions::CAN_CREATE_CUSTOMER_WITHDRAWAL_REQUEST);
     }
 
     /**
-     * Determine whether the user can update the contribution plan.
+     * Determine whether the user can update the customer withdrawal request.
      *
      * @param  \App\User $user
      * @param CustomerWithdrawalRequest $customerwithdrawalrequest
@@ -54,11 +54,11 @@ class CustomerWithdrawalRequestPolicy
      */
     public function update(User $user, CustomerWithdrawalRequest $customerwithdrawalrequest)
     {
-        return $user->can(UserPermissions::CAN_UPDATE_CUSTOMER_WITHDRAWAL_REQUESTS);
+        return $user->can(UserPermissions::CAN_UPDATE_CUSTOMER_WITHDRAWAL_REQUEST);
     }
 
     /**
-     * Determine whether the user can delete the contribution plan.
+     * Determine whether the user can delete the customer withdrawal request.
      *
      * @param  \App\User $user
      * @param CustomerWithdrawalRequest $customerwithdrawalrequest
@@ -66,11 +66,11 @@ class CustomerWithdrawalRequestPolicy
      */
     public function delete(User $user, CustomerWithdrawalRequest $customerwithdrawalrequest)
     {
-        return $user->can(UserPermissions::CAN_DELETE_CUSTOMER_WITHDRAWAL_REQUESTS);
+        return $user->can(UserPermissions::CAN_DELETE_CUSTOMER_WITHDRAWAL_REQUEST);
     }
 
     /**
-     * Determine whether the user can restore the contribution plan.
+     * Determine whether the user can restore the customer withdrawal request.
      *
      * @param  \App\User $user
      * @param CustomerWithdrawalRequest $customerwithdrawalrequest
@@ -82,7 +82,7 @@ class CustomerWithdrawalRequestPolicy
     }
 
     /**
-     * Determine whether the user can permanently delete the contribution plan.
+     * Determine whether the user can permanently delete the customer withdrawal request.
      *
      * @param  \App\User $user
      * @param CustomerWithdrawalRequest $customerwithdrawalrequest
@@ -94,7 +94,7 @@ class CustomerWithdrawalRequestPolicy
     }
 
     /**
-     * Determine whether the user can initiate a new contribution plan transaction
+     * Determine whether the user can initiate a new customer withdrawal request transaction
      *
      * @param  \App\User $user
      * @param CustomerWithdrawalRequest $customerwithdrawalrequest
