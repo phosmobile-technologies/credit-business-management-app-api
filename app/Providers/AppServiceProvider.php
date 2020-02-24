@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\CompanyBranch;
 use App\Models\ContributionPlan;
 use App\Models\enums\TransactionOwnerType;
 use App\Models\Loan;
@@ -86,6 +87,7 @@ class AppServiceProvider extends ServiceProvider
         Relation::morphMap([
             TransactionOwnerType::LOAN => Loan::class,
             TransactionOwnerType::CONTRIBUTION_PLAN => ContributionPlan::class,
+            TransactionOwnerType::COMPANY_BRANCH => CompanyBranch::class
         ]);
     }
 
