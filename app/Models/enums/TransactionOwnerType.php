@@ -14,4 +14,5 @@ class TransactionOwnerType
 {
     const LOAN = "LOAN";
     const CONTRIBUTION_PLAN = "CONTRIBUTION_PLAN";
+    const COMPANY_BRANCH = "COMPANY_BRANCH";
 }

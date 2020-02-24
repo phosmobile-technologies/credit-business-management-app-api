@@ -103,7 +103,7 @@ class LoanRepaymentTransactionsTest extends TestCase
             'owner_id' => $loan->id,
             'owner_type' => TransactionOwnerType::LOAN
         ]);
-        $message = $this->faker->realText();
+        $message = $this->faker->text;
 
         $response = $this->postGraphQL([
             'query' => TransactionsQueriesAndMutations::processTransaction(),
@@ -174,7 +174,7 @@ class LoanRepaymentTransactionsTest extends TestCase
             'owner_id' => $loan->id,
             'owner_type' => TransactionOwnerType::LOAN
         ]);
-        $message = $this->faker->realText();
+        $message = $this->faker->text;
 
         $response = $this->postGraphQL([
             'query' => TransactionsQueriesAndMutations::processTransaction(),
