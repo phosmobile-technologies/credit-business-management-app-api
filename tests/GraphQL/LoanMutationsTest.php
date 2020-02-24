@@ -38,7 +38,6 @@ class LoanMutationsTest extends TestCase
             ->except(['loan_identifier'])
             ->toArray();
         $loanData['user_id'] = $this->user['id'];
-        dd($loanData);
 
         $response = $this->postGraphQL([
             'query' => LoanQueriesAndMutations::CreateLoanMutation(),
