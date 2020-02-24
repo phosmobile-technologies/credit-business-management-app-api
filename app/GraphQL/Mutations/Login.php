@@ -24,8 +24,9 @@ class Login extends BaseAuthResolver
     {
         $credentials = $this->buildCredentials($args);
         $response = $this->makeRequest($credentials);
+        $username = strtolower($credentials['username']);
 
-        $user = User::where('phone_number', $credentials['username'])->orWhere('email', $credentials['username'])->first();
+        $user = User::where('phone_number', $username)->orWhere('email', $username)->first();
         $roles = $user->getRoleNames();
         $response['user'] = $user;
         $response['roles'] = $roles;
