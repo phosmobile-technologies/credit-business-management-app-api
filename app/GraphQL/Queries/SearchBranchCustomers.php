@@ -34,7 +34,7 @@ class SearchBranchCustomers
      */
     public function __invoke($rootValue, array $args, GraphQLContext $context, ResolveInfo $resolveInfo)
     {
-        $searchString = isset($args['search_query']) ? $args['search_query'] : null;
+        $searchString = isset($args['search_query']) ? strtolower($args['search_query']) : null;
         $startDate = isset($args['start_date']) ? $args['start_date'] : null;
         $endDate = isset($args['end_date']) ? $args['end_date'] : null;
 
