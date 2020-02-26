@@ -68,7 +68,9 @@ class RolesAndPermissionsSeeder extends Seeder
     {
         $this->customer->syncPermissions([
             Permission::create(['name' => UserPermissions::CAN_CREATE_LOAN_APPLICATIONS]),
-            Permission::create(['name' => UserPermissions::CAN_CREATE_CONTRIBUTION])
+            Permission::create(['name' => UserPermissions::CAN_CREATE_CONTRIBUTION]),
+            Permission::create(['name' => UserPermissions::CAN_CREATE_WALLET]),
+            Permission::firstOrCreate(['name' => UserPermissions::CAN_UPDATE_WALLET])
         ]);
     }
 
@@ -80,6 +82,7 @@ class RolesAndPermissionsSeeder extends Seeder
         $this->adminStaff->syncPermissions([
             Permission::firstOrCreate(['name' => UserPermissions::CAN_CREATE_LOANS]),
             Permission::firstOrCreate(['name' => UserPermissions::CAN_UPDATE_CONTRIBUTION]),
+            Permission::firstOrCreate(['name' => UserPermissions::CAN_UPDATE_WALLET]),
             Permission::firstOrCreate(['name' => UserPermissions::CAN_DELETE_CONTRIBUTION]),
         ]);
     }
@@ -104,6 +107,8 @@ class RolesAndPermissionsSeeder extends Seeder
             Permission::firstOrCreate(['name' => UserPermissions::CAN_DISBURSE_LOAN]),
             Permission::firstOrCreate(['name' => UserPermissions::CAN_INITIATE_LOAN_REPAYMENT]),
             Permission::firstOrCreate(['name' => UserPermissions::CAN_INITIATE_CONTRIBUTION_PLAN_TRANSACTION]),
+            Permission::firstOrCreate(['name' => UserPermissions::CAN_INITIATE_WALLET_PAYMENT_TRANSACTION]),
+            Permission::firstOrCreate(['name' => UserPermissions::CAN_INITIATE_WALLET_WITHDRAWAL_TRANSACTION]),
             Permission::firstOrCreate(['name' => UserPermissions::CAN_PROCESS_TRANSACTION]),
         ]);
     }
@@ -117,6 +122,8 @@ class RolesAndPermissionsSeeder extends Seeder
             Permission::firstOrCreate(['name' => UserPermissions::CAN_DISBURSE_LOAN]),
             Permission::firstOrCreate(['name' => UserPermissions::CAN_INITIATE_LOAN_REPAYMENT]),
             Permission::firstOrCreate(['name' => UserPermissions::CAN_INITIATE_CONTRIBUTION_PLAN_TRANSACTION]),
+            Permission::firstOrCreate(['name' => UserPermissions::CAN_INITIATE_WALLET_PAYMENT_TRANSACTION]),
+            Permission::firstOrCreate(['name' => UserPermissions::CAN_INITIATE_WALLET_WITHDRAWAL_TRANSACTION]),
             Permission::firstOrCreate(['name' => UserPermissions::CAN_PROCESS_TRANSACTION]),
         ]);
     }
