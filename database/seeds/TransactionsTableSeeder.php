@@ -6,6 +6,7 @@ use App\Models\enums\TransactionStatus;
 use App\Models\enums\TransactionType;
 use App\Models\Loan;
 use App\Models\Transaction;
+use App\Models\Wallet;
 use Illuminate\Database\Seeder;
 
 class TransactionsTableSeeder extends Seeder
@@ -19,6 +20,7 @@ class TransactionsTableSeeder extends Seeder
     {
         $this->seedLoanTransactions();
         $this->seedContributionTransactions();
+        $this->seedWalletTransactions();
     }
 
     private function seedLoanTransactions()
@@ -52,8 +54,7 @@ class TransactionsTableSeeder extends Seeder
 
         foreach ($contributionPlans as $contributionPlan) {
             $transactionTypes = [
-                TransactionType::CONTRIBUTION_PAYMENT,
-                TransactionType::CONTRIBUTION_WITHDRAWAL
+                TransactionType::CONTRIBUTION_PAYMENT
             ];
 
             $transactionStatustes = [
@@ -70,4 +71,22 @@ class TransactionsTableSeeder extends Seeder
             ]);
         }
     }
+
+    private function seedWalletTransactions ()
+    {
+        $wallets = Wallet::limit(5)->get();
+
+        foreach ($wallets as $wallet) {
+            $transactionTypes = [
+                TransactionType::WALLET_PAYMENT,
+                TransactionType::WALLET_WITHDRAWAL
+            ];
+
+            factory(Transaction::class, 2)->create([
+                'transaction_type' => $transactionTypes[array_rand($transactionTypes)],
+                'owner_id' => $wallet->id,
+                'owner_type' => TransactionOwnerType::WALLET
+            ]);
+    }
+}
 }
