@@ -6,11 +6,14 @@ use App\Models\CompanyBranch;
 use App\Models\ContributionPlan;
 use App\Models\enums\TransactionOwnerType;
 use App\Models\Loan;
+use App\Models\Wallet;
 use App\Models\Transaction;
 use App\Repositories\CompanyBranchRepository;
 use App\Repositories\ContributionRepository;
+use App\Repositories\WalletRepository;
 use App\Repositories\Interfaces\CompanyBranchRepositoryInterface;
 use App\Repositories\Interfaces\ContributionRepositoryInterface;
+use App\Repositories\Interfaces\WalletRepositoryInterface;
 use App\Repositories\Interfaces\LoanApplicationRepositoryInterface;
 use App\Repositories\Interfaces\LoanRepositoryInterface;
 use App\Repositories\Interfaces\TransactionRepositoryInterface;
@@ -70,6 +73,7 @@ class AppServiceProvider extends ServiceProvider
             LoanRepositoryInterface::class => LoanRepository::class,
             LoanApplicationRepositoryInterface::class => LoanApplicationRepository::class,
             ContributionRepositoryInterface::class => ContributionRepository::class,
+            WalletRepositoryInterface::class => WalletRepository::class,
             TransactionRepositoryInterface::class => TransactionRepository::class,
             CompanyBranchRepositoryInterface::class => CompanyBranchRepository::class
         ];
@@ -87,7 +91,8 @@ class AppServiceProvider extends ServiceProvider
         Relation::morphMap([
             TransactionOwnerType::LOAN => Loan::class,
             TransactionOwnerType::CONTRIBUTION_PLAN => ContributionPlan::class,
-            TransactionOwnerType::COMPANY_BRANCH => CompanyBranch::class
+            TransactionOwnerType::COMPANY_BRANCH => CompanyBranch::class,
+            TransactionOwnerType::WALLET => Wallet::class
         ]);
     }
 
