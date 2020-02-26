@@ -11,7 +11,6 @@ use Faker\Generator as Faker;
 $factory->define(ContributionPlan::class, function (Faker $faker) {
     $contributionTypes = [
         ContributionType::FIXED,
-        ContributionType::WALLET,
         ContributionType::LOCKED,
         ContributionType::GOAL
     ];
