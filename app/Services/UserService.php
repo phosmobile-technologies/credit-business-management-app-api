@@ -50,13 +50,9 @@ class UserService
 
         $roles = $attributes['roles'];
         
-        $walletData = $attributes->except([
-            'first_name',
-            'last_name',
-            'email',
-            'phone_number',
-            'roles',
-            'directive'
+        $walletData = $attributes->only([
+            'wallet_amount',
+            'wallet_balance',
         ])->toArray();
 
         $userData = $attributes->only([

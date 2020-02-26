@@ -1,0 +1,13 @@
+""" Input for creating a wallet """
+input CreateWalletInput {
+    user_id: ID!
+    wallet_amount: Float!
+    wallet_balance: Float!
+}
+
+""" Input for creating a wallet """
+input UpdateWalletInput {
+    id: ID!
+    wallet_amount: Float!
+    wallet_balance: Float!
+}

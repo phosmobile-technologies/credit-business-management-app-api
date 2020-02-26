@@ -1,0 +1,11 @@
+""" A wallet made by a user """
+type Wallet {
+    id: ID!
+    user_id: ID! 
+    wallet_id: String!
+    wallet_amount: Float!
+    wallet_balance: Float!
+    transactions: [Transaction]! @morphMany
+    created_at: DateTime!
+    updated_at: DateTime!
+}
