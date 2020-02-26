@@ -19,7 +19,6 @@ enum ContributionType {
     FIXED
     GOAL
     LOCKED
-    WALLET
 }
 
 """ The frequency made by a user """
