@@ -6,8 +6,10 @@ namespace App\Services;
 use App\Events\NewUserRegistered;
 use App\Models\enums\TransactionOwnerType;
 use App\Models\UserProfile;
+use App\Models\Wallet;
 use App\Repositories\Interfaces\UserProfileRepositoryInterface;
 use App\Repositories\Interfaces\UserRepositoryInterface;
+use App\Repositories\Interfaces\WalletRepositoryInterface;
 use App\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Str;
@@ -24,10 +26,16 @@ class UserService
      */
     private $userProfileRepository;
 
-    public function __construct(UserRepositoryInterface $userRepository, UserProfileRepositoryInterface $userProfileRepository)
+    /**
+     * @var WalletRepositoryInterface
+     */
+    private $walletRepository;
+
+    public function __construct(UserRepositoryInterface $userRepository, UserProfileRepositoryInterface $userProfileRepository, WalletRepositoryInterface $walletRepository)
     {
         $this->userRepository = $userRepository;
         $this->userProfileRepository = $userProfileRepository;
+        $this->walletRepository = $walletRepository;
     }
 
     /**
@@ -41,6 +49,15 @@ class UserService
         $attributes = collect($attributes);
 
         $roles = $attributes['roles'];
+        
+        $walletData = $attributes->except([
+            'first_name',
+            'last_name',
+            'email',
+            'phone_number',
+            'roles',
+            'directive'
+        ])->toArray();
 
         $userData = $attributes->only([
             'first_name',
@@ -67,6 +84,7 @@ class UserService
         $user = $this->userRepository->createUser($userData);
         $this->userRepository->attachUserProfile($user, $userProfileData);
         $this->userRepository->attachUserRoles($user, $roles);
+        $this->userRepository->attachWallet($user, $walletData);
 
         event(new NewUserRegistered($user, $defaultPassword));
 
@@ -108,6 +126,10 @@ class UserService
 
             case TransactionOwnerType::CONTRIBUTION_PLAN:
                 return $this->userRepository->findContributionPlanTransactionsQuery($customer_id);
+                break;
+
+            case TransactionOwnerType::WALLET:
+                return $this->userRepository->findWalletTransactionsQuery($customer_id);
                 break;
         }
     }
