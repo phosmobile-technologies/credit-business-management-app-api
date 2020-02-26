@@ -14,5 +14,4 @@ class ContributionType
     const FIXED = "FIXED";
     const GOAL = "GOAL";
     const LOCKED = "LOCKED";
-    const WALLET = "WALLET";
 }
