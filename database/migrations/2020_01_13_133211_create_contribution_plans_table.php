@@ -22,8 +22,7 @@ class CreateContributionPlansTable extends Migration
             $table->enum('contribution_type', [
                 ContributionType::FIXED,
                 ContributionType::GOAL,
-                ContributionType::LOCKED,
-                ContributionType::WALLET
+                ContributionType::LOCKED
             ]);
             $table->enum('contribution_frequency', [
                 ContributionFrequency::DAILY,
