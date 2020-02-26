@@ -6,10 +6,12 @@ use App\Models\Concerns\UsesUuid;
 use App\Models\ContributionPlan;
 use App\Models\Enums\LoanConditionStatus;
 use App\Models\Loan;
+use App\Models\Wallet;
 use App\Models\Transaction;
 use App\Models\UserProfile;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -139,4 +141,31 @@ class User extends Authenticatable
         return $this->hasManyThrough(Transaction::class, ContributionPlan::class, 'user_id', 'owner_id', 'id', 'id');
     }
 
+    /**
+     * Relationship between a user and their wallets.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function wallets(): HasOne
+    {
+        return $this->hasOne(Wallet::class, 'user_id', 'id');
+    }
+
+    /**
+     * A user's currently active wallets
+     *
+     * @return Collection
+     */
+    public function activeWallets(): Collection
+    {
+        return $this->wallets()->get();
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     */
+    public function WalletsTransactions()
+    {
+        return $this->hasManyThrough(Transaction::class, Wallet::class, 'user_id', 'owner_id', 'id', 'id');
+    }
 }
