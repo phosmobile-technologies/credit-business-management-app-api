@@ -1,9 +1,0 @@
-extend type Mutation @middleware(checks: ["auth:api"]){
-    """ Create a new wallet """
-    CreateWallet(input: CreateWalletInput! @spread): Wallet!
-    @can(ability: "create", model: "App\\Models\\Wallet")
-
-    """ Update a new wallet """
-    UpdateWallet(input: UpdateWalletInput! @spread): Wallet!
-    @can(ability: "update", model: "App\\Models\\Wallet", find: "id")
-}
