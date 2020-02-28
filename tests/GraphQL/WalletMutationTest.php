@@ -38,7 +38,6 @@ class WalletMutationsTest extends TestCase
         $response->assertJson([
             'data' => [
                 'CreateWallet' => [
-                    'wallet_amount' => $walletData['wallet_amount'],
                     'wallet_balance' => $walletData['wallet_balance'],
                 ]
             ]
@@ -61,7 +60,7 @@ class WalletMutationsTest extends TestCase
             'updated_at',
             'user_id'
         ])->toArray();
-        $walletData['wallet_amount'] = 2500;
+        $walletData['wallet_balance'] = 2500;
 
         $response = $this->postGraphQL([
             'query' => WalletQueriesAndMutations::updateWallet(),
@@ -73,8 +72,8 @@ class WalletMutationsTest extends TestCase
         $response->assertJson([
             'data' => [
                 'UpdateWallet' => [
-                    'wallet_amount' => $walletData['wallet_amount'],
-                    'wallet_amount' => 2500,
+                    'wallet_balance' => $walletData['wallet_balance'],
+                    'wallet_balance' => 2500,
                 ]
             ]
         ]);

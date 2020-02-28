@@ -30,13 +30,10 @@ class UserRegistrationTest extends TestCase
             'company_id' => $company->id,
             'branch_id' => $branch->id
         ]);
-        $walletData = factory(Wallet::class)->make()->toArray();
         $userProfileData = collect($userProfileData)->except(['customer_identifier'])->toArray();
-        $walletData = collect($walletData)->toArray();
         $userProfileData['roles'] = [UserRoles::CUSTOMER];
 
         $registrationData = array_merge($userData, $userProfileData);
-        $registrationData = array_merge($userData, $walletData);
 
 
         /** @var \Illuminate\Foundation\Testing\TestResponse $response */
@@ -55,11 +52,7 @@ class UserRegistrationTest extends TestCase
                             state_of_origin,
                             saving_amount,
                             frequency_of_saving
-                        }
-                        wallet {
-                            wallet_amount,
-                            wallet_balance
-                        }
+                        }  
                     }
                 }
             }
@@ -83,10 +76,6 @@ class UserRegistrationTest extends TestCase
                             'state_of_origin' => $userProfileData['state_of_origin'],
                             'saving_amount' => $userProfileData['saving_amount'],
                             'frequency_of_saving' => $userProfileData['frequency_of_saving']
-                        ],
-                        'wallet' => [
-                            'wallet_amount' => $walletData['wallet_amount'],
-                            'wallet_balance' => $walletData['wallet_balance']
                         ]
                     ]
                 ]

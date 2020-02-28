@@ -17,7 +17,6 @@ class CreateWalletsTable extends Migration
             $table->uuid('id');
             $table->uuid('user_id');
             $table->bigIncrements('wallet_id');
-            $table->float('wallet_amount');
             $table->float('wallet_balance');
             $table->timestamps();
 

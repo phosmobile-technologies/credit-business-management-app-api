@@ -49,11 +49,6 @@ class UserService
         $attributes = collect($attributes);
 
         $roles = $attributes['roles'];
-        
-        $walletData = $attributes->only([
-            'wallet_amount',
-            'wallet_balance',
-        ])->toArray();
 
         $userData = $attributes->only([
             'first_name',
@@ -80,7 +75,6 @@ class UserService
         $user = $this->userRepository->createUser($userData);
         $this->userRepository->attachUserProfile($user, $userProfileData);
         $this->userRepository->attachUserRoles($user, $roles);
-        $this->userRepository->attachWallet($user, $walletData);
 
         event(new NewUserRegistered($user, $defaultPassword));
 

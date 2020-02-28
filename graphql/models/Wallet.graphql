@@ -3,7 +3,7 @@ type Wallet {
     id: ID!
     user_id: ID! 
     wallet_id: String!
-    wallet_amount: Float!
+    user: User! @belongsTo
     wallet_balance: Float!
     transactions: [Transaction]! @morphMany
     created_at: DateTime!

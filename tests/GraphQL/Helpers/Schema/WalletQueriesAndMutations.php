@@ -15,7 +15,6 @@ class WalletQueriesAndMutations
         return '
             mutation Createwallet($input: CreateWalletInput!) {
                 CreateWallet(input: $input) {
-                    wallet_amount
                     wallet_balance
                 }
             }
@@ -33,7 +32,6 @@ class WalletQueriesAndMutations
             mutation UpdateWallet($input: UpdateWalletInput!) {
                 UpdateWallet(input: $input) {
                     id
-                    wallet_amount
                     wallet_balance
                 }
             }
@@ -53,7 +51,6 @@ class WalletQueriesAndMutations
                     id
                     user_id
                     wallet_id
-                    wallet_amount
                     wallet_balance
                     transactions {
                         id

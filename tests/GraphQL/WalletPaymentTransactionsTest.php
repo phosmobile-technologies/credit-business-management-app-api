@@ -72,7 +72,6 @@ class WalletPaymentTransactionsTest extends TestCase
         $wallet = factory(Wallet::class)->create([
             'id' => $this->faker->uuid,
             'user_id' => $this->user['id'],
-            'wallet_amount' => 2000,
             'wallet_balance' => 1000,
         ]);
 
@@ -138,7 +137,6 @@ class WalletPaymentTransactionsTest extends TestCase
         $wallet = factory(Wallet::class)->create([
             'id' => $this->faker->uuid,
             'user_id' => $this->user['id'],
-            'wallet_amount' => 2000,
             'wallet_balance' => 1000,
         ]);
 

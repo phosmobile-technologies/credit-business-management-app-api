@@ -29,7 +29,6 @@ trait InteractsWithTestWallets
         $wallet = factory(Wallet::class)->create([
             'id' => $this->faker->uuid,
             'user_id' => $this->user['id'],
-            'wallet_amount' => 2000,
             'wallet_balance' => 1000,
         ]);
 
