@@ -146,25 +146,18 @@ class User extends Authenticatable
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function wallets(): HasOne
+    public function wallet(): HasOne
     {
         return $this->hasOne(Wallet::class, 'user_id', 'id');
     }
 
-    /**
-     * A user's currently active wallets
-     *
-     * @return Collection
-     */
-    public function activeWallets(): Collection
-    {
-        return $this->wallets()->get();
-    }
 
     /**
+     * Relationship between a user and their wallet transactions.
+     *
      * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
      */
-    public function WalletsTransactions()
+    public function walletTransactions()
     {
         return $this->hasManyThrough(Transaction::class, Wallet::class, 'user_id', 'owner_id', 'id', 'id');
     }

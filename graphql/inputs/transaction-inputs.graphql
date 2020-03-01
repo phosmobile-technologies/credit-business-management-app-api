@@ -10,14 +10,6 @@ input CreateContributionPlanTransactionInput {
     transaction_details: TransactionDetailsInput!
 }
 
-"""
- Input used in creating a Wallet Transaction
-"""
-input CreateWalletTransactionInput {
-    wallet_id: ID!
-    transaction_details: TransactionDetailsInput!
-}
-
 """ Input used in creating a Transaction """
 input CreateTransactionInput {
     owner_id: ID!

@@ -26,7 +26,7 @@ class WalletTableSeeder extends Seeder
         });
 
         $this->users->each(function ($user) {
-            $user->wallets()->createMany(
+            $user->wallet()->createMany(
                 factory(Wallet::class, 2)->make()->toArray()
             );
         });
