@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 
 use App\Models\UserProfile;
+use App\Models\Wallet;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use App\User;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
@@ -35,6 +36,23 @@ class UserRepository implements UserRepositoryInterface
     {
         $user->profile()->save(new UserProfile($userProfileData));
         $user->user_profile_id = $user->profile->id;
+        $user->save();
+
+        return $user;
+    }
+
+    /**
+     * Attach the wallet data to a user.
+     * This will usually be called when a new user is registered.
+     *
+     * @param User $user
+     * @param array $walletData
+     * @return User
+     */
+    public function attachWallet(User $user, array $walletData): User
+    {
+        $user->wallet()->save(new Wallet($walletData));
+        $user->wallet_id = $user->wallet->id;
         $user->save();
 
         return $user;
@@ -77,6 +95,19 @@ class UserRepository implements UserRepositoryInterface
         $user = $this->find($customer_id);
 
         return $user->loanTransactions();
+    }
+
+    /**
+     * Get the eloquent query builder that can get wallet transactions that belong to a customer.
+     *sss
+     * @param string $customer_id
+     * @return HasManyThrough
+     */
+    public function findWalletTransactionsQuery(string $customer_id): HasManyThrough
+    {
+        $user = $this->find($customer_id);
+
+        return $user->walletTransactions();
     }
 
     /**

@@ -5,6 +5,7 @@ namespace Tests\GraphQL;
 use App\Models\Company;
 use App\Models\CompanyBranch;
 use App\Models\UserProfile;
+use App\Models\Wallet;
 use App\Models\Enums\UserRoles;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -44,14 +45,14 @@ class UserRegistrationTest extends TestCase
                         first_name,
                         last_name,
                         email,
-                        phone_number
+                        phone_number,
                         profile {
                             occupation,
                             address,
                             state_of_origin,
                             saving_amount,
                             frequency_of_saving
-                        }
+                        }  
                     }
                 }
             }
@@ -74,7 +75,7 @@ class UserRegistrationTest extends TestCase
                             'address' => $userProfileData['address'],
                             'state_of_origin' => $userProfileData['state_of_origin'],
                             'saving_amount' => $userProfileData['saving_amount'],
-                            'frequency_of_saving' => $userProfileData['frequency_of_saving'],
+                            'frequency_of_saving' => $userProfileData['frequency_of_saving']
                         ]
                     ]
                 ]

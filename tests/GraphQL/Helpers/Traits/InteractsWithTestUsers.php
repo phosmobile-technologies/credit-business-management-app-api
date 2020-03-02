@@ -6,6 +6,7 @@ use App\Models\Company;
 use App\Models\CompanyBranch;
 use App\Models\Enums\UserRoles;
 use App\Models\UserProfile;
+use App\Models\Wallet;
 use App\User;
 
 /**

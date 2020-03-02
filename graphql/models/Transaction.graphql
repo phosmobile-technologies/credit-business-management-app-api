@@ -24,19 +24,21 @@ type TransactionDetails {
 enum TransactionType {
     LOAN_REPAYMENT
     CONTRIBUTION_PAYMENT
-    CONTRIBUTION_WITHDRAWAL
     DEFAULT_REPAYMENT
     DEFAULT_CANCELLATION
     LOAN_DISBURSEMENT
     VENDOR_PAYOUT
     BRANCH_EXPENSE
     BRANCH_FUND_DISBURSEMENT
+    WALLET_PAYMENT
+    WALLET_WITHDRAWAL
 }
 
 """ The owner type of a financial transaction """
 enum TransactionOwnerType {
     LOAN
     CONTRIBUTION_PLAN
+    WALLET
 }
 
 """ The medium via which a transaction is made """

@@ -8,8 +8,10 @@ use App\Models\enums\TransactionProcessingActions;
 use App\Models\enums\TransactionStatus;
 use App\Models\enums\TransactionType;
 use App\Models\Loan;
+use App\Models\Wallet;
 use App\Models\Transaction;
 use App\Repositories\Interfaces\ContributionRepositoryInterface;
+use App\Repositories\Interfaces\WalletRepositoryInterface;
 use App\Repositories\Interfaces\LoanRepositoryInterface;
 use App\Repositories\Interfaces\TransactionRepositoryInterface;
 use App\User;
@@ -26,10 +28,16 @@ class TransactionService
      * @var ContributionRepositoryInterface
      */
     private $contributionRepository;
+
     /**
      * @var LoanRepositoryInterface
      */
     private $loanRepository;
+
+    /**
+     * @var WalletRepositoryInterface
+     */
+    private $walletRepository;
 
     /**
      * TransactionService constructor.
@@ -37,12 +45,14 @@ class TransactionService
      * @param TransactionRepositoryInterface $transactionRepository
      * @param ContributionRepositoryInterface $contributionRepository
      * @param LoanRepositoryInterface $loanRepository
+     * @param WalletRepositoryInterface $walletRepository
      */
-    public function __construct(TransactionRepositoryInterface $transactionRepository, ContributionRepositoryInterface $contributionRepository, LoanRepositoryInterface $loanRepository)
+    public function __construct(TransactionRepositoryInterface $transactionRepository, ContributionRepositoryInterface $contributionRepository, LoanRepositoryInterface $loanRepository, WalletRepositoryInterface $walletRepository)
     {
         $this->transactionRepository = $transactionRepository;
         $this->contributionRepository = $contributionRepository;
         $this->loanRepository = $loanRepository;
+        $this->walletRepository = $walletRepository;
     }
 
     public function initiateTransaction(string $owner_id, array $transactionDetails)
@@ -56,8 +66,12 @@ class TransactionService
                 return $this->initiateContributionPlanPaymentTransaction($owner_id, $transactionDetails);
                 break;
 
-            case TransactionType::CONTRIBUTION_WITHDRAWAL:
-                return $this->initiateContributionPlanWithdrawalTransaction($owner_id, $transactionDetails);
+            case TransactionType::WALLET_PAYMENT:
+                return $this->initiateWalletPaymentTransaction($owner_id, $transactionDetails);
+                break;
+
+            case TransactionType::WALLET_WITHDRAWAL:
+                return $this->initiateWalletWithdrawalTransaction($owner_id, $transactionDetails);
                 break;
 
             case TransactionType::BRANCH_FUND_DISBURSEMENT:
@@ -84,8 +98,12 @@ class TransactionService
                 return $this->processContributionPaymentTransaction($user, $transaction, $action, $message);
                 break;
 
-            case (TransactionType::CONTRIBUTION_WITHDRAWAL):
-                return $this->processContributionWithdrawalTransaction($user, $transaction, $action, $message);
+            case (TransactionType::WALLET_PAYMENT):
+                return $this->processWalletPaymentTransaction($user, $transaction, $action, $message);
+                break;
+
+            case (TransactionType::WALLET_WITHDRAWAL):
+                return $this->processWalletWithdrawalTransaction($user, $transaction, $action, $message);
                 break;
 
             case (TransactionType::LOAN_REPAYMENT):
@@ -111,15 +129,27 @@ class TransactionService
     }
 
     /**
-     * Initiate a contribution plan withdrawal transaction.
+     * Initiate a wallet payment transaction.
      *
-     * @param string $contribution_plan_id
+     * @param string $wallet_id
      * @param array $transactionDetails
      * @return Transaction
      */
-    public function initiateContributionPlanWithdrawalTransaction(string $contribution_plan_id, array $transactionDetails): Transaction
+    public function initiateWalletPaymentTransaction(string $wallet_id, array $transactionDetails): Transaction
     {
-        return $this->createTransaction(TransactionOwnerType::CONTRIBUTION_PLAN, $contribution_plan_id, $transactionDetails);
+        return $this->createTransaction(TransactionOwnerType::WALLET, $wallet_id, $transactionDetails);
+    }
+
+    /**
+     * Initiate a wallet withdrawal transaction.
+     *
+     * @param string $wallet_id
+     * @param array $transactionDetails
+     * @return Transaction
+     */
+    public function initiateWalletWithdrawalTransaction(string $wallet_id, array $transactionDetails): Transaction
+    {
+        return $this->createTransaction(TransactionOwnerType::WALLET, $wallet_id, $transactionDetails);
     }
 
     /**
@@ -203,7 +233,7 @@ class TransactionService
     }
 
     /**
-     * Process (approve or disapprove) a contribution withdrawal transaction.
+     * Process (approve or disapprove) a wallet payment transaction.
      *
      * @param User $user
      * @param Transaction $transaction
@@ -211,13 +241,43 @@ class TransactionService
      * @param null|string $message
      * @return Transaction
      */
-    private function processContributionWithdrawalTransaction(User $user, Transaction $transaction, string $action, ?string $message)
+    private function processWalletPaymentTransaction(User $user, Transaction $transaction, string $action, ?string $message)
     {
         DB::transaction(function () use ($transaction, $action, $user, $message) {
             switch ($action) {
                 case TransactionProcessingActions::APPROVE:
-                    $contributionPlan = $this->contributionRepository->find($transaction->owner_id);
-                    $this->contributionRepository->withdraw($contributionPlan, $transaction);
+                    $wallet = $this->walletRepository->find($transaction->owner_id);
+                    $this->walletRepository->addPayment($wallet, $transaction);
+                    $this->transactionRepository->updateTransactionStatus($transaction, TransactionStatus::COMPLETED);
+                    break;
+
+                case TransactionProcessingActions::DISAPPROVE:
+                    $this->transactionRepository->updateTransactionStatus($transaction, TransactionStatus::FAILED);
+                    break;
+            }
+
+            $this->transactionRepository->storeProcessedTransaction($transaction, $user->id, $action, $message);
+        });
+
+        return $transaction;
+    }
+
+    /**
+     * Process (approve or disapprove) a wallet withdrawal transaction.
+     *
+     * @param User $user
+     * @param Transaction $transaction
+     * @param string $action
+     * @param null|string $message
+     * @return Transaction
+     */
+    private function processWalletWithdrawalTransaction(User $user, Transaction $transaction, string $action, ?string $message)
+    {
+        DB::transaction(function () use ($transaction, $action, $user, $message) {
+            switch ($action) {
+                case TransactionProcessingActions::APPROVE:
+                    $wallet = $this->walletRepository->find($transaction->owner_id);
+                    $this->walletRepository->withdraw($wallet, $transaction);
                     $this->transactionRepository->updateTransactionStatus($transaction, TransactionStatus::COMPLETED);
                     break;
 

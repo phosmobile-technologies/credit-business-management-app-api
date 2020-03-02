@@ -1,0 +1,4 @@
+extend type Query @middleware(checks: ["auth:api"]) {
+    """ Get a wallet by its ID """
+    GetWalletById(id: ID! @eq): Wallet @find(model: "App\\Models\\Wallet")
+}

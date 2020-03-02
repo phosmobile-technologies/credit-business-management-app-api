@@ -17,6 +17,16 @@ interface UserRepositoryInterface
     public function createUser(array $userData): User;
 
     /**
+     * Attach the wallet data to a user.
+     * This will usually be called when a new user is registered.
+     *
+     * @param User $user
+     * @param array $walletData
+     * @return User
+     */
+    public function attachWallet(User $user, array $walletData): User;
+
+    /**
      * Attach the user profile data to a user.
      * This will usually be called when a new user is registered.
      *
@@ -59,4 +69,12 @@ interface UserRepositoryInterface
      * @return HasManyThrough
      */
     public function findContributionPlanTransactionsQuery(string $customer_id): HasManyThrough;
+
+    /**
+     * Get the eloquent query builder that can get wallet transactions that belong to a customer.
+     *sss
+     * @param string $customer_id
+     * @return HasManyThrough
+     */
+    public function findWalletTransactionsQuery(string $customer_id): HasManyThrough;
 }

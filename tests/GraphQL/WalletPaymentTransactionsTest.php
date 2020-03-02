@@ -2,7 +2,7 @@
 
 namespace Tests\GraphQL;
 
-use App\Models\ContributionPlan;
+use App\Models\Wallet;
 use App\Models\enums\TransactionOwnerType;
 use App\Models\enums\TransactionProcessingActions;
 use App\Models\enums\TransactionStatus;
@@ -13,13 +13,13 @@ use App\Models\Transaction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\GraphQL\Helpers\Schema\TransactionsQueriesAndMutations;
-use Tests\GraphQL\Helpers\Traits\InteractsWithTestContributionPlans;
+use Tests\GraphQL\Helpers\Traits\InteractsWithTestWallets;
 use Tests\GraphQL\Helpers\Traits\InteractsWithTestUsers;
 use Tests\TestCase;
 
-class ContributionPlanWithdrawalMutationsTest extends TestCase
+class WalletPaymentTransactionsTest extends TestCase
 {
-    use RefreshDatabase, InteractsWithTestUsers, InteractsWithTestContributionPlans, WithFaker;
+    use RefreshDatabase, InteractsWithTestUsers, InteractsWithTestWallets, WithFaker;
 
     protected function setUp(): void
     {
@@ -31,12 +31,12 @@ class ContributionPlanWithdrawalMutationsTest extends TestCase
     /**
      * @test
      */
-    public function testItInitiatesContributionPlanWithdrawalTransactionSuccessfully()
+    public function testItInitiatesWalletPaymentTransactionSuccessfully()
     {
-        $contributionData = $this->createContributionPlanAndTransactionData(TransactionType::CONTRIBUTION_WITHDRAWAL);
-        $contributionPlan = $contributionData['contributionPlan'];
-        $transactionDetails = $contributionData['transactionDetails'];
-        $transactionData = $contributionData['transactionData'];
+        $walletData = $this->createWalletAndTransactionData(TransactionType::WALLET_PAYMENT);
+        $wallet = $walletData['wallet'];
+        $transactionDetails = $walletData['transactionDetails'];
+        $transactionData = $walletData['transactionData'];
 
         $response = $this->postGraphQL([
             'query' => TransactionsQueriesAndMutations::initiateTransaction(),
@@ -54,8 +54,8 @@ class ContributionPlanWithdrawalMutationsTest extends TestCase
         ]);
 
         $this->assertDatabaseHas(with(new Transaction)->getTable(), [
-            'owner_type' => TransactionOwnerType::CONTRIBUTION_PLAN,
-            'owner_id' => $contributionPlan->id,
+            'owner_type' => TransactionOwnerType::WALLET,
+            'owner_id' => $wallet->id,
             'transaction_amount' => $transactionDetails['transaction_amount'],
             'transaction_type' => $transactionDetails['transaction_type'],
             'transaction_purpose' => $transactionDetails['transaction_purpose'],
@@ -65,23 +65,22 @@ class ContributionPlanWithdrawalMutationsTest extends TestCase
     /**
      * @test
      */
-    public function testItCorrectlyApprovesAContributionWithdrawalTransaction()
+    public function testItCorrectlyApprovesAWalletPaymentTransaction()
     {
         $this->loginTestUserAndGetAuthHeaders([UserRoles::BRANCH_ACCOUNTANT]);
 
-        $contributionPlan = factory(ContributionPlan::class)->create([
+        $wallet = factory(Wallet::class)->create([
             'id' => $this->faker->uuid,
             'user_id' => $this->user['id'],
-            'contribution_amount' => 2000,
-            'contribution_balance' => 1000,
+            'wallet_balance' => 1000,
         ]);
 
         $transaction = factory(Transaction::class)->create([
             'transaction_amount' => 500,
-            'transaction_type' => TransactionType::CONTRIBUTION_WITHDRAWAL,
+            'transaction_type' => TransactionType::WALLET_PAYMENT,
             'transaction_status' => TransactionStatus::PENDING,
-            'owner_id' => $contributionPlan->id,
-            'owner_type' => TransactionOwnerType::CONTRIBUTION_PLAN
+            'owner_id' => $wallet->id,
+            'owner_type' => TransactionOwnerType::WALLET
         ]);
 
         $message = $this->faker->realText();
@@ -125,29 +124,28 @@ class ContributionPlanWithdrawalMutationsTest extends TestCase
      * @test
      * @group active
      */
-    public function testItCorrectlyDisapprovesAContributionPlanWithdrawalTransaction()
+    public function testItCorrectlyDisapprovesAWalletPaymentTransaction()
     {
         $this->loginTestUserAndGetAuthHeaders([UserRoles::BRANCH_ACCOUNTANT]);
 
         /**
-         * Create a contribution plan
-         * Create a contribution plan transaction for the loan (ensure it's pending)
+         * Create a wallet
+         * Create a wallet transaction for the loan (ensure it's pending)
          * Try to approve it, ensure that it's approved
          */
 
-        $contributionPlan = factory(ContributionPlan::class)->create([
+        $wallet = factory(Wallet::class)->create([
             'id' => $this->faker->uuid,
             'user_id' => $this->user['id'],
-            'contribution_amount' => 2000,
-            'contribution_balance' => 1000,
+            'wallet_balance' => 1000,
         ]);
 
         $transaction = factory(Transaction::class)->create([
             'transaction_amount' => 500,
-            'transaction_type' => TransactionType::CONTRIBUTION_WITHDRAWAL,
+            'transaction_type' => TransactionType::WALLET_PAYMENT,
             'transaction_status' => TransactionStatus::PENDING,
-            'owner_id' => $contributionPlan->id,
-            'owner_type' => TransactionOwnerType::CONTRIBUTION_PLAN
+            'owner_id' => $wallet->id,
+            'owner_type' => TransactionOwnerType::WALLET
         ]);
         $message = $this->faker->realText();
 
