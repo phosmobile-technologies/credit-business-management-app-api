@@ -8,6 +8,7 @@ scalar Date @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
 #import models/*.graphql
 #import queries/*.graphql
 #import mutations/*.graphql
+#import payloads/*.graphql
 
 type Query {
     """ Get a list of all users """
