@@ -48,6 +48,9 @@ class ContributionService
      */
     public function create(array $contributionData): ContributionPlan
     {
+        // Ensure that the default value when creating a contribution is set
+        $contributionData['contribution_balance'] = null;
+
         return $this->contributionRepository->create($contributionData);
     }
 

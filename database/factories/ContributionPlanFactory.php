@@ -32,3 +32,25 @@ $factory->define(ContributionPlan::class, function (Faker $faker) {
         'contribution_frequency' => $contributionFrequencies[array_rand($contributionFrequencies)],
     ];
 });
+
+    /**
+     * Factory state for a contribution plan that includes all default values that cannot be passed when creating a contribution
+     */
+    $factory->state(ContributionPlan::class, 'with_default_values', function ($faker) {
+    $contributionTypes = [
+        ContributionType::FIXED,
+        ContributionType::LOCKED,
+        ContributionType::GOAL
+    ];
+
+    $contributionFrequencies = [
+      ContributionFrequency::DAILY,
+      ContributionFrequency::WEEKLY,
+      ContributionFrequency::MONTHLY,
+      ContributionFrequency::QUARTERLY
+    ];
+
+    return [
+        'contribution_balance' => $faker->randomFloat(2, 10000, 5000000),
+    ];
+});

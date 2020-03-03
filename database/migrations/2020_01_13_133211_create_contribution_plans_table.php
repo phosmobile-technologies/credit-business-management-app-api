@@ -31,7 +31,7 @@ class CreateContributionPlansTable extends Migration
                 ContributionFrequency::QUARTERLY
             ]);
             $table->float('contribution_amount');
-            $table->float('contribution_balance');
+            $table->float('contribution_balance')->nullable();
             $table->string('contribution_name');
             $table->integer('contribution_duration'); # In months
             $table->float('contribution_interest_rate'); # In percentage
