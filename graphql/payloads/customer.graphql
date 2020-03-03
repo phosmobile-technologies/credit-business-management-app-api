@@ -1,0 +1,36 @@
+""" Loan statistics for a customer """
+type CustomerLoanStatistics {
+    """ if the user has an active loan this is the balance on the loan the user is supposed to pay. """
+    loan_balance: Float!
+
+    """ The amount of customer's next loan payment. """
+    next_due_payment: Float!
+
+    """ Date when the customer's next loan repayment is due. """
+    next_repayment_date: String!
+
+    """ if the customer is defaulting this is the number of days of the default multiplied by the default amount. """
+    default_charges: Float!
+
+    """ how much the user paid off from the loan. """
+    total_paid_amount: Float!
+
+    """ return true or false value that lets us know whether the user has an active loan or not. """
+    active_loan: Boolean!
+}
+
+""" Contribution plan statistics for a customer """
+type CustomerContributionPlanStatistics {
+    """ This is the sum of the balance of all the contribution plans the client has """
+    total_contribution_amount: Float!
+    goal_contribution_sum: Float!
+    fixed_contribution_sum: Float!
+    locked_contribution_sum: Float!
+    wallet_balance: Float!
+}
+
+""" Customer loan and contribution plan statistics """
+type CustomerStatistics {
+    loan_statistics: CustomerLoanStatistics!
+    contribution_plan_statistics: CustomerContributionPlanStatistics!
+}
