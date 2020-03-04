@@ -6,6 +6,7 @@ use App\Models\enums\TransactionOwnerType;
 use App\Models\enums\TransactionStatus;
 use App\Models\Loan;
 use App\Models\Transaction;
+use App\Models\CompanyBranch;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\GraphQL\Helpers\Schema\TransactionsQueriesAndMutations;

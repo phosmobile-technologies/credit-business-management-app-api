@@ -3,6 +3,10 @@
 namespace App\Services;
 
 use App\Models\CompanyBranch;
+use App\Models\Transaction;
+use App\Models\enums\TransactionType;
+use App\Repositories\Interfaces\TransactionRepositoryInterface;
+use App\Repositories\Interfaces\UserRepositoryInterface;
 use App\Repositories\Interfaces\CompanyBranchRepositoryInterface;
 use Illuminate\Support\Facades\Date;
 
@@ -17,9 +21,21 @@ class BranchService
      */
     private $branchRepository;
 
-    public function __construct(CompanyBranchRepositoryInterface $branchRepository)
+    /**
+     * @var TransactionService
+     */
+    private $transactionService;
+
+    /**
+     * @var UserRepositoryInterface
+     */
+    private $userRepository;
+
+    public function __construct(CompanyBranchRepositoryInterface $branchRepository,  TransactionService $transactionService, UserRepositoryInterface $userRepository)
     {
         $this->branchRepository = $branchRepository;
+        $this->transactionService = $transactionService;
+        $this->userRepository = $userRepository;
     }
 
     /**
@@ -78,6 +94,17 @@ class BranchService
     }
 
     /**
+     * Get the query builder for Transactions that a belong to a branch.
+     *
+     * @param string $branch_id
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     */
+    public function getBranchTransactionsQuery(string $branch_id)
+    {
+        return $this->branchRepository->findTransactionsQuery($branch_id);
+    }
+
+    /**
      * Search/Filter the branch customers.
      *
      * @param string $branch_id
@@ -88,5 +115,17 @@ class BranchService
      */
     public function searchBranchCustomersQuery(string $branch_id, ?string $search_query, ?Date $start_date, ?Date $end_date) {
         return $this->branchRepository->searchBranchCustomers($branch_id, $search_query, $start_date, $end_date);
+    }
+
+    /**
+     * Initiate a new Company transaction
+     *
+     * @param string $company_id
+     * @param array $transactionDetails
+     * @return Transaction
+     */
+    public function initiateTransaction(string $branch_id, array $transactionDetails): Transaction
+    {
+        return $this->transactionService->initiateCompanyWithdrawalTransaction($branch_id, $transactionDetails);
     }
 }

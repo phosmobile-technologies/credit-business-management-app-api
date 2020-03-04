@@ -18,7 +18,8 @@ $factory->define(\App\Models\Transaction::class, function (Faker $faker) {
         TransactionType::LOAN_REPAYMENT,
         TransactionType::VENDOR_PAYOUT,
         TransactionType::WALLET_PAYMENT,
-        TransactionType::WALLET_WITHDRAWAL
+        TransactionType::WALLET_WITHDRAWAL,
+        TransactionType::COMPANY_WITHDRAWAL
     ];
 
     $transactionMediums = [

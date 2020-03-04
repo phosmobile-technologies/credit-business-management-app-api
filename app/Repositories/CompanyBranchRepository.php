@@ -3,7 +3,9 @@
 namespace App\Repositories;
 
 
+use App\GraphQL\Errors\GraphqlError;
 use App\Models\CompanyBranch;
+use App\Models\Transaction;
 use App\Models\Enums\UserRoles;
 use App\Repositories\Interfaces\CompanyBranchRepositoryInterface;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -92,6 +94,19 @@ class CompanyBranchRepository implements CompanyBranchRepositoryInterface
     }
 
     /**
+     * Get the eloquent query builder that can get transactions that belong to a branch.
+     *
+     * @param string $branch_id
+     * @return HasManyThrough
+     */
+    public function findTransactionsQuery(string $branch_id): HasManyThrough
+    {
+        $branch = $this->find($branch_id);
+
+        return $branch->Transactions();
+    }
+
+    /**
      * Search/Filter the customers for a branch.
      *
      * @param string $branch_id
@@ -120,5 +135,25 @@ class CompanyBranchRepository implements CompanyBranchRepositoryInterface
             }
 
         });
+    }
+
+    /**
+     * Withdraw funds from a Company.
+     *
+     * @param CompanyBranch $companyBranch
+     * @param Transaction $transaction
+     * @return Wallet
+     * @throws GraphqlError
+     */
+    public function withdraw(CompanyBranch $companyBranch, Transaction $transaction): CompanyBranch
+    {
+        if ($transaction->transaction_amount > $companyBranch->company_balance) {
+            throw new GraphqlError("Insufficient Company balance to make this withdrawal");
+        }
+
+        $companyBranch->company_balance = $companyBranch->company_balance - $transaction->transaction_amount;
+        $companyBranch->save();
+
+        return $companyBranch;
     }
 }

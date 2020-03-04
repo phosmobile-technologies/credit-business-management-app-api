@@ -4,6 +4,8 @@ namespace App\Repositories\Interfaces;
 
 
 use App\Models\CompanyBranch;
+use App\Models\Transaction;
+use Faker\Provider\ar_SA\Color;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Support\Collection;
@@ -60,6 +62,14 @@ interface CompanyBranchRepositoryInterface
     public function findLoanApplicationsQuery(string $branch_id): HasManyThrough;
 
     /**
+     * Get the eloquent query builder that can get transactions that belong to a branch.
+     *
+     * @param string $branch_id
+     * @return HasManyThrough
+     */
+    public function findTransactionsQuery(string $branch_id): HasManyThrough;
+
+    /**
      * Search/Filter the customers for a branch.
      *
      * @param string $branch_id
@@ -69,4 +79,13 @@ interface CompanyBranchRepositoryInterface
      * @return HasManyThrough
      */
     public function searchBranchCustomers(string $branch_id, ?string $search_query, ?Date $start_date, ?Date $end_date): HasManyThrough;
+
+    /**
+     * Withdraw funds from a company.
+     *
+     * @param Wallet $wallet
+     * @param Transaction $transaction
+     * @return Wallet
+     */
+    public function withdraw(CompanyBranch $companyBranch, Transaction $transaction): CompanyBranch;
 }

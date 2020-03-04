@@ -32,6 +32,7 @@ enum TransactionType {
     BRANCH_FUND_DISBURSEMENT
     WALLET_PAYMENT
     WALLET_WITHDRAWAL
+    COMPANY_WITHDRAWAL
 }
 
 """ The owner type of a financial transaction """
@@ -39,6 +40,7 @@ enum TransactionOwnerType {
     LOAN
     CONTRIBUTION_PLAN
     WALLET
+    COMPANY_BRANCH
 }
 
 """ The medium via which a transaction is made """

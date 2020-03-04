@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\CompanyBranch;
 use App\Models\ContributionPlan;
 use App\Models\enums\TransactionOwnerType;
 use App\Models\enums\TransactionStatus;
@@ -21,6 +22,7 @@ class TransactionsTableSeeder extends Seeder
         $this->seedLoanTransactions();
         $this->seedContributionTransactions();
         $this->seedWalletTransactions();
+        $this->seedCompanyTransactions();
     }
 
     private function seedLoanTransactions()
@@ -87,6 +89,30 @@ class TransactionsTableSeeder extends Seeder
                 'owner_id' => $wallet->id,
                 'owner_type' => TransactionOwnerType::WALLET
             ]);
+        }
     }
-}
+
+    private function seedCompanyTransactions()
+    {
+        $branches = CompanyBranch::limit(5)->get();
+
+        foreach ($branches as $branch) {
+            $transactionTypes = [
+                TransactionType::COMPANY_WITHDRAWAL
+            ];
+
+            $transactionStatustes = [
+                TransactionStatus::PENDING,
+                TransactionStatus::COMPLETED,
+                TransactionStatus::FAILED
+            ];
+
+            factory(Transaction::class, 2)->create([
+                'transaction_type' => $transactionTypes[array_rand($transactionTypes)],
+                'owner_id' => $branch->id,
+                'owner_type' => TransactionOwnerType::COMPANY_BRANCH,
+                'transaction_status' => $transactionStatustes[array_rand($transactionStatustes)]
+            ]);
+        }
+    }
 }

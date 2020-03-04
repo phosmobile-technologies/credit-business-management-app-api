@@ -122,4 +122,17 @@ class UserRepository implements UserRepositoryInterface
 
         return $user->contributionPlansTransactions();
     }
+
+    /**
+     * Get the eloquent query builder that can get company transactions that belong to a customer.
+     *sss
+     * @param string $customer_id
+     * @return HasManyThrough
+     */
+    public function findCompanyTransactionsQuery(string $customer_id): HasManyThrough
+    {
+        $user = $this->find($customer_id);
+
+        return $user->companyTransactions();
+    }
 }

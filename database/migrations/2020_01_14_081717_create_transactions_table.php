@@ -29,7 +29,8 @@ class CreateTransactionsTable extends Migration
                 TransactionType::LOAN_REPAYMENT,
                 TransactionType::VENDOR_PAYOUT,
                 TransactionType::WALLET_PAYMENT,
-                TransactionType::WALLET_WITHDRAWAL
+                TransactionType::WALLET_WITHDRAWAL,
+                TransactionType::COMPANY_WITHDRAWAL
             ]);
             $table->float('transaction_amount');
             $table->enum('transaction_medium', [

@@ -77,4 +77,12 @@ interface UserRepositoryInterface
      * @return HasManyThrough
      */
     public function findWalletTransactionsQuery(string $customer_id): HasManyThrough;
+
+    /**
+     * Get the eloquent query builder that can get company transactions that belong to a customer.
+     *sss
+     * @param string $customer_id
+     * @return HasManyThrough
+     */
+    public function findCompanyTransactionsQuery(string $customer_id): HasManyThrough;
 }

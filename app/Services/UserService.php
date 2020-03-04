@@ -121,6 +121,10 @@ class UserService
             case TransactionOwnerType::WALLET:
                 return $this->userRepository->findWalletTransactionsQuery($customer_id);
                 break;
+
+            case TransactionOwnerType::COMPANY_BRANCH:
+                return $this->userRepository->findCompanyTransactionsQuery($customer_id);
+                break;
         }
     }
 }

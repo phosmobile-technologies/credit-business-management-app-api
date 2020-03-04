@@ -17,6 +17,7 @@ class CreateCompanyBranchesTable extends Migration
             $table->uuid('id')->unique();
             $table->uuid('company_id');
             $table->string('name');
+            $table->string('company_balance')->nullable();
             $table->string('location')->nullable();
             $table->timestamps();
 

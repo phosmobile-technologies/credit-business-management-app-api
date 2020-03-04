@@ -53,4 +53,14 @@ class CompanyBranch extends Model
     {
         return $this->hasManyThrough(LoanApplication::class, UserProfile::class, 'branch_id', 'user_id', 'id', 'user_id');
     }
+
+    /**
+     * The Transactions that belong to a branch
+     *
+     * @return HasManyThrough
+     */
+    public function transactions(): HasManyThrough
+    {
+        return $this->hasManyThrough(Transaction::class, UserProfile::class, 'branch_id', 'user_id', 'id', 'user_id');
+    }
 }
