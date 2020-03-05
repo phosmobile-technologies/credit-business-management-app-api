@@ -147,11 +147,11 @@ class CompanyBranchRepository implements CompanyBranchRepositoryInterface
      */
     public function withdraw(CompanyBranch $companyBranch, Transaction $transaction): CompanyBranch
     {
-        if ($transaction->transaction_amount > $companyBranch->company_balance) {
-            throw new GraphqlError("Insufficient Company balance to make this withdrawal");
+        if ($transaction->transaction_amount > $companyBranch->branch_balance) {
+            throw new GraphqlError("Insufficient Branch balance to make this withdrawal");
         }
 
-        $companyBranch->company_balance = $companyBranch->company_balance - $transaction->transaction_amount;
+        $companyBranch->branch_balance = $companyBranch->branch_balance - $transaction->transaction_amount;
         $companyBranch->save();
 
         return $companyBranch;

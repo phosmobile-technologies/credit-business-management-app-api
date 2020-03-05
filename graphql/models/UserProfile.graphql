@@ -31,7 +31,7 @@ type CompanyBranch {
     id: ID!
     name: String!
     location: String
-    company_balance: Float!
+    branch_balance: Float!
     customers: [User]! @hasMany
     loans: [Loan]! @hasMany
     transactions: [Transaction]! @hasMany
