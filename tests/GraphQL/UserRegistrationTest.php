@@ -50,8 +50,8 @@ class UserRegistrationTest extends TestCase
                             occupation,
                             address,
                             state_of_origin,
-                            saving_amount,
-                            frequency_of_saving
+                            bvn,
+                            bank_account_number
                         }  
                     }
                 }
@@ -74,8 +74,8 @@ class UserRegistrationTest extends TestCase
                             'occupation' => $userProfileData['occupation'],
                             'address' => $userProfileData['address'],
                             'state_of_origin' => $userProfileData['state_of_origin'],
-                            'saving_amount' => $userProfileData['saving_amount'],
-                            'frequency_of_saving' => $userProfileData['frequency_of_saving']
+                            'bvn' => $userProfileData['bvn'],
+                            'bank_account_number' => $userProfileData['bank_account_number']
                         ]
                     ]
                 ]
