@@ -23,13 +23,15 @@ class CreateUserProfileTable extends Migration
             $table->string('occupation')->nullable();
             $table->string('address');
             $table->string('state_of_origin')->nullable();
-            $table->float('saving_amount')->nullable();
-            $table->enum('frequency_of_saving', ['WEEKLY', 'MONTHLY', 'QUARTERLY'])->nullable();
             $table->string('next_of_kin')->nullable();
             $table->string('relationship_with_next_of_kin')->nullable();
             $table->string('account_administrator')->nullable();
             $table->string('account_name')->nullable();
             $table->string('account_number')->nullable();
+            $table->string('bvn')->nullable();
+            $table->string('bank_account_number')->nullable();
+            $table->string('bank_account_name')->nullable();
+            $table->string('bank_name')->nullable();
             $table->enum('status', ['ACTIVE', 'INACTIVE']);
             $table->uuid('company_id');
             $table->uuid('branch_id');
