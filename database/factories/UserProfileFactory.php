@@ -9,7 +9,6 @@ $factory->define(UserProfile::class, function (Faker $faker) {
     $genders = ['MALE', 'FEMALE'];
     $maritalStatus = ['SINGLE', 'MARRIED', 'DIVORCED'];
     $stateOfOrigin = ['Lagos', 'Ogun', 'Delta'];
-    $frequencyOfSaving = ['WEEKLY', 'MONTHLY', 'QUARTERLY'];
     $nokRelationship = ['father', 'mother', 'sibling'];
 
     return [
@@ -19,8 +18,6 @@ $factory->define(UserProfile::class, function (Faker $faker) {
         'occupation' => $faker->text,
         'address' => $faker->address,
         'state_of_origin' => $stateOfOrigin[array_rand($stateOfOrigin)],
-        'saving_amount' => $faker->numberBetween(1, 20000000),
-        'frequency_of_saving' => $frequencyOfSaving[array_rand($frequencyOfSaving)],
         'next_of_kin' => $faker->name,
         'relationship_with_next_of_kin' => $nokRelationship[array_rand($nokRelationship)],
         'account_administrator' => $faker->name,
@@ -30,5 +27,18 @@ $factory->define(UserProfile::class, function (Faker $faker) {
         'customer_identifier' => $faker->uuid,
         'company_id' => $faker->uuid,
         'branch_id' => $faker->uuid
+    ];
+});
+
+/**
+ * Factory state for a user profile that includes all default values that cannot be passed when creating a user profile
+ */
+$factory->state(UserProfile::class, 'with_default_values', function ($faker) {
+
+    return [
+        'bvn' => $faker->numberBetween(100000, 20000000),
+        'bank_account_number' => $faker->numberBetween(100000, 20000000),
+        'bank_account_name' => $faker->name,
+        'bank_name' => $faker->name,
     ];
 });

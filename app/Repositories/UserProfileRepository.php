@@ -19,4 +19,16 @@ class UserProfileRepository implements UserProfileRepositoryInterface
     {
         return UserProfile::where('customer_identifier', $identifier)->exists();
     }
+
+    /**
+     * Insert a UserProfile in the database
+     *
+     * @param array $userProfileData
+     * @return UserProfile
+     */
+    public function create(array $userProfileData): UserProfile
+    {
+        return UserProfile::create($userProfileData);
+    }
+
 }

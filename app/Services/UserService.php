@@ -101,6 +101,23 @@ class UserService
     }
 
     /**
+     * Create a new UserProfile.
+     *
+     * @param array $userProfileData
+     * @return UserProfile
+     */
+    public function create(array $userProfileData): UserProfile
+    {
+        // Ensure that the default values when creating a user profile are set
+        $userProfileData['bvn'] = null;
+        $userProfileData['bank_account_number'] = null;
+        $userProfileData['bank_account_name'] = null;
+        $userProfileData['bank_name'] = null;
+
+        return $this->userProfileRepository->create($userProfileData);
+    }
+
+    /**
      * Get the query builder for transactions that a belong to a user.
      *
      * @param string $customer_id

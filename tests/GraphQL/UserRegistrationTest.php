@@ -49,9 +49,7 @@ class UserRegistrationTest extends TestCase
                         profile {
                             occupation,
                             address,
-                            state_of_origin,
-                            saving_amount,
-                            frequency_of_saving
+                            state_of_origin
                         }  
                     }
                 }
@@ -73,9 +71,7 @@ class UserRegistrationTest extends TestCase
                         'profile' => [
                             'occupation' => $userProfileData['occupation'],
                             'address' => $userProfileData['address'],
-                            'state_of_origin' => $userProfileData['state_of_origin'],
-                            'saving_amount' => $userProfileData['saving_amount'],
-                            'frequency_of_saving' => $userProfileData['frequency_of_saving']
+                            'state_of_origin' => $userProfileData['state_of_origin']
                         ]
                     ]
                 ]
