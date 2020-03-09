@@ -59,7 +59,8 @@ class UserService
             'last_name',
             'email',
             'phone_number',
-            'password'
+            'password',
+            'password_confirmation'
         ])->toArray();
 
         // Generate a random password for the user registration via backend
