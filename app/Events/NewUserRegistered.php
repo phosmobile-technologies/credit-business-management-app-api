@@ -30,7 +30,7 @@ class NewUserRegistered
      * @param String $defaultPassword
      * @param String $source
      */
-    public function __construct(User $user, String $defaultPassword, String $source)
+    public function __construct(User $user, String $defaultPassword, $source)
     {
         $this->user = $user;
         $this->defaultPassword = $defaultPassword;
