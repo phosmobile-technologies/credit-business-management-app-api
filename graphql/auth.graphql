@@ -52,9 +52,11 @@ input RegisterInput {
     first_name: String! @rules(apply: ["required", "string"])
     last_name: String! @rules(apply: ["required", "string"])
     phone_number: String! @rules(apply: ["required", "string"])
+    password:String
     email: String @rules(apply: ["email"])
     roles: [UserRoles!]!
 
+    source:Source!
     gender: Gender! @rules(apply: ["required"])
     date_of_birth: Date
     marital_status: MaritalStatus

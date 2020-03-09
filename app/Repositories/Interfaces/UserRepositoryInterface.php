@@ -42,9 +42,10 @@ interface UserRepositoryInterface
      *
      * @param User $user
      * @param array $roles
+     * @param $source
      * @return User
      */
-    public function attachUserRoles(User $user, array $roles): User;
+    public function attachUserRoles(User $user, array $roles, $source): User;
 
     /**
      * Find a User by id.

@@ -5,6 +5,7 @@ namespace App\Services;
 
 use App\Events\NewUserRegistered;
 use App\Models\enums\TransactionOwnerType;
+use App\Models\enums\UserRegistrationSource;
 use App\Models\UserProfile;
 use App\Models\Wallet;
 use App\Repositories\Interfaces\UserProfileRepositoryInterface;
@@ -31,6 +32,8 @@ class UserService
      */
     private $walletRepository;
 
+    private  $defaultPassword;
+
     public function __construct(UserRepositoryInterface $userRepository, UserProfileRepositoryInterface $userProfileRepository, WalletRepositoryInterface $walletRepository)
     {
         $this->userRepository = $userRepository;
@@ -49,17 +52,24 @@ class UserService
         $attributes = collect($attributes);
 
         $roles = $attributes['roles'];
+        $source = $attributes['source'];
 
         $userData = $attributes->only([
             'first_name',
             'last_name',
             'email',
-            'phone_number'
+            'phone_number',
+            'password'
         ])->toArray();
 
-        // Generate a random password for the user
-        $defaultPassword = Str::random(8);
-        $userData['password'] = $defaultPassword;
+        // Generate a random password for the user registration via backend
+        if(UserRegistrationSource::BACKEND){
+            $this->defaultPassword = Str::random(8);
+            $userData['password'] = $this->defaultPassword;
+        }else{
+            // mailing event requires defaultPassword not to be null
+            $this->defaultPassword = $userData['password'];
+        }
 
         // TODO: Figure why the 'directive' index is added by Lighthouse-php to the args it passes down
         $userProfileData = $attributes->except([
@@ -68,15 +78,16 @@ class UserService
             'email',
             'phone_number',
             'roles',
-            'directive'
+            'directive',
+            'password'
         ])->toArray();
         $userProfileData['customer_identifier'] = $this->generateCustomerIdentifier();
 
         $user = $this->userRepository->createUser($userData);
         $this->userRepository->attachUserProfile($user, $userProfileData);
-        $this->userRepository->attachUserRoles($user, $roles);
+        $this->userRepository->attachUserRoles($user, $roles, $source);
 
-        event(new NewUserRegistered($user, $defaultPassword));
+        event(new NewUserRegistered($user, $this->defaultPassword, $source));
 
         return [
             "user" => $user

@@ -4,10 +4,18 @@
         Hello **{{ $user["first_name"] }} {{ $user["last_name"] }},**
 
         You have successfully been registered on the SpringVerse platform.
-        Please find your login credentials below:
 
-        * Email - {{ $user['email'] }}
-        * Default Password - {{ $defaultPassword }}
+        @if($source == "BACKEND")
+            {
+            Please find your login credentials below:
+
+            * Email - {{ $user['email'] }}
+            * Default Password - {{ $defaultPassword }}
+            }
+        @else{
+
+        }
+        @endif
 
         If you are not a Springverse customer, please disregard this email.
         please disregard this email.

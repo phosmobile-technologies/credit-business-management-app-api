@@ -5,6 +5,7 @@ type User {
     last_name: String!
     phone_number: String!
     email: String!
+    password:String
     profile: UserProfile @hasOne
     wallet: Wallet! @hasOne
     loans: [Loan]! @hasMany

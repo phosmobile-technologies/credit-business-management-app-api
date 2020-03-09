@@ -3,6 +3,8 @@
 namespace App\Repositories;
 
 
+use App\Models\enums\UserRegistrationSource;
+use App\Models\Enums\UserRoles;
 use App\Models\UserProfile;
 use App\Models\Wallet;
 use App\Repositories\Interfaces\UserRepositoryInterface;
@@ -64,11 +66,17 @@ class UserRepository implements UserRepositoryInterface
      *
      * @param User $user
      * @param array $roles
+     * @param $source
      * @return User
      */
-    public function attachUserRoles(User $user, array $roles): User
+    public function attachUserRoles(User $user, array $roles, $source): User
     {
-        $user->assignRole($roles);
+        if(UserRegistrationSource::BACKEND){
+            $user->assignRole($roles);
+        }else{
+            $user->assignRole(UserRoles::CUSTOMER);
+        }
+
 
         return $user;
     }
