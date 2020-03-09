@@ -3,6 +3,7 @@
 namespace Tests\Unit\Services;
 
 use App\Events\NewUserRegistered;
+use App\Models\enums\UserRegistrationSource;
 use App\Models\UserProfile;
 use App\Models\Wallet;
 use App\Models\Enums\UserRoles;
@@ -70,6 +71,7 @@ class UserServiceTest extends TestCase
         $registrationData = array_merge($userData, $userProfileData);
         $registrationData = array_merge($userData, $walletData);
         $registrationData['roles'] = [UserRoles::CUSTOMER];
+        $registrationData['source'] = [UserRegistrationSource::BACKEND];
 
         $this->userRepository->shouldReceive('createUser')
             ->andReturn($user);
