@@ -5,7 +5,7 @@
 
         You have successfully been registered on the SpringVerse platform.
 
-        @if($source == "BACKEND")
+        @if($registration_source == "BACKEND")
             {
             Please find your login credentials below:
 
@@ -17,6 +17,7 @@
         }
         @endif
 
+        <a href="http://www.springverse.com/login">Login</a>
         If you are not a Springverse customer, please disregard this email.
         please disregard this email.
 

@@ -5,7 +5,7 @@ namespace App\Services;
 
 use App\Events\NewUserRegistered;
 use App\Models\enums\TransactionOwnerType;
-use App\Models\enums\UserRegistrationSource;
+use App\Models\enums\RegistrationSource;
 use App\Models\UserProfile;
 use App\Models\Wallet;
 use App\Repositories\Interfaces\UserProfileRepositoryInterface;
@@ -52,7 +52,7 @@ class UserService
         $attributes = collect($attributes);
 
         $roles = $attributes['roles'];
-        $source = $attributes['source'];
+        $source = $attributes['registration_source'];
 
         $userData = $attributes->only([
             'first_name',
@@ -63,7 +63,7 @@ class UserService
         ])->toArray();
 
         // Generate a random password for the user registration via backend
-        if(UserRegistrationSource::BACKEND){
+        if(RegistrationSource::BACKEND){
             $this->defaultPassword = Str::random(8);
             $userData['password'] = $this->defaultPassword;
         }else{
@@ -79,7 +79,8 @@ class UserService
             'phone_number',
             'roles',
             'directive',
-            'password'
+            'password',
+            'password_confirmation'
         ])->toArray();
         $userProfileData['customer_identifier'] = $this->generateCustomerIdentifier();
 

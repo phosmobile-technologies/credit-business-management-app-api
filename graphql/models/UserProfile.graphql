@@ -7,7 +7,7 @@ type UserProfile {
     occupation: String!
     address: String!
     state_of_origin: String!
-    source: Source!
+    registration_source: RegistrationSource!
     bvn: String
     bank_account_number: String
     bank_account_name: String
@@ -45,7 +45,7 @@ enum Gender {
 }
 
 # registration source for creating user
-enum Source {
+enum RegistrationSource {
     ONLINE
     BACKEND
 }

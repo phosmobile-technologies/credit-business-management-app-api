@@ -30,7 +30,7 @@ $factory->define(UserProfile::class, function (Faker $faker) {
         'bank_name' => $faker->name,
         'status' => 'INACTIVE',
         'customer_identifier' => $faker->uuid,
-        'source' => $registrationSource[array_rand($registrationSource)],
+        'registration_source' => $registrationSource[array_rand($registrationSource)],
         'company_id' => $faker->uuid,
         'branch_id' => $faker->uuid
     ];

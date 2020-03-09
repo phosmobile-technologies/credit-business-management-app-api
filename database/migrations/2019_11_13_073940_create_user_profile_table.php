@@ -17,7 +17,7 @@ class CreateUserProfileTable extends Migration
             $table->uuid('id')->unique();
             $table->uuid('user_id');
             $table->string('customer_identifier')->unique();
-            $table->enum('source', ['ONLINE', 'BACKEND']);
+            $table->enum('registration_source', ['ONLINE', 'BACKEND']);
             $table->enum('gender', ['MALE', 'FEMALE'])->nullable();
             $table->date('date_of_birth')->nullable();
             $table->enum('marital_status', ['SINGLE', 'MARRIED', 'DIVORCED', 'SEPERATED', 'WIDOWED'])->nullable();

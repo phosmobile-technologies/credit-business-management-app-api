@@ -9,7 +9,7 @@ namespace App\Models\enums;
  *
  * @package App\Models\enums
  */
-class UserRegistrationSource
+class RegistrationSource
 {
     const BACKEND = "BACKEND";
     const ONLINE = "ONLINE";
