@@ -66,12 +66,12 @@ class UserRepository implements UserRepositoryInterface
      *
      * @param User $user
      * @param array $roles
-     * @param $source
+     * @param $registration_source
      * @return User
      */
-    public function attachUserRoles(User $user, array $roles, $source): User
+    public function attachUserRoles(User $user, array $roles, $registration_source): User
     {
-        if(RegistrationSource::BACKEND){
+        if($registration_source==RegistrationSource::BACKEND){
             $user->assignRole($roles);
         }else{
             $user->assignRole(UserRoles::CUSTOMER);

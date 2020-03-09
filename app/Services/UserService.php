@@ -52,7 +52,7 @@ class UserService
         $attributes = collect($attributes);
 
         $roles = $attributes['roles'];
-        $source = $attributes['registration_source'];
+        $registration_source = $attributes['registration_source'];
 
         $userData = $attributes->only([
             'first_name',
@@ -86,9 +86,9 @@ class UserService
 
         $user = $this->userRepository->createUser($userData);
         $this->userRepository->attachUserProfile($user, $userProfileData);
-        $this->userRepository->attachUserRoles($user, $roles, $source);
+        $this->userRepository->attachUserRoles($user, $roles, $registration_source);
 
-        event(new NewUserRegistered($user, $this->defaultPassword, $source));
+        event(new NewUserRegistered($user, $this->defaultPassword, $registration_source));
 
         return [
             "user" => $user
