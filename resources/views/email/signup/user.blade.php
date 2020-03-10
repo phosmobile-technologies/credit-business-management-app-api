@@ -5,19 +5,16 @@
 
         You have successfully been registered on the SpringVerse platform.
 
-        @if($registration_source == "BACKEND")
+        @if($registration_source == \App\Models\enums\RegistrationSource::BACKEND)
             {
             Please find your login credentials below:
 
             * Email - {{ $user['email'] }}
             * Default Password - {{ $defaultPassword }}
             }
-        @else{
-
-        }
         @endif
 
-        <a href="http://www.springverse.com/login">Login</a>
+        <a href="{{env('APP_URL')}}/login">Login</a>
         If you are not a Springverse customer, please disregard this email.
         please disregard this email.
 
