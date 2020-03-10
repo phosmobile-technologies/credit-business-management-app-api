@@ -17,6 +17,8 @@
         "laravel/framework": "^6.0",
         "laravel/passport": "^7.5",
         "laravel/tinker": "^1.0",
+        "maatwebsite/excel": "^3.1",
+        "myclabs/php-enum": "^1.7",
         "nuwave/lighthouse": "^4.3",
         "spatie/laravel-activitylog": "^3.8",
         "spatie/laravel-permission": "^3.0"
@@ -36,7 +38,9 @@
     },
     "extra": {
         "laravel": {
-            "dont-discover": []
+            "dont-discover": [
+
+            ]
         }
     },
     "autoload": {
@@ -58,7 +62,9 @@
     "scripts": {
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
-            "@php artisan package:discover --ansi"
+            "@php artisan package:discover --ansi",
+            "if [ \"$OAUTH_PUBLIC_KEY\" != \"\" ]; then echo \"$OAUTH_PUBLIC_KEY\" > storage/oauth-public.key; fi",
+            "if [ \"$OAUTH_PRIVATE_KEY\" != \"\" ]; then echo \"$OAUTH_PRIVATE_KEY\" > storage/oauth-private.key; fi"
         ],
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""

@@ -1,0 +1,18 @@
+extend type Query @middleware(checks: ["auth:api"]){
+    """ Get a client by their ID """
+    GetCustomerById(id: ID! @eq): User @find(model: "App\\User")
+
+    """ Get a customers transactions """
+    GetCustomerTransactionsById(
+        customer_id: ID!,
+        transaction_type: TransactionOwnerType!,
+        orderBy: [OrderByClause!] @orderBy(columns: ["created_at"])
+    ): [Transaction]!
+    @paginate(builder: "App\\GraphQL\\Queries\\GetCustomerTransactionsById", defaultCount: 25)
+
+}
+
+extend type Query {
+    """ Get aggregate statistics for loans and contribbution plans owned by a user  """
+    GetCustomerStatistics( customer_id: ID!): CustomerStatistics!
+}

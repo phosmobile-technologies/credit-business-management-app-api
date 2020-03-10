@@ -2,7 +2,11 @@
 
 namespace Tests\GraphQL;
 
+use App\Models\Company;
+use App\Models\CompanyBranch;
 use App\Models\UserProfile;
+use App\Models\Wallet;
+use App\Models\Enums\UserRoles;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -16,9 +20,21 @@ class UserRegistrationTest extends TestCase
      */
     public function testItSuccessfullyRegistersANewUser()
     {
+        $this->seed('TestDatabaseSeeder');
+
         $userData = collect(factory(User::class)->make())->except(['email_verified_at', 'password'])->toArray();
-        $userProfileData = factory(UserProfile::class)->make()->toArray();
+
+        $company = Company::first();
+        $branch = CompanyBranch::inRandomOrder()->first();
+        $userProfileData = factory(UserProfile::class)->make([
+            'company_id' => $company->id,
+            'branch_id' => $branch->id
+        ]);
+        $userProfileData = collect($userProfileData)->except(['customer_identifier'])->toArray();
+        $userProfileData['roles'] = [UserRoles::CUSTOMER];
+
         $registrationData = array_merge($userData, $userProfileData);
+
 
         /** @var \Illuminate\Foundation\Testing\TestResponse $response */
         $response = $this->postGraphQL([
@@ -29,14 +45,14 @@ class UserRegistrationTest extends TestCase
                         first_name,
                         last_name,
                         email,
-                        phone_number
+                        phone_number,
                         profile {
                             occupation,
                             address,
                             state_of_origin,
-                            saving_amount,
-                            frequency_of_saving
-                        }
+                            bvn,
+                            bank_account_number
+                        }  
                     }
                 }
             }
@@ -58,8 +74,8 @@ class UserRegistrationTest extends TestCase
                             'occupation' => $userProfileData['occupation'],
                             'address' => $userProfileData['address'],
                             'state_of_origin' => $userProfileData['state_of_origin'],
-                            'saving_amount' => $userProfileData['saving_amount'],
-                            'frequency_of_saving' => $userProfileData['frequency_of_saving'],
+                            'bvn' => $userProfileData['bvn'],
+                            'bank_account_number' => $userProfileData['bank_account_number']
                         ]
                     ]
                 ]

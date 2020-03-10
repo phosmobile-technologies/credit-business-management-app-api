@@ -1,0 +1,16 @@
+extend type Mutation @middleware(checks: ["auth:api"]){
+
+    """ Initiate a transaction """
+    InitiateTransaction(input: CreateTransactionInput! @spread): Transaction!
+    @can(ability: "initiateTransaction", model: "App\\Models\\Transaction")
+
+    """ Process a transaction """
+    ProcessTransaction(
+        transaction_id: ID!
+        action: TransactionProcessingType!
+        message: String
+    ): Transaction!
+    @can(ability: "processTransaction", model: "App\\Models\\Transaction", find: "transaction_id")
+    @inject(context: "user", name: "user")
+
+}

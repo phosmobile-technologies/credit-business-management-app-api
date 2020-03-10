@@ -1,0 +1,30 @@
+""" Input for creating a loan """
+input CreateLoanInput {
+    user_id: ID!
+    loan_purpose: String!
+    loan_repayment_source: String!
+    loan_amount: Float!
+    interest_rate: Float! # In percentage
+    loan_repayment_frequency: LoanRepaymentFrequency!
+    service_charge: Float! # (percent of the loan / static amount)
+    default_amount: Float! # (static amount to be set for defaults on loans, defaults count when due date is exceeded)
+    tenure: Int! # In Months
+}
+
+""" Input which allows customers apply for a loan """
+input CreateLoanApplicationInput {
+    user_id: ID!
+    loan_purpose: String!
+    loan_repayment_source: String!
+    loan_amount: Float!
+    loan_repayment_frequency: LoanRepaymentFrequency!
+    tenure: Int # In Months
+    expected_disbursement_date: Date
+}
+
+""" Input for disbursing loans """
+input DisburseLoanInput {
+    loan_id: ID!
+    amount_disbursed: Float!
+    message: String
+}

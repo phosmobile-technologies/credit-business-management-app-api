@@ -31,8 +31,14 @@ class SendUserRegistrationEmail implements ShouldQueue
     {
         $user = $event->user;
         $defaultPassword = $event->defaultPassword;
+        $registration_source = $event->registration_source;
 
-        Mail::to($user)->send(new NewUserRegisteredMail($user, $defaultPassword));
+        /**
+         * This check was added because when importing existing users, they might not have an email address.
+         */
+        if ($user->getEmailForVerification()) {
+            Mail::to($user)->send(new NewUserRegisteredMail($user, $defaultPassword, $registration_source));
+        }
     }
 
     /**

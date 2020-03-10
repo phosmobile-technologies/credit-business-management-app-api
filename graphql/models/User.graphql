@@ -6,6 +6,23 @@ type User {
     phone_number: String!
     email: String!
     profile: UserProfile @hasOne
+    wallet: Wallet! @hasOne
+    loans: [Loan]! @hasMany
+    contribution_plans: [ContributionPlan]! @hasMany(relation: "contributionPlans")
+    roles: [Role!]! @morphMany
     created_at: DateTime!
     updated_at: DateTime!
+}
+
+type Role {
+    id: ID!
+    name: String!
+}
+
+enum UserRoles {
+    CUSTOMER,
+    ADMIN_STAFF,
+    ADMIN_ACCOUNTANT,
+    ADMIN_MANAGER,
+    SUPER_ADMIN
 }

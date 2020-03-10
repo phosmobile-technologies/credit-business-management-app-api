@@ -3,10 +3,19 @@
 namespace App;
 
 use App\Models\Concerns\UsesUuid;
+use App\Models\ContributionPlan;
+use App\Models\Enums\LoanConditionStatus;
+use App\Models\Loan;
+use App\Models\Wallet;
+use App\Models\Transaction;
 use App\Models\UserProfile;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Passport\HasApiTokens;
 use Spatie\Activitylog\Traits\CausesActivity;
@@ -23,7 +32,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'first_name', 'last_name', 'phone_number'
+        'name', 'email', 'password','first_name', 'last_name', 'phone_number'
     ];
 
     /**
@@ -59,6 +68,26 @@ class User extends Authenticatable
     }
 
     /**
+     * Converts the user email to lowercase when setting it.
+     *
+     * @param $value
+     */
+    public function setEmailAttribute($value)
+    {
+        $this->attributes['email'] = strtolower($value);
+    }
+
+    /**
+     * Encrypt the user password when setting it.
+     *
+     * @param $value
+     */
+    public function setPasswordAttribute($value)
+    {
+        $this->attributes['password'] = Hash::make($value);
+    }
+
+    /**
      * Relationship between a user and their user profile.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
@@ -69,11 +98,67 @@ class User extends Authenticatable
     }
 
     /**
-     * Encrypt the user password when setting it.
+     * Relationship between a user and their loans.
      *
-     * @param $value
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function setPasswordAttribute($value) {
-        $this->attributes['password'] = Hash::make($value);
+    public function loans(): HasMany
+    {
+        return $this->hasMany(Loan::class, 'user_id', 'id');
+    }
+
+    /**
+     * A user's currently active loans
+     *
+     * @return Collection
+     */
+    public function activeLoans(): Collection
+    {
+        return $this->loans()->where('loan_condition_status', "!=", LoanConditionStatus::COMPLETED)->get();
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     */
+    public function loanTransactions() {
+        return $this->hasManyThrough(Transaction::class, Loan::class, 'user_id', 'owner_id', 'id', 'id');
+    }
+
+    /**
+     * Relationship between a user and their contribution plans.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function contributionPlans(): HasMany
+    {
+        return $this->hasMany(ContributionPlan::class, 'user_id', 'id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     */
+    public function contributionPlansTransactions() {
+        return $this->hasManyThrough(Transaction::class, ContributionPlan::class, 'user_id', 'owner_id', 'id', 'id');
+    }
+
+    /**
+     * Relationship between a user and their wallets.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function wallet(): HasOne
+    {
+        return $this->hasOne(Wallet::class, 'user_id', 'id');
+    }
+
+
+    /**
+     * Relationship between a user and their wallet transactions.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     */
+    public function walletTransactions()
+    {
+        return $this->hasManyThrough(Transaction::class, Wallet::class, 'user_id', 'owner_id', 'id', 'id');
     }
 }

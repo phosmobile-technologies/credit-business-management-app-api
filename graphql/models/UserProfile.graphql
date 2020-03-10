@@ -1,4 +1,4 @@
-# The User Profile
+""" Profile data for a user """
 type UserProfile {
     id: ID!
     gender: Gender!
@@ -7,14 +7,35 @@ type UserProfile {
     occupation: String!
     address: String!
     state_of_origin: String!
-    saving_amount: Float!
-    frequency_of_saving: FrequencyOfSaving!
+    registration_source: RegistrationSource!
+    bvn: String
+    bank_account_number: String
+    bank_account_name: String
+    bank_name: String
     next_of_kin: String!
     relationship_with_next_of_kin: String!
     account_administrator: String!
     account_name: String!
     account_number: String!
     status: AccountStatus!
+    company: Company! @belongsTo
+    branch: CompanyBranch! @belongsTo
+}
+
+""" A company that has users """
+type Company {
+    id: ID!
+    name: String!
+    location: String
+}
+
+""" A branch operated by a company """
+type CompanyBranch {
+    id: ID!
+    name: String!
+    location: String
+    customers: [User]! @hasMany
+    loans: [Loan]! @hasMany
 }
 
 # Gender for a user
@@ -23,18 +44,19 @@ enum Gender {
     FEMALE
 }
 
+# registration source for creating user
+enum RegistrationSource {
+    ONLINE
+    BACKEND
+}
+
 # Marital status of a user
 enum MaritalStatus {
     SINGLE
     MARRIED
     DIVORCED
-}
-
-# Frequency at which a user saves money
-enum FrequencyOfSaving {
-    WEEKLY
-    MONTHLY
-    QUARTERLY
+    SEPERATED
+    WIDOWED
 }
 
 # User's account status

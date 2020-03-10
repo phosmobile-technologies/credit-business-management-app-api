@@ -1,12 +1,16 @@
+### This workflow releases the dev branch to AWS lambda via serverless (bref.sh) when a PR is merged into the dev
+
+
 # The name of the workflow.
-name: Continuous integration pipeline triggered when a release
+name: Release Dev
 
 # The events that trigger this github workflow
 on:
-  release:
-    types: [created]
+  pull_request:
+    types: [closed]
     branches:
-      - dev
+    # Intentionally putting a wrong branch name, so this workflow doesn't run until the issue with serverless deployment is resolved.
+      - dev-wrong
 
 jobs:
   # Job used to setup the app and run unit tests
@@ -15,30 +19,37 @@ jobs:
     steps:
     # Checkout your code
       - uses: actions/checkout@v1
+        if: github.event.pull_request.merged == true
         with:
           ref: dev
 
       - name: Copy .env
+        if: success()
         run: php -r "file_exists('.env') || copy('.env.example', '.env');"
 
       - name: Cache Composer Dependencies
+        if: success()
         uses: actions/cache@v1
         with:
           path: vendor
           key: ${{ runner.OS }}-build-${{ hashFiles('**/composer.lock') }}
 
       - name: Install Composer Dependencies
+        if: success()
         run: composer install --optimize-autoloader -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
 
       - name: Generate Application Key
+        if: success()
         run: php artisan key:generate
 
       - name: Create Testing Database
+        if: success()
         run: |
             mkdir -p database
             touch database/database.sqlite
 
       - name: Execute tests (Unit, Feature and GraphQL tests) via PHPUnit
+        if: success()
         env:
           DB_CONNECTION: sqlite
           DB_DATABASE: database/database.sqlite
@@ -46,15 +57,19 @@ jobs:
 
         ### Serverless app deployment
       - name: Clear Laraval config cache in preparation for serverless deployment
+        if: success()
         run: php artisan config:clear
 
       - name: Install Composer dependencies optimized for production
+        if: success()
         run: composer install --prefer-dist --optimize-autoloader --no-dev
 
       - name: Install serverless cli
+        if: success()
         run: npm install serverless
 
       - name: Deploy the application to AWS lambda using bref.sh(serverless)
+        if: success()
         run: |
             export AWS_ACCESS_KEY_ID=${{ secrets.AwsAccessKeyId }}
             export AWS_SECRET_ACCESS_KEY=${{ secrets.AwsSecretAccessKey }}

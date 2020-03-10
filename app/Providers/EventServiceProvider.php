@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Events\LoanApplicationStatusChanged;
+use App\Events\NewLoanCreated;
 use App\Events\NewUserRegistered;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -22,7 +24,15 @@ class EventServiceProvider extends ServiceProvider
 
         NewUserRegistered::class => [
             "App\Listeners\SendUserRegistrationEmail"
-        ]
+        ],
+
+        NewLoanCreated::class => [
+            "App\Listeners\SendLoanCreatedEmail"
+        ],
+
+        LoanApplicationStatusChanged::class => [
+            "App\Listeners\LogLoanApplicationStatusChange"
+        ],
     ];
 
     /**
