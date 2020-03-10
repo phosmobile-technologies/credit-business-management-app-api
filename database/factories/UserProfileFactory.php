@@ -9,6 +9,7 @@ $factory->define(UserProfile::class, function (Faker $faker) {
     $genders = ['MALE', 'FEMALE'];
     $maritalStatus = ['SINGLE', 'MARRIED', 'DIVORCED'];
     $stateOfOrigin = ['Lagos', 'Ogun', 'Delta'];
+    $registrationSource = ['ONLINE', 'BACKEND'];
     $nokRelationship = ['father', 'mother', 'sibling'];
 
     return [
@@ -29,6 +30,7 @@ $factory->define(UserProfile::class, function (Faker $faker) {
         'bank_name' => $faker->name,
         'status' => 'INACTIVE',
         'customer_identifier' => $faker->uuid,
+        'registration_source' => $registrationSource[array_rand($registrationSource)],
         'company_id' => $faker->uuid,
         'branch_id' => $faker->uuid
     ];

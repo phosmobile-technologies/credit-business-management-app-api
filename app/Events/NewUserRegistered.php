@@ -18,17 +18,23 @@ class NewUserRegistered
     public $user;
 
     public $defaultPassword;
+    /**
+     * @var String
+     */
+    public $registration_source;
 
     /**
      * Create a new event instance.
      *
      * @param User $user
      * @param String $defaultPassword
+     * @param  $registration_source
      */
-    public function __construct(User $user, String $defaultPassword)
+    public function __construct(User $user, String $defaultPassword, $registration_source)
     {
         $this->user = $user;
         $this->defaultPassword = $defaultPassword;
+        $this->registration_source = $registration_source;
     }
 
     /**

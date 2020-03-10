@@ -7,6 +7,7 @@ type UserProfile {
     occupation: String!
     address: String!
     state_of_origin: String!
+    registration_source: RegistrationSource!
     bvn: String
     bank_account_number: String
     bank_account_name: String
@@ -41,6 +42,12 @@ type CompanyBranch {
 enum Gender {
     MALE
     FEMALE
+}
+
+# registration source for creating user
+enum RegistrationSource {
+    ONLINE
+    BACKEND
 }
 
 # Marital status of a user
