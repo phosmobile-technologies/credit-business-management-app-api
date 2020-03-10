@@ -2,8 +2,10 @@
 
 namespace App\Services;
 
+use App\Models\Company;
 use App\Models\CompanyBranch;
 use App\Repositories\Interfaces\CompanyBranchRepositoryInterface;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Date;
 
 /**
@@ -88,5 +90,15 @@ class BranchService
      */
     public function searchBranchCustomersQuery(string $branch_id, ?string $search_query, ?Date $start_date, ?Date $end_date) {
         return $this->branchRepository->searchBranchCustomers($branch_id, $search_query, $start_date, $end_date);
+    }
+    /**
+     * @return Collection
+     */
+    public function getCompanyBranchesQuery()
+    {
+        $company = Company::all()->first();
+        $company_id = $company->id;
+
+        return $this->branchRepository->getCompanyBranches($company_id);
     }
 }

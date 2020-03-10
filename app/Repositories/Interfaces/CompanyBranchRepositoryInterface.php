@@ -3,6 +3,7 @@
 namespace App\Repositories\Interfaces;
 
 
+use App\Models\Company;
 use App\Models\CompanyBranch;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
@@ -69,4 +70,10 @@ interface CompanyBranchRepositoryInterface
      * @return HasManyThrough
      */
     public function searchBranchCustomers(string $branch_id, ?string $search_query, ?Date $start_date, ?Date $end_date): HasManyThrough;
+
+    /**
+     * @param string $company_id
+     * @return Collection
+     */
+    public function getCompanyBranches(string $company_id):Collection;
 }

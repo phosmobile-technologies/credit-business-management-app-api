@@ -1,0 +1,7 @@
+extend type Query {
+
+    getCompanyBranches(
+        company_id: ID
+    ): [CompanyBranch]!
+
+}

@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 
+use App\Models\Company;
 use App\Models\CompanyBranch;
 use App\Models\Enums\UserRoles;
 use App\Repositories\Interfaces\CompanyBranchRepositoryInterface;
@@ -121,4 +122,19 @@ class CompanyBranchRepository implements CompanyBranchRepositoryInterface
 
         });
     }
+
+    /**
+     * @param string $company_id
+     * @return Collection
+     */
+    public function getCompanyBranches(string $company_id): Collection
+    {
+        // TODO: Implement getCompanyBranches() method.
+
+        return CompanyBranch::where('company_id',$company_id)->get();
+
+    }
+
+
+
 }
