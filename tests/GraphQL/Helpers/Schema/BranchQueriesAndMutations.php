@@ -78,4 +78,30 @@ class BranchQueriesAndMutations
             }
         ';
     }
+
+
+
+    /**
+     * Get the loans that belong to a branch.
+     *
+     * @return string
+     */
+    public static function GetCompany()
+    {
+        return '
+            query GetCompany {
+                GetCompany{
+                   id
+                    name
+                    location
+                    branches{
+                    id
+                    name
+                    location
+            }
+            }
+            }
+        ';
+    }
+
 }
