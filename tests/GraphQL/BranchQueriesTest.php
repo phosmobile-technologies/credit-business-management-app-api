@@ -171,7 +171,7 @@ class BranchQueriesTest extends TestCase
     /**
      * @test
      */
-    public function testGetCompanyBranchesQuery()
+    public function testGetCompanyQuery()
     {
         $this->loginTestUserAndGetAuthHeaders();
         $branches = CompanyBranch::all();
@@ -179,12 +179,12 @@ class BranchQueriesTest extends TestCase
 
 
         $response = $this->postGraphQL([
-            'query' => BranchQueriesAndMutations::GetCompanyBranches(),
+            'query' => BranchQueriesAndMutations::GetCompany(),
         ], $this->headers);
 
         $response->assertJson([
             'data' => [
-                'GetCompanyBranches' => [
+                'GetCompany' => [
                     'id' => $company->id,
                     'branches' => [
                         ['id' => $branches[0]['id']],

@@ -86,11 +86,11 @@ class BranchQueriesAndMutations
      *
      * @return string
      */
-    public static function GetCompanyBranches()
+    public static function GetCompany()
     {
         return '
-            query GetCompanyBranches {
-                GetCompanyBranches {
+            query GetCompany {
+                GetCompany{
                    id
                     name
                     location
