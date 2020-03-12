@@ -174,23 +174,23 @@ class BranchQueriesTest extends TestCase
     public function testGetBranchesByCompanyIdQuery()
     {
         $this->loginTestUserAndGetAuthHeaders();
-        $branch = CompanyBranch::first();
+        $branches = CompanyBranch::all();
         $company = Company::first();
 
+
         $response = $this->postGraphQL([
-            'query' => BranchQueriesAndMutations::getCompanyBranchesById(),
-            'variables' => [
-                'id' => $company->id
-            ],
+            'query' => BranchQueriesAndMutations::GetCompanyBranches(),
         ], $this->headers);
 
         $response->assertJson([
-            'GetCompanyById' => [
-                'id' => $company->id,
-                'branches' => [
-                    ['id' => $branch[0]['id']],
-                    ['id' => $branch[1]['id']],
-                    ['id' => $branch[2]['id']],
+            'data' => [
+                'GetCompanyBranches' => [
+                    'id' => $company->id,
+                    'branches' => [
+                        ['id' => $branches[0]['id']],
+                        ['id' => $branches[1]['id']],
+                        ['id' => $branches[2]['id']],
+                    ]
                 ]
             ]
         ]);

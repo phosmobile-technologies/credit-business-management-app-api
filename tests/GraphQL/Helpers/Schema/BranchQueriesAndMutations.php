@@ -86,11 +86,11 @@ class BranchQueriesAndMutations
      *
      * @return string
      */
-    public static function getCompanyBranchesById()
+    public static function GetCompanyBranches()
     {
         return '
-            query GetCompanyById($id: ID!) {
-                getCompanyById(id: $id) {
+            query GetCompanyBranches {
+                GetCompanyBranches {
                    id
                     name
                     location
@@ -98,6 +98,8 @@ class BranchQueriesAndMutations
                     id
                     name
                     location
+            }
+            }
             }
         ';
     }
