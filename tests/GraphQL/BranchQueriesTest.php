@@ -171,7 +171,7 @@ class BranchQueriesTest extends TestCase
     /**
      * @test
      */
-    public function testGetBranchesByCompanyIdQuery()
+    public function testGetCompanyBranchesQuery()
     {
         $this->loginTestUserAndGetAuthHeaders();
         $branches = CompanyBranch::all();
