@@ -167,4 +167,33 @@ class BranchQueriesTest extends TestCase
     public function testSearchBranchCustomersQuery() {
         $this->markTestSkipped("The test for searching a branch's customers needs to be implemented");
     }
+
+    /**
+     * @test
+     */
+    public function testGetBranchesByCompanyIdQuery()
+    {
+        $this->loginTestUserAndGetAuthHeaders();
+        $branch = CompanyBranch::first();
+        $company = Company::first();
+
+        $response = $this->postGraphQL([
+            'query' => BranchQueriesAndMutations::getCompanyBranchesById(),
+            'variables' => [
+                'id' => $company->id
+            ],
+        ], $this->headers);
+
+        $response->assertJson([
+            'GetCompanyById' => [
+                'id' => $company->id,
+                'branches' => [
+                    ['id' => $branch[0]['id']],
+                    ['id' => $branch[1]['id']],
+                    ['id' => $branch[2]['id']],
+                ]
+            ]
+        ]);
+    }
+
 }
