@@ -93,7 +93,7 @@ class UserRepository implements UserRepositoryInterface
     }
 
     /**
-     * Get the eloquent query builder that can get transactions that belong to a customer.
+     * Get the eloquent query builder that can get transaction that belong to a customer.
      *sss
      * @param string $customer_id
      * @return HasManyThrough
@@ -106,7 +106,7 @@ class UserRepository implements UserRepositoryInterface
     }
 
     /**
-     * Get the eloquent query builder that can get wallet transactions that belong to a customer.
+     * Get the eloquent query builder that can get wallet transaction that belong to a customer.
      *sss
      * @param string $customer_id
      * @return HasManyThrough
@@ -119,7 +119,7 @@ class UserRepository implements UserRepositoryInterface
     }
 
     /**
-     * Get the eloquent query builder that can get contribution plan transactions that belong to a customer.
+     * Get the eloquent query builder that can get contribution plan transaction that belong to a customer.
      *sss
      * @param string $customer_id
      * @return HasManyThrough

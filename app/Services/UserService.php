@@ -113,7 +113,7 @@ class UserService
     }
 
     /**
-     * Get the query builder for transactions that a belong to a user.
+     * Get the query builder for transaction that a belong to a user.
      *
      * @param string $customer_id
      * @param string $transactionType

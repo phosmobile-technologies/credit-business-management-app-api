@@ -56,7 +56,7 @@ interface UserRepositoryInterface
     public function find(string $user_id): ?User;
 
     /**
-     * Get the eloquent query builder that can get loan transactions that belong to a customer.
+     * Get the eloquent query builder that can get loan transaction that belong to a customer.
      *sss
      * @param string $customer_id
      * @return HasManyThrough
@@ -64,7 +64,7 @@ interface UserRepositoryInterface
     public function findLoanTransactionsQuery(string $customer_id): HasManyThrough;
 
     /**
-     * Get the eloquent query builder that can get contribution plan transactions that belong to a customer.
+     * Get the eloquent query builder that can get contribution plan transaction that belong to a customer.
      *sss
      * @param string $customer_id
      * @return HasManyThrough
@@ -72,7 +72,7 @@ interface UserRepositoryInterface
     public function findContributionPlanTransactionsQuery(string $customer_id): HasManyThrough;
 
     /**
-     * Get the eloquent query builder that can get wallet transactions that belong to a customer.
+     * Get the eloquent query builder that can get wallet transaction that belong to a customer.
      *sss
      * @param string $customer_id
      * @return HasManyThrough

@@ -22,7 +22,7 @@ class Wallet extends Model
     protected $guarded = [];
 
     /**
-     * Get all of the wallet's transactions.
+     * Get all of the wallet's transaction.
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */

@@ -25,7 +25,7 @@ class CustomerQueriesAndMutations
     }
 
     /**
-     * Query for getting a customer's loan transactions.
+     * Query for getting a customer's loan transaction.
      *
      * @return string
      */

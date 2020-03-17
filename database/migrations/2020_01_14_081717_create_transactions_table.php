@@ -16,7 +16,7 @@ class CreateTransactionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('transactions', function (Blueprint $table) {
+        Schema::create('transaction', function (Blueprint $table) {
             $table->uuid('id');
             $table->dateTime('transaction_date');
             $table->enum('transaction_type', [
@@ -57,6 +57,6 @@ class CreateTransactionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('transactions');
+        Schema::dropIfExists('transaction');
     }
 }

@@ -29,7 +29,7 @@ class ContributionPlan extends Model
     }
 
     /**
-     * Get all of the contribution plan's transactions.
+     * Get all of the contribution plan's transaction.
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */

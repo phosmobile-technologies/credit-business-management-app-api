@@ -38,7 +38,7 @@ class Loan extends Model
     }
 
     /**
-     * Get all of the loan's transactions.
+     * Get all of the loan's transaction.
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */

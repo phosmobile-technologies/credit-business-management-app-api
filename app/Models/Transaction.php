@@ -12,7 +12,7 @@ class Transaction extends Model
     /**
      * @var string
      */
-    protected $table = "transactions";
+    protected $table = "transaction";
 
     /**
      * @var array
