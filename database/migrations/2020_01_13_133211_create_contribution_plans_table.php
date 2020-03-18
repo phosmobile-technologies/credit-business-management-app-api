@@ -29,14 +29,16 @@ class CreateContributionPlansTable extends Migration
                 ContributionFrequency::WEEKLY,
                 ContributionFrequency::MONTHLY,
                 ContributionFrequency::QUARTERLY
-            ]);
+            ])->nullable();
             $table->float('contribution_amount');
             $table->float('contribution_balance')->nullable();
             $table->string('contribution_name');
             $table->integer('contribution_duration'); # In months
             $table->float('contribution_interest_rate'); # In percentage
+            $table->date('contribution_start_date')->nullable();
+            $table->date('contribution_payback_date')->nullable();
+            $table->float('contribution_fixed_amount')->nullable();
             $table->timestamps();
-
             $table->foreign('user_id')
                 ->references('id')
                 ->on('users');
