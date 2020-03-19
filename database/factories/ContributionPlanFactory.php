@@ -30,6 +30,9 @@ $factory->define(ContributionPlan::class, function (Faker $faker) {
         'contribution_balance' => $faker->randomFloat(2, 10000, 5000000),
         'contribution_interest_rate' => $faker->randomFloat(2, 1, 50),
         'contribution_frequency' => $contributionFrequencies[array_rand($contributionFrequencies)],
+        'contribution_start_date' => $faker->date('Y-m-d'),
+        'contribution_payback_date' => $faker->date('Y-m-d'),
+        'contribution_fixed_amount'=>$faker->randomFloat(2, 10000, 10000000),
     ];
 });
 
