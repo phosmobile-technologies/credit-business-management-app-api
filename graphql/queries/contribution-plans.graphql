@@ -4,5 +4,5 @@ extend type Query {
         customer_id: ID! @where(operator: "=", key: "user_id"),
         contribution_plan_type: ContributionType @where(operator: "=", key: "contribution_type")
     ): [ContributionPlan]!
-    @all
+
 }

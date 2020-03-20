@@ -4,11 +4,13 @@ namespace App\Services;
 
 
 use App\Models\ContributionPlan;
+use App\Models\enums\ContributionStatus;
 use App\Models\enums\TransactionOwnerType;
 use App\Models\enums\TransactionStatus;
 use App\Models\Transaction;
 use App\Repositories\Interfaces\ContributionRepositoryInterface;
 use App\Repositories\Interfaces\TransactionRepositoryInterface;
+use Carbon\Carbon;
 
 /**
  * Class ContributionService
@@ -80,4 +82,46 @@ class ContributionService
     {
         return $this->transactionService->initiateContributionPlanPaymentTransaction($contribution_plan_id, $transactionDetails);
     }
+
+
+    /**
+     * @param string $customer_id
+     * @return mixed
+     */
+    public function getContributionPlan(string $customer_id)
+    {
+        $user_contributions =  collect(ContributionPlan::where('user_id',$customer_id)->get());
+        $computedContributions = [];
+        foreach ($user_contributions as $contribution){
+           $userContribution =  collect($contribution)->toArray();
+            $currentDate = Carbon::now(); //get a carbon instance with created_at as date
+            $payBackDate =  Carbon::parse($userContribution['contribution_payback_date']);
+
+            $userContribution['contribution_status'] = $this->computeContributionPlanStatus($currentDate,$payBackDate,$userContribution['contribution_duration']);
+           array_push($computedContributions,$userContribution);
+        }
+
+        return $computedContributions;
+
+    }
+
+    public function computeContributionPlanStatus( $currentDate, $payBackDate, float $balance)
+    {
+
+        if($balance <=0 && $currentDate < $payBackDate){
+            return ContributionStatus::INACTIVE;
+        }else{
+
+            if($currentDate > $payBackDate){
+                return ContributionStatus::COMPLETED;
+            }else{
+                return ContributionStatus::ACTIVE;
+            }
+
+        }
+    }
+
+
+
+
 }

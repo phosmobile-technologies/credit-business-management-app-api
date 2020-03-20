@@ -19,14 +19,14 @@ class ContributionPlan extends Model
      */
     protected $guarded = [];
 
-    /**
-     * Make the contribution_id into a custom readable format.
-     *
-     * @return string
-     */
-    public function getContributionIdAttribute() {
-        return "Loan - {$this->contribution_id}";
-    }
+//    /**
+//     * Make the contribution_id into a custom readable format.
+//     *
+//     * @return string
+//     */
+//    public function getContributionIdAttribute() {
+//        return "Loan - {$this->contribution_id}";
+//    }
 
     /**
      * Get all of the contribution plan's transactions.
