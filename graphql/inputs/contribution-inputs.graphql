@@ -19,7 +19,7 @@ input UpdateContributionInput {
     contribution_amount: Float
     contribution_name: String!
     contribution_duration: Int! #in months
-    contribution_balance: Float!
+    contribution_balance: Float
     contribution_payback_date:Date #contribution end date
     contribution_start_date:Date
     contribution_fixed_amount:Float

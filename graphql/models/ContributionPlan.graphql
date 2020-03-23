@@ -6,7 +6,7 @@ type ContributionPlan {
     contribution_amount: Float!
     contribution_name: String!
     contribution_duration: Int! #in months
-    contribution_balance: Float!
+    contribution_balance: Float
     contribution_start_date:Date
     contribution_payback_date:Date #contribution end date
     contribution_fixed_amount:Float
