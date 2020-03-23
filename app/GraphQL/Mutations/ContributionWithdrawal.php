@@ -1,25 +1,25 @@
 <?php
 
-namespace App\GraphQL\Queries;
+namespace App\GraphQL\Mutations;
 
-use App\Services\ContributionService;
+use App\Services\TransactionService;
 use GraphQL\Type\Definition\ResolveInfo;
 use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
 
-class GetCustomerContributionPlans
+class ContributionWithdrawal
 {
     /**
-     * @var ContributionService
+     * @var TransactionService
      */
-    private $contributionService;
+    private $transactionService;
 
     /**
-     * GetCustomerContributionPlans constructor.
-     * @param ContributionService $contributionService
+     * ContributionWithdrawal constructor.
+     * @param TransactionService $transactionService
      */
-    function __construct(ContributionService $contributionService)
+    function __construct(TransactionService $transactionService)
     {
-        $this->contributionService = $contributionService;
+        $this->transactionService = $transactionService;
     }
 
     /**
@@ -34,14 +34,6 @@ class GetCustomerContributionPlans
     public function __invoke($rootValue, array $args, GraphQLContext $context, ResolveInfo $resolveInfo)
     {
         // TODO implement the resolver
-
-        if(isset($args['contribution_plan_type'])){
-            return $this->contributionService->getContributionPlan($args['customer_id'],$args['contribution_plan_type']);
-        }else{
-            return $this->contributionService->getContributionPlan($args['customer_id']);
-        }
-
-
-
-}
+        return $this->transactionService->ContributionPlanWithdrawalTransaction($args['contribution_plan_id'], $args['owner_id'], $args['transaction_details']);
+    }
 }

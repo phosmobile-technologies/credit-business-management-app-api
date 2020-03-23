@@ -13,4 +13,5 @@ extend type Mutation @middleware(checks: ["auth:api"]){
     @delete(model: "App\\Models\\ContributionPlan")
     @can(ability: "delete", model: "App\\Models\\ContributionPlan", find: "contribution_id")
 
+
 }

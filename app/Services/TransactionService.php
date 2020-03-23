@@ -3,6 +3,10 @@
 namespace App\Services;
 
 
+use App\GraphQL\Errors\GraphqlError;
+use App\Models\ContributionPlan;
+use App\Models\enums\ContributionStatus;
+use App\Models\enums\ContributionType;
 use App\Models\enums\TransactionOwnerType;
 use App\Models\enums\TransactionProcessingActions;
 use App\Models\enums\TransactionStatus;
@@ -15,6 +19,7 @@ use App\Repositories\Interfaces\WalletRepositoryInterface;
 use App\Repositories\Interfaces\LoanRepositoryInterface;
 use App\Repositories\Interfaces\TransactionRepositoryInterface;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class TransactionService
@@ -77,6 +82,10 @@ class TransactionService
             case TransactionType::BRANCH_FUND_DISBURSEMENT:
                 return $this->initiateBranchFundDisbursementTransaction($owner_id, $transactionDetails);
                 break;
+            case TransactionType::CONTRIBUTION_WITHDRAWAL:
+                return $this->initiateContributionPlanWithdrawalTransaction($owner_id, $transactionDetails);
+                break;
+
         }
     }
 
@@ -117,16 +126,24 @@ class TransactionService
     }
 
     /**
-     * Initiate a contribution plan payment transaction.
-     *
-     * @param string $contribution_plan_id
-     * @param array $transactionDetails
-     * @return Transaction
-     */
+ * Initiate a contribution plan payment transaction.
+ *
+ * @param string $contribution_plan_id
+ * @param array $transactionDetails
+ * @return Transaction
+ */
     public function initiateContributionPlanPaymentTransaction(string $contribution_plan_id, array $transactionDetails): Transaction
     {
         return $this->createTransaction(TransactionOwnerType::CONTRIBUTION_PLAN, $contribution_plan_id, $transactionDetails);
     }
+
+
+
+    public function initiateContributionPlanWithdrawalTransaction(string $contribution_plan_id, array $transactionDetails): Transaction
+    {
+        return $this->createTransaction(TransactionOwnerType::CONTRIBUTION_PLAN, $contribution_plan_id, $transactionDetails);
+    }
+
 
     /**
      * Initiate a wallet payment transaction.
@@ -344,5 +361,66 @@ class TransactionService
         });
 
         return $transaction;
+    }
+
+
+    public function ContributionPlanWithdrawalTransaction(string $contribution_plan_id, string $owner_id, array $transaction_details){
+
+        $contribution_plan = collect(ContributionPlan::find($contribution_plan_id));
+        $currentDate = Carbon::now(); //get a carbon instance with created_at as date
+        $payBackDate =  Carbon::parse($contribution_plan['contribution_payback_date']);
+        $startDate =  Carbon::parse($contribution_plan['contribution_start_date']);
+        $balance =  $contribution_plan['contribution_balance'];
+
+        $contributionStatus = ContributionService::computeContributionPlanStatus($currentDate,$payBackDate,$balance);
+        $contributionDefaultCharge = 0;
+        $contributionInterestSoFar = 0;
+
+        switch ($contributionStatus){
+            case ContributionStatus::ACTIVE:{
+                    switch ($contribution_plan['contribution_type']){
+                        case ContributionType::GOAL:{
+                            // deduct 2%
+                            $contributionDefaultCharge = 2/100*$contribution_plan['contribution_type'];
+                            $contributionInterestSoFar = ContributionService::computeContributionPlanInterest(10,$startDate,$payBackDate,$balance);
+                            break;
+                        }
+                        case ContributionType::FIXED:{
+                            // deduct 5%
+                            $contributionDefaultCharge = 5/100*$contribution_plan['contribution_type'];
+                            $contributionInterestSoFar = ContributionService::computeContributionPlanInterest(10,$startDate,$payBackDate,$balance);
+                            break;
+                        }
+                        case ContributionType::LOCKED:{
+                            throw new GraphqlError("Can't Complete Transaction");
+                            break;
+                        }
+                    }
+                break;
+            }
+            case ContributionStatus::COMPLETED:{
+                $contributionInterestSoFar = ContributionService::computeContributionPlanInterest(10,$startDate,$payBackDate,$balance);
+                break;
+            }
+            case ContributionStatus::INACTIVE:{
+                throw new GraphqlError("Inactive Contribution Plan");
+                break;
+            }
+        }
+
+
+        $transaction_details  = collect($transaction_details)->only([
+            'transaction_date',
+            'transaction_type',
+            'transaction_medium',
+            'transaction_purpose'
+        ]);
+        $transaction_details['transaction_amount'] =($contribution_plan['contribution_balance'] - $contributionDefaultCharge) + $contributionInterestSoFar;
+
+
+
+
+        return $this->initiateTransaction($owner_id,$transaction_details->toArray());
+
     }
 }

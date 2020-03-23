@@ -12,6 +12,7 @@ $factory->define(\App\Models\Transaction::class, function (Faker $faker) {
         TransactionType::BRANCH_EXPENSE,
         TransactionType::BRANCH_FUND_DISBURSEMENT,
         TransactionType::CONTRIBUTION_PAYMENT,
+        TransactionType::CONTRIBUTION_WITHDRAWAL,
         TransactionType::DEFAULT_CANCELLATION,
         TransactionType::DEFAULT_REPAYMENT,
         TransactionType::LOAN_DISBURSEMENT,

@@ -13,4 +13,8 @@ extend type Mutation @middleware(checks: ["auth:api"]){
     @can(ability: "processTransaction", model: "App\\Models\\Transaction", find: "transaction_id")
     @inject(context: "user", name: "user")
 
+
+    """ Initiate a contribution withdrawal transaction """
+    ContributionWithdrawal(input: ContributionWithdrawalTransactionInput! @spread): Transaction!
+    @can(ability: "initiateTransaction", model: "App\\Models\\Transaction")
 }
