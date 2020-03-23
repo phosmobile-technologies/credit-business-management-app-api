@@ -375,6 +375,7 @@ class TransactionService
         $contributionStatus = ContributionService::computeContributionPlanStatus($currentDate,$payBackDate,$balance);
         $contributionDefaultCharge = 0;
         $contributionInterestSoFar = 0;
+        $interestRate = $contribution_plan['contribution_interest_rate'];
 
         switch ($contributionStatus){
             case ContributionStatus::ACTIVE:{
@@ -382,13 +383,13 @@ class TransactionService
                         case ContributionType::GOAL:{
                             // deduct 2%
                             $contributionDefaultCharge = 2/100*$contribution_plan['contribution_type'];
-                            $contributionInterestSoFar = ContributionService::computeContributionPlanInterest(10,$startDate,$payBackDate,$balance);
+                            $contributionInterestSoFar = ContributionService::computeContributionPlanInterest($interestRate,$startDate,$payBackDate,$balance);
                             break;
                         }
                         case ContributionType::FIXED:{
                             // deduct 5%
                             $contributionDefaultCharge = 5/100*$contribution_plan['contribution_type'];
-                            $contributionInterestSoFar = ContributionService::computeContributionPlanInterest(10,$startDate,$payBackDate,$balance);
+                            $contributionInterestSoFar = ContributionService::computeContributionPlanInterest($interestRate,$startDate,$payBackDate,$balance);
                             break;
                         }
                         case ContributionType::LOCKED:{
@@ -399,7 +400,7 @@ class TransactionService
                 break;
             }
             case ContributionStatus::COMPLETED:{
-                $contributionInterestSoFar = ContributionService::computeContributionPlanInterest(10,$startDate,$payBackDate,$balance);
+                $contributionInterestSoFar = ContributionService::computeContributionPlanInterest($interestRate,$startDate,$payBackDate,$balance);
                 break;
             }
             case ContributionStatus::INACTIVE:{

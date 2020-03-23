@@ -106,30 +106,19 @@ class ContributionService
             $payBackDate =  Carbon::parse($userContribution['contribution_payback_date']);
 
             $userContribution['contribution_status'] = $this->computeContributionPlanStatus($currentDate,$payBackDate,                                      $userContribution['contribution_amount']);
+            $interestRate = $userContribution['contribution_interest_rate'];
             switch ($userContribution['contribution_type']){
                 case ContributionType::FIXED:{
-                    $userContribution['contribution_interest'] = $this->computeContributionPlanInterest (10, $userContribution['contribution_start_date'], $payBackDate, $userContribution['contribution_amount']);
+                    $userContribution['contribution_interest'] = $this->computeContributionPlanInterest ($interestRate, $userContribution['contribution_start_date'], $payBackDate, $userContribution['contribution_amount']);
                     break;
                 }
 
                 case ContributionType::LOCKED:{
-                    $interestRate = null;
-                   if($userContribution['contribution_duration'] <= 3){
-                       $interestRate = 6;
-                   }elseif($userContribution['contribution_duration'] <= 6){
-                       $interestRate = 8;
-                   }
-                   elseif($userContribution['contribution_duration'] <=9){
-                       $interestRate = 10;
-                   }
-                   elseif($userContribution['contribution_duration'] <=12){
-                       $interestRate = 12;
-                   }
                     $userContribution['contribution_interest']= $this->computeContributionPlanInterest ($interestRate, $userContribution['contribution_start_date'], $payBackDate, $userContribution['contribution_amount']);
                    break;
                 }
                 case ContributionType::GOAL:{
-                    $userContribution['contribution_interest']= $this->computeContributionPlanInterest (10, $userContribution['contribution_start_date'], $payBackDate, $userContribution['contribution_amount']);
+                    $userContribution['contribution_interest']= $this->computeContributionPlanInterest ($interestRate, $userContribution['contribution_start_date'], $payBackDate, $userContribution['contribution_amount']);
                     break;
                 }
             }
