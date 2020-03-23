@@ -35,7 +35,7 @@ trait InteractsWithGraphQLRequests
     public function setUpPassportClient()
     {
         Artisan::call("passport:install");
-        Passport::loadKeysFrom(__DIR__ . '/../../storage/');
+        Passport::loadKeysFrom(__DIR__ . '/../storage/');
         $client = app(ClientRepository::class)->createPasswordGrantClient(null, 'test', 'http://localhost:9595');
 
         config()->set('lighthouse-graphql-passport.client_id', $client->id);

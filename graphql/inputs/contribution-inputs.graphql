@@ -26,3 +26,15 @@ input UpdateContributionInput {
     contribution_interest_rate: Float #per annum, depending on type and duration, rates would be given
     contribution_frequency: ContributionFrequency
 }
+
+""" Input for funding a contribution plan from a wallet  """
+input FundContributionPlanFromWalletInput {
+    """ The id of the contribution plan to be funded """
+    contribution_plan_id: ID!
+
+    """ The id of the wallet to fund the contribution plan from """
+    wallet_id: ID!
+
+    """ The amount of money to fund the contribution plan with """
+    amount: Float!
+}

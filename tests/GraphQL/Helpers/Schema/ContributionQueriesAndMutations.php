@@ -58,4 +58,23 @@ class ContributionQueriesAndMutations
             }
         ';
     }
+
+    /**
+     * Mutation for funding a contribution plan from a wallet.
+     *
+     * @return string
+     */
+    public static function fundContributionPlanFromWallet() {
+        return '
+            mutation FundContributionPlanFromWallet($input: FundContributionPlanFromWalletInput!) {
+                FundContributionPlanFromWallet(input: $input) {
+                    id
+                    contribution_type
+                    contribution_amount
+                    contribution_balance
+                    contribution_frequency
+                }
+            }
+        ';
+    }
 }
