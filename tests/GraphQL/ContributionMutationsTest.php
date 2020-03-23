@@ -28,6 +28,12 @@ class ContributionMutationsTest extends TestCase
         $contributionData = factory(ContributionPlan::class)->make()->toArray();
         $contributionData['user_id'] = $this->user['id'];
 
+        $contributionData =  collect($contributionData)->except([
+            'contribution_balance',
+        ])->toArray();
+
+
+
         $response = $this->postGraphQL([
             'query' => ContributionQueriesAndMutations::createContribution(),
             'variables' => [
