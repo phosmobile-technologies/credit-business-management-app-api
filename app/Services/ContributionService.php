@@ -3,13 +3,21 @@
 namespace App\Services;
 
 
+use App\GraphQL\Errors\GraphqlError;
 use App\Models\ContributionPlan;
+use App\Models\enums\TransactionMedium;
 use App\Models\enums\ContributionType;
 use App\Models\enums\TransactionOwnerType;
+use App\Models\enums\TransactionProcessingActions;
 use App\Models\enums\TransactionStatus;
+use App\Models\enums\TransactionType;
 use App\Models\Transaction;
 use App\Repositories\Interfaces\ContributionRepositoryInterface;
 use App\Repositories\Interfaces\TransactionRepositoryInterface;
+use App\Repositories\UserRepository;
+use App\Repositories\WalletRepository;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class ContributionService
@@ -29,16 +37,29 @@ class ContributionService
      * @var TransactionService
      */
     private $transactionService;
+    /**
+     * @var WalletRepository
+     */
+    private $walletRepository;
+    /**
+     * @var UserRepository
+     */
+    private $userRepository;
 
     /**
      * ContributionService constructor.
      * @param ContributionRepositoryInterface $contributionRepository
      * @param TransactionService $transactionService
+     * @param WalletRepository $walletRepository
+     * @param UserRepository $userRepository
      */
-    public function __construct(ContributionRepositoryInterface $contributionRepository, TransactionService $transactionService)
+    public function __construct(ContributionRepositoryInterface $contributionRepository, TransactionService $transactionService,
+                                WalletRepository $walletRepository, UserRepository $userRepository)
     {
         $this->contributionRepository = $contributionRepository;
         $this->transactionService = $transactionService;
+        $this->walletRepository = $walletRepository;
+        $this->userRepository = $userRepository;
     }
 
     /**
@@ -104,5 +125,53 @@ class ContributionService
     public function initiateTransaction(string $contribution_plan_id, array $transactionDetails): Transaction
     {
         return $this->transactionService->initiateContributionPlanPaymentTransaction($contribution_plan_id, $transactionDetails);
+    }
+
+    /**
+     * Withdraw funds from a contribution plan to a wallet.
+     *
+     * @param string $contribution_plan_id
+     * @param string $wallet_id
+     * @param float $amount
+     * @param string $user_id
+     * @return ContributionPlan
+     * @throws GraphqlError
+     */
+    public function withdrawToWallet(string $contribution_plan_id, string $wallet_id, float $amount, string $user_id): ContributionPlan {
+        $contributionPlan = $this->contributionRepository->find($contribution_plan_id);
+
+        if($amount > $contributionPlan->contribution_balance) {
+            throw new GraphqlError("Cannot withdraw {$amount} from contribution plan with {$contributionPlan->contribution_balance} as balance");
+        }
+
+        $user = $this->userRepository->find($user_id);
+
+        // Start a database for initiating and approving the necessary transactions
+        DB::transaction(function() use ($contribution_plan_id, $amount, $wallet_id, $user) {
+            // Initiate Transaction For Funding wallet and approve it, do the same for withdrawing from contribution plan
+            $contributionPlanWithdrawalTransaction = $this->transactionService->initiateTransaction($contribution_plan_id, [
+                'transaction_date' => Carbon::now()->toDateString(),
+                'transaction_type' => TransactionType::CONTRIBUTION_WITHDRAWAL,
+                'transaction_amount' => $amount,
+                'transaction_medium' => TransactionMedium::ONLINE,
+                'transaction_purpose' => "Online withdrawing from user contribution plan to fund wallet",
+            ]);
+
+            $walletFundingTransaction = $this->transactionService->initiateTransaction($wallet_id, [
+                'transaction_date' => Carbon::now()->toDateString(),
+                'transaction_type' => TransactionType::WALLET_PAYMENT,
+                'transaction_amount' => $amount,
+                'transaction_medium' => TransactionMedium::ONLINE,
+                'transaction_purpose' => "Online Wallet funding from user contribution plan",
+            ]);
+
+            $this->transactionService->processTransaction($user, $contributionPlanWithdrawalTransaction->id,
+                TransactionProcessingActions::APPROVE, "Approved as an online user contribution plan withdrawal transaction");
+
+            $this->transactionService->processTransaction($user, $walletFundingTransaction->id,
+                TransactionProcessingActions::APPROVE, "Approved as an online user wallet funding transaction");
+        });
+
+        return $this->contributionRepository->find($contribution_plan_id);
     }
 }

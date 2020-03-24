@@ -14,7 +14,7 @@ class ContributionPlanPolicy
     /**
      * Determine whether the user can view any contribution plans.
      *
-     * @param  \App\User  $user
+     * @param  \App\User $user
      * @return mixed
      */
     public function viewAny(User $user)
@@ -37,7 +37,7 @@ class ContributionPlanPolicy
     /**
      * Determine whether the user can create contribution plans.
      *
-     * @param  \App\User  $user
+     * @param  \App\User $user
      * @return mixed
      */
     public function create(User $user)
@@ -103,5 +103,29 @@ class ContributionPlanPolicy
     public function initiateContributionPlanTransaction(User $user, ContributionPlan $contributionPlan)
     {
         return true;
+    }
+
+    /**
+     * Determine whether the user can fund the contribution plan
+     *
+     * @param  \App\User $user
+     * @param ContributionPlan $contributionPlan
+     * @return mixed
+     */
+    public function fund(User $user, ContributionPlan $contributionPlan)
+    {
+        return $contributionPlan->user_id === $user->id;
+    }
+
+    /**
+     * Determine whether the user can withdraw funds from a contribution plan
+     *
+     * @param  \App\User $user
+     * @param ContributionPlan $contributionPlan
+     * @return mixed
+     */
+    public function withdraw(User $user, ContributionPlan $contributionPlan)
+    {
+        return $contributionPlan->user_id === $user->id;
     }
 }

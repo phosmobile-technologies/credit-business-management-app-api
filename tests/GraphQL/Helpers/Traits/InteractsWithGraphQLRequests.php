@@ -12,6 +12,7 @@ use App\Models\Enums\UserRoles;
 use App\User;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Laravel\Passport\Passport;
 use Nuwave\Lighthouse\Testing\MakesGraphQLRequests;
 use Illuminate\Foundation\Testing\TestResponse;
@@ -35,7 +36,7 @@ trait InteractsWithGraphQLRequests
     public function setUpPassportClient()
     {
         Artisan::call("passport:install");
-        Passport::loadKeysFrom(__DIR__ . '/../../storage/');
+        Passport::loadKeysFrom(__DIR__ . '/../storage/');
         $client = app(ClientRepository::class)->createPasswordGrantClient(null, 'test', 'http://localhost:9595');
 
         config()->set('lighthouse-graphql-passport.client_id', $client->id);
@@ -64,7 +65,6 @@ trait InteractsWithGraphQLRequests
                 ]
             ]
         ]);
-
         return $response;
     }
 
