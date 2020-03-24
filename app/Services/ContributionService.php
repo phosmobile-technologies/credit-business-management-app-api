@@ -4,6 +4,7 @@ namespace App\Services;
 
 
 use App\Models\ContributionPlan;
+use App\Models\enums\ContributionType;
 use App\Models\enums\TransactionOwnerType;
 use App\Models\enums\TransactionStatus;
 use App\Models\Transaction;
@@ -50,6 +51,30 @@ class ContributionService
     {
         // Ensure that the default value when creating a contribution is set
         $contributionData['contribution_balance'] = null;
+
+        switch ($contributionData['contribution_type']){
+            case ContributionType::GOAL:{
+                $contributionData['contribution_interest_rate'] = 10;
+                break;
+            }
+            case ContributionType::LOCKED:{
+                if($contributionData['contribution_duration'] <= 3){
+                    $contributionData['contribution_interest_rate'] = 6;
+                }elseif($contributionData['contribution_duration'] <= 6){
+                    $contributionData['contribution_interest_rate'] = 8;
+                }elseif ($contributionData['contribution_duration'] <= 9){
+                    $contributionData['contribution_interest_rate'] = 10;
+                }else{
+                    $contributionData['contribution_interest_rate'] = 12;
+                }
+
+                break;
+            }
+            case ContributionType::FIXED:{
+                $contributionData['contribution_interest_rate'] = 10;
+                break;
+            }
+        }
 
         return $this->contributionRepository->create($contributionData);
     }
