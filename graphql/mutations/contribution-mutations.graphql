@@ -18,4 +18,9 @@ extend type Mutation @middleware(checks: ["auth:api"]){
     @can(ability: "fund", model: "App\\Models\\ContributionPlan", find: "contribution_plan_id")
     @inject(context: "user", name: "user")
 
+    """ Withdraw from a user's contribution plan to their wallet """
+    WithdrawFromContributionPlanToWallet(input: WithdrawFromContributionPlanToWalletInput! @spread): ContributionPlan!
+    @can(ability: "withdraw", model: "App\\Models\\ContributionPlan", find: "contribution_plan_id")
+    @inject(context: "user", name: "user")
+
 }

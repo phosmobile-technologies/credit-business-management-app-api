@@ -18,6 +18,7 @@ use App\Repositories\Interfaces\TransactionRepositoryInterface;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Class WalletService
@@ -128,28 +129,30 @@ class WalletService
 
         $user = $this->userRepository->find($user_id);
 
-        // Initiate Transaction For Funding wallet and approve it, do the same for contribution plan
-        $walletWithdrawalTransaction = $this->transactionService->initiateTransaction($wallet_id, [
-            'transaction_date' => Carbon::now()->toDateString(),
-            'transaction_type' => TransactionType::WALLET_WITHDRAWAL,
-            'transaction_amount' => $amount,
-            'transaction_medium' => TransactionMedium::ONLINE,
-            'transaction_purpose' => "Withdrawn to fund user contribution plan",
-        ]);
+        DB::transaction(function () use ($wallet_id, $amount, $user, $contribution_plan_id) {
+            // Initiate Transaction For withdrawing from wallet and approve it, do the same for funding contribution plan
+            $walletWithdrawalTransaction = $this->transactionService->initiateTransaction($wallet_id, [
+                'transaction_date' => Carbon::now()->toDateString(),
+                'transaction_type' => TransactionType::WALLET_WITHDRAWAL,
+                'transaction_amount' => $amount,
+                'transaction_medium' => TransactionMedium::ONLINE,
+                'transaction_purpose' => "Withdrawn to fund user contribution plan",
+            ]);
 
-        $contributionPlanFundingTransaction = $this->transactionService->initiateTransaction($contribution_plan_id, [
-            'transaction_date' => Carbon::now()->toDateString(),
-            'transaction_type' => TransactionType::CONTRIBUTION_PAYMENT,
-            'transaction_amount' => $amount,
-            'transaction_medium' => TransactionMedium::ONLINE,
-            'transaction_purpose' => "Funding user contribution plan with money withdrawn from wallet",
-        ]);
+            $contributionPlanFundingTransaction = $this->transactionService->initiateTransaction($contribution_plan_id, [
+                'transaction_date' => Carbon::now()->toDateString(),
+                'transaction_type' => TransactionType::CONTRIBUTION_PAYMENT,
+                'transaction_amount' => $amount,
+                'transaction_medium' => TransactionMedium::ONLINE,
+                'transaction_purpose' => "Funding user contribution plan with money withdrawn from wallet",
+            ]);
 
-        $this->transactionService->processTransaction($user, $walletWithdrawalTransaction->id,
-            TransactionProcessingActions::APPROVE, "Approved as an online user wallet withdrawal transaction");
+            $this->transactionService->processTransaction($user, $walletWithdrawalTransaction->id,
+                TransactionProcessingActions::APPROVE, "Approved as an online user wallet withdrawal transaction");
 
-        $this->transactionService->processTransaction($user, $contributionPlanFundingTransaction->id,
-            TransactionProcessingActions::APPROVE, "Approved as an online user contribution plan funding transaction");
+            $this->transactionService->processTransaction($user, $contributionPlanFundingTransaction->id,
+                TransactionProcessingActions::APPROVE, "Approved as an online user contribution plan funding transaction");
+        });
 
         return $this->contributionRepository->find($contribution_plan_id);
     }

@@ -12,6 +12,7 @@ use App\Models\Enums\UserRoles;
 use App\User;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Laravel\Passport\Passport;
 use Nuwave\Lighthouse\Testing\MakesGraphQLRequests;
 use Illuminate\Foundation\Testing\TestResponse;
@@ -64,7 +65,6 @@ trait InteractsWithGraphQLRequests
                 ]
             ]
         ]);
-
         return $response;
     }
 

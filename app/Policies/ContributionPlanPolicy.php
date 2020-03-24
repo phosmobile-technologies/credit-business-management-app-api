@@ -116,4 +116,16 @@ class ContributionPlanPolicy
     {
         return $contributionPlan->user_id === $user->id;
     }
+
+    /**
+     * Determine whether the user can withdraw funds from a contribution plan
+     *
+     * @param  \App\User $user
+     * @param ContributionPlan $contributionPlan
+     * @return mixed
+     */
+    public function withdraw(User $user, ContributionPlan $contributionPlan)
+    {
+        return $contributionPlan->user_id === $user->id;
+    }
 }

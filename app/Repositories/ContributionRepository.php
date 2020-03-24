@@ -70,4 +70,19 @@ class ContributionRepository implements ContributionRepositoryInterface
 
         return $contribution;
     }
+
+    /**
+     * Withdraw from a contribution plan.
+     *
+     * @param ContributionPlan $contribution
+     * @param Transaction $transaction
+     * @return ContributionPlan
+     */
+    public function withdraw(ContributionPlan $contribution, Transaction $transaction): ContributionPlan
+    {
+        $contribution->contribution_balance = $contribution->contribution_balance - $transaction->transaction_amount;
+        $contribution->save();
+
+        return $contribution;
+    }
 }

@@ -38,3 +38,15 @@ input FundContributionPlanFromWalletInput {
     """ The amount of money to fund the contribution plan with """
     amount: Float!
 }
+
+""" Input for withdrawing funds from a contribution plan to a wallet  """
+input WithdrawFromContributionPlanToWalletInput {
+    """ The id of the contribution plan to withdraw from """
+    contribution_plan_id: ID!
+
+    """ The id of the wallet to fund """
+    wallet_id: ID!
+
+    """ The amount of money to fund the wallet with """
+    amount: Float!
+}
