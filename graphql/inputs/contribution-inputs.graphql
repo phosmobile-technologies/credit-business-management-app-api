@@ -8,7 +8,6 @@ input CreateContributionInput {
     contribution_start_date:Date
     contribution_payback_date:Date #contribution end date
     contribution_fixed_amount:Float
-    contribution_interest_rate: Float #per annum, depending on type and duration, rates would be given
     contribution_frequency: ContributionFrequency
 }
 
@@ -19,10 +18,8 @@ input UpdateContributionInput {
     contribution_amount: Float
     contribution_name: String!
     contribution_duration: Int! #in months
-    contribution_balance: Float
     contribution_payback_date:Date #contribution end date
     contribution_start_date:Date
     contribution_fixed_amount:Float
-    contribution_interest_rate: Float #per annum, depending on type and duration, rates would be given
     contribution_frequency: ContributionFrequency
 }

@@ -30,6 +30,7 @@ class ContributionMutationsTest extends TestCase
 
         $contributionData =  collect($contributionData)->except([
             'contribution_balance',
+            'contribution_interest_rate',
         ])->toArray();
 
 
@@ -65,6 +66,8 @@ class ContributionMutationsTest extends TestCase
         $contributionData = collect($contribution)->except([
             'created_at',
             'updated_at',
+            'contribution_balance',
+            'contribution_interest_rate',
             'user_id'
         ])->toArray();
         $contributionData['contribution_amount'] = 2500;
