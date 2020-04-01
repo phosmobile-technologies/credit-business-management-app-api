@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\GraphQL;
+namespace Tests\GraphQL\Queries;
 
 use App\Models\ContributionPlan;
 use App\Models\enums\ContributionType;

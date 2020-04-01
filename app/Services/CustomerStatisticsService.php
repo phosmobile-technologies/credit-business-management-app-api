@@ -90,7 +90,7 @@ class CustomerStatisticsService
     private function getCustomerContributionPlanStatistics(User $user): array
     {
         $contributionPlanStatistics = [
-            'total_contribution_amount' => 0.00,
+            'total_goal' => 0.00,
             'goal_contribution_sum' => 0.00,
             'fixed_contribution_sum' => 0.00,
             'locked_contribution_sum' => 0.00,
@@ -100,10 +100,10 @@ class CustomerStatisticsService
         $contributionPlans = $user->contributionPlans;
 
         if (count($contributionPlans)) {
-            $contributionPlanStatistics['total_contribution_amount'] = $contributionPlans->sum('contribution_amount');
-            $contributionPlanStatistics['goal_contribution_sum'] = $contributionPlans->where('contribution_type', ContributionType::GOAL)->sum('contribution_amount');
-            $contributionPlanStatistics['fixed_contribution_sum'] = $contributionPlans->where('contribution_type', ContributionType::FIXED)->sum('contribution_amount');
-            $contributionPlanStatistics['locked_contribution_sum'] = $contributionPlans->where('contribution_type', ContributionType::LOCKED)->sum('contribution_amount');
+            $contributionPlanStatistics['total_contribution_sum'] = $contributionPlans->sum('goal');
+            $contributionPlanStatistics['goal_contribution_sum'] = $contributionPlans->where('type', ContributionType::GOAL)->sum('goal');
+            $contributionPlanStatistics['fixed_contribution_sum'] = $contributionPlans->where('type', ContributionType::FIXED)->sum('goal');
+            $contributionPlanStatistics['locked_contribution_sum'] = $contributionPlans->where('type', ContributionType::LOCKED)->sum('goal');
         }
 
         return $contributionPlanStatistics;

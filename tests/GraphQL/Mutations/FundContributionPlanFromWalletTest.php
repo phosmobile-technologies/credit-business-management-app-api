@@ -33,8 +33,9 @@ class FundContributionPlanFromWalletTest extends TestCase
         $contributionPlan = factory(ContributionPlan::class)->create([
             'id' => $this->faker->uuid,
             'user_id' => $this->user['id'],
-            'contribution_amount' => 2000,
-            'contribution_balance' => 1000,
+            'goal' => 2000,
+            'balance' => 1000,
+            'status' => ContributionPlan::STATUS_INACTIVE
         ]);
 
         $wallet = factory(Wallet::class)->create([
@@ -58,8 +59,8 @@ class FundContributionPlanFromWalletTest extends TestCase
         $response->assertJson([
             'data' => [
                 'FundContributionPlanFromWallet' => [
-                    'contribution_balance' => 1500,
-                    'contribution_amount' => 2000,
+                    'balance' => 1500,
+                    'goal' => 2000,
                 ]
             ]
         ]);

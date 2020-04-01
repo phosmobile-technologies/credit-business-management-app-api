@@ -13,6 +13,7 @@ use App\GraphQL\Errors\GraphqlError;
 use App\Models\ContributionPlan;
 use App\Models\Transaction;
 use App\Repositories\Interfaces\ContributionRepositoryInterface;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ContributionRepository implements ContributionRepositoryInterface
@@ -62,12 +63,23 @@ class ContributionRepository implements ContributionRepositoryInterface
      * @param ContributionPlan $contribution
      * @param Transaction $transaction
      * @return ContributionPlan
+     * @throws GraphqlError
      */
     public function addPayment(ContributionPlan $contribution, Transaction $transaction): ContributionPlan
     {
-        $contribution->contribution_balance = $contribution->contribution_balance + $transaction->transaction_amount;
-        $contribution->save();
+        $contribution->balance = $contribution->balance + $transaction->transaction_amount;
 
+        if ($contribution->status === ContributionPlan::STATUS_COMPLETED) {
+            throw new GraphqlError("The contribution plan is already completed, and can no longer be funded");
+        }
+
+        // This is the first payment made to the contribution plan
+        if ($contribution->status === ContributionPlan::STATUS_INACTIVE && !isset($contribution->activation_date)) {
+            $contribution->status = ContributionPlan::STATUS_ACTIVE;
+            $contribution->activation_date = Carbon::today();
+        }
+
+        $contribution->save();
         return $contribution;
     }
 
@@ -80,7 +92,7 @@ class ContributionRepository implements ContributionRepositoryInterface
      */
     public function withdraw(ContributionPlan $contribution, Transaction $transaction): ContributionPlan
     {
-        $contribution->contribution_balance = $contribution->contribution_balance - $transaction->transaction_amount;
+        $contribution->balance = $contribution->balance - $transaction->transaction_amount;
         $contribution->save();
 
         return $contribution;

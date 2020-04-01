@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\GraphQL;
+namespace Tests\GraphQL\Mutations;
 
 use App\Models\enums\ContributionFrequency;
 use App\Models\Enums\UserRoles;
@@ -31,6 +31,7 @@ class ContributionMutationsTest extends TestCase
         $contributionData =  collect($contributionData)->except([
             'balance',
             'interest_rate',
+            'status'
         ])->toArray();
 
 
@@ -69,6 +70,7 @@ class ContributionMutationsTest extends TestCase
             'user_id',
             'balance',
             'interest_rate',
+            'status'
         ])->toArray();
         $contributionData['goal'] = 2500;
         $contributionData['frequency'] = ContributionFrequency::DAILY;
