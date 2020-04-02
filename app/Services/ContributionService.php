@@ -71,28 +71,28 @@ class ContributionService
     public function create(array $contributionData): ContributionPlan
     {
         // Ensure that the default value when creating a contribution is set
-        $contributionData['contribution_balance'] = null;
+        $contributionData['balance'] = null;
 
-        switch ($contributionData['contribution_type']){
+        switch ($contributionData['type']){
             case ContributionType::GOAL:{
-                $contributionData['contribution_interest_rate'] = 10;
+                $contributionData['interest_rate'] = 10;
                 break;
             }
             case ContributionType::LOCKED:{
-                if($contributionData['contribution_duration'] <= 3){
-                    $contributionData['contribution_interest_rate'] = 6;
-                }elseif($contributionData['contribution_duration'] <= 6){
-                    $contributionData['contribution_interest_rate'] = 8;
-                }elseif ($contributionData['contribution_duration'] <= 9){
-                    $contributionData['contribution_interest_rate'] = 10;
+                if($contributionData['duration'] <= 3){
+                    $contributionData['interest_rate'] = 6;
+                }elseif($contributionData['duration'] <= 6){
+                    $contributionData['interest_rate'] = 8;
+                }elseif ($contributionData['duration'] <= 9){
+                    $contributionData['interest_rate'] = 10;
                 }else{
-                    $contributionData['contribution_interest_rate'] = 12;
+                    $contributionData['interest_rate'] = 12;
                 }
 
                 break;
             }
             case ContributionType::FIXED:{
-                $contributionData['contribution_interest_rate'] = 10;
+                $contributionData['interest_rate'] = 10;
                 break;
             }
         }
@@ -140,8 +140,8 @@ class ContributionService
     public function withdrawToWallet(string $contribution_plan_id, string $wallet_id, float $amount, string $user_id): ContributionPlan {
         $contributionPlan = $this->contributionRepository->find($contribution_plan_id);
 
-        if($amount > $contributionPlan->contribution_balance) {
-            throw new GraphqlError("Cannot withdraw {$amount} from contribution plan with {$contributionPlan->contribution_balance} as balance");
+        if($amount > $contributionPlan->balance) {
+            throw new GraphqlError("Cannot withdraw {$amount} from contribution plan with {$contributionPlan->balance} as balance");
         }
 
         $user = $this->userRepository->find($user_id);

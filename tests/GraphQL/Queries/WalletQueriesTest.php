@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\GraphQL;
+namespace Tests\GraphQL\Queries;
 
 use App\Models\enums\TransactionOwnerType;
 use Illuminate\Foundation\Testing\RefreshDatabase;

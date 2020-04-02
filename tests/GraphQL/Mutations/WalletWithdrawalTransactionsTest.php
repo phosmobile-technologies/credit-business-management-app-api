@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\GraphQL;
+namespace Tests\GraphQL\Mutations;
 
 use App\Models\Wallet;
 use App\Models\enums\TransactionOwnerType;

@@ -65,7 +65,7 @@ class CustomerQueriesAndMutations
                         }
                         
                         contribution_plan_statistics {
-                          total_contribution_amount
+                         total_contribution_sum
                           goal_contribution_sum
                           fixed_contribution_sum
                           locked_contribution_sum

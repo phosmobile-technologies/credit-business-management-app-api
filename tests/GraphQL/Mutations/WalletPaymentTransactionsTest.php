@@ -1,8 +1,8 @@
 <?php
 
-namespace Tests\GraphQL;
+namespace Tests\GraphQL\Mutations;
 
-use App\Models\CompanyBranch;
+use App\Models\Wallet;
 use App\Models\enums\TransactionOwnerType;
 use App\Models\enums\TransactionProcessingActions;
 use App\Models\enums\TransactionStatus;
@@ -13,13 +13,13 @@ use App\Models\Transaction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\GraphQL\Helpers\Schema\TransactionsQueriesAndMutations;
-use Tests\GraphQL\Helpers\Traits\InteractsWithTestTransactions;
+use Tests\GraphQL\Helpers\Traits\InteractsWithTestWallets;
 use Tests\GraphQL\Helpers\Traits\InteractsWithTestUsers;
 use Tests\TestCase;
 
-class BranchFundDisbursementTransactionTest extends TestCase
+class WalletPaymentTransactionsTest extends TestCase
 {
-    use RefreshDatabase, InteractsWithTestUsers, InteractsWithTestTransactions, WithFaker;
+    use RefreshDatabase, InteractsWithTestUsers, InteractsWithTestWallets, WithFaker;
 
     protected function setUp(): void
     {
@@ -31,16 +31,12 @@ class BranchFundDisbursementTransactionTest extends TestCase
     /**
      * @test
      */
-    public function testItCorrectlyInitiatesANewBranchFundReimbursementTransaction()
+    public function testItInitiatesWalletPaymentTransactionSuccessfully()
     {
-        $this->loginTestUserAndGetAuthHeaders();
-        $branch = CompanyBranch::first();
-
-        $transactionData = $this->makeTransaction(TransactionOwnerType::COMPANY_BRANCH, $branch->id, [
-            'transaction_type' => TransactionType::BRANCH_FUND_DISBURSEMENT
-        ]);
-
-        $transactionDetails = $transactionData['transaction_details'];
+        $walletData = $this->createWalletAndTransactionData(TransactionType::WALLET_PAYMENT);
+        $wallet = $walletData['wallet'];
+        $transactionDetails = $walletData['transactionDetails'];
+        $transactionData = $walletData['transactionData'];
 
         $response = $this->postGraphQL([
             'query' => TransactionsQueriesAndMutations::initiateTransaction(),
@@ -52,14 +48,14 @@ class BranchFundDisbursementTransactionTest extends TestCase
         $response->assertJson([
             'data' => [
                 'InitiateTransaction' => [
-                    'transaction_amount' => $transactionData['transaction_details']['transaction_amount'],
+                    'transaction_amount' => 500,
                 ]
             ]
         ]);
 
         $this->assertDatabaseHas(with(new Transaction)->getTable(), [
-            'owner_type' => TransactionOwnerType::COMPANY_BRANCH,
-            'owner_id' => $branch->id,
+            'owner_type' => TransactionOwnerType::WALLET,
+            'owner_id' => $wallet->id,
             'transaction_amount' => $transactionDetails['transaction_amount'],
             'transaction_type' => $transactionDetails['transaction_type'],
             'transaction_purpose' => $transactionDetails['transaction_purpose'],
@@ -69,19 +65,24 @@ class BranchFundDisbursementTransactionTest extends TestCase
     /**
      * @test
      */
-    public function testItCorrectlyApprovesABranchFundReimbursementTransaction()
+    public function testItCorrectlyApprovesAWalletPaymentTransaction()
     {
         $this->loginTestUserAndGetAuthHeaders([UserRoles::BRANCH_ACCOUNTANT]);
 
-        $branch = CompanyBranch::first();
+        $wallet = factory(Wallet::class)->create([
+            'id' => $this->faker->uuid,
+            'user_id' => $this->user['id'],
+            'wallet_balance' => 1000,
+        ]);
 
         $transaction = factory(Transaction::class)->create([
             'transaction_amount' => 500,
-            'transaction_type' => TransactionType::BRANCH_FUND_DISBURSEMENT,
+            'transaction_type' => TransactionType::WALLET_PAYMENT,
             'transaction_status' => TransactionStatus::PENDING,
-            'owner_id' => $branch->id,
-            'owner_type' => TransactionOwnerType::COMPANY_BRANCH
+            'owner_id' => $wallet->id,
+            'owner_type' => TransactionOwnerType::WALLET
         ]);
+
         $message = $this->faker->realText();
 
         $response = $this->postGraphQL([
@@ -121,19 +122,30 @@ class BranchFundDisbursementTransactionTest extends TestCase
 
     /**
      * @test
+     * @group active
      */
-    public function testItCorrectlyDisapprovesABranchFundReimbursementTransaction()
+    public function testItCorrectlyDisapprovesAWalletPaymentTransaction()
     {
         $this->loginTestUserAndGetAuthHeaders([UserRoles::BRANCH_ACCOUNTANT]);
 
-        $branch = CompanyBranch::first();
+        /**
+         * Create a wallet
+         * Create a wallet transaction for the loan (ensure it's pending)
+         * Try to approve it, ensure that it's approved
+         */
+
+        $wallet = factory(Wallet::class)->create([
+            'id' => $this->faker->uuid,
+            'user_id' => $this->user['id'],
+            'wallet_balance' => 1000,
+        ]);
 
         $transaction = factory(Transaction::class)->create([
             'transaction_amount' => 500,
-            'transaction_type' => TransactionType::BRANCH_FUND_DISBURSEMENT,
+            'transaction_type' => TransactionType::WALLET_PAYMENT,
             'transaction_status' => TransactionStatus::PENDING,
-            'owner_id' => $branch->id,
-            'owner_type' => TransactionOwnerType::COMPANY_BRANCH
+            'owner_id' => $wallet->id,
+            'owner_type' => TransactionOwnerType::WALLET
         ]);
         $message = $this->faker->realText();
 
@@ -171,5 +183,4 @@ class BranchFundDisbursementTransactionTest extends TestCase
             'message' => $message
         ]);
     }
-
 }

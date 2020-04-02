@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\GraphQL;
+namespace Tests\GraphQL\Mutations;
 
 use App\Models\ContributionPlan;
 use App\Models\enums\TransactionOwnerType;
@@ -77,8 +77,9 @@ class ContributionPlanPaymentTransactionsTest extends TestCase
         $contributionPlan = factory(ContributionPlan::class)->create([
             'id' => $this->faker->uuid,
             'user_id' => $this->user['id'],
-            'contribution_amount' => 2000,
-            'contribution_balance' => 1000,
+            'goal' => 2000,
+            'balance' => 1000,
+            'status' => ContributionPlan::STATUS_INACTIVE
         ]);
 
         $transaction = factory(Transaction::class)->create([
@@ -142,8 +143,8 @@ class ContributionPlanPaymentTransactionsTest extends TestCase
         $contributionPlan = factory(ContributionPlan::class)->create([
             'id' => $this->faker->uuid,
             'user_id' => $this->user['id'],
-            'contribution_amount' => 2000,
-            'contribution_balance' => 1000,
+            'goal' => 2000,
+            'balance' => 1000,
         ]);
 
         $transaction = factory(Transaction::class)->create([

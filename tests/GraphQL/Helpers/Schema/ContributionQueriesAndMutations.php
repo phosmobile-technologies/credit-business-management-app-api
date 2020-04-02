@@ -15,9 +15,9 @@ class ContributionQueriesAndMutations
             mutation CreateContribution($input: CreateContributionInput!) {
                 CreateContribution(input: $input) {
                     id
-                    contribution_type
-                    contribution_amount
-                    contribution_frequency
+                    type
+                    goal
+                    frequency
                 }
             }
         ';
@@ -33,9 +33,9 @@ class ContributionQueriesAndMutations
             mutation UpdateContribution($input: UpdateContributionInput!) {
                 UpdateContribution(input: $input) {
                     id
-                    contribution_type
-                    contribution_amount
-                    contribution_frequency
+                    type
+                    goal
+                    frequency
                 }
             }
         ';
@@ -51,9 +51,9 @@ class ContributionQueriesAndMutations
             mutation DeleteContribution($contribution_id: ID!) {
                 DeleteContribution(contribution_id: $contribution_id) {
                     id
-                    contribution_type
-                    contribution_amount
-                    contribution_frequency
+                    type
+                    goal
+                    frequency
                 }
             }
         ';
@@ -69,10 +69,10 @@ class ContributionQueriesAndMutations
             mutation FundContributionPlanFromWallet($input: FundContributionPlanFromWalletInput!) {
                 FundContributionPlanFromWallet(input: $input) {
                     id
-                    contribution_type
-                    contribution_amount
-                    contribution_balance
-                    contribution_frequency
+                    type
+                    goal
+                    balance
+                    frequency
                 }
             }
         ';
@@ -88,10 +88,10 @@ class ContributionQueriesAndMutations
             mutation WithdrawFromContributionPlanToWallet($input: WithdrawFromContributionPlanToWalletInput!) {
                 WithdrawFromContributionPlanToWallet(input: $input) {
                     id
-                    contribution_type
-                    contribution_amount
-                    contribution_balance
-                    contribution_frequency
+                    type
+                    goal
+                    balance
+                    frequency
                 }
             }
         ';

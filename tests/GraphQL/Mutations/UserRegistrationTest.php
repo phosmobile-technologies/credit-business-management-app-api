@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\GraphQL;
+namespace Tests\GraphQL\Mutations;
 
 use App\Models\Company;
 use App\Models\CompanyBranch;

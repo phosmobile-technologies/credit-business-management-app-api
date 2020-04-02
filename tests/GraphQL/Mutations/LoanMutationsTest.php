@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\GraphQL;
+namespace Tests\GraphQL\Mutations;
 
 use App\GraphQL\Errors\GraphqlError;
 use App\Models\Enums\DisbursementStatus;
