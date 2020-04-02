@@ -34,8 +34,6 @@ class ContributionMutationsTest extends TestCase
             'status'
         ])->toArray();
 
-
-
         $response = $this->postGraphQL([
             'query' => ContributionQueriesAndMutations::createContribution(),
             'variables' => [

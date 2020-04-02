@@ -3,8 +3,10 @@
 namespace Tests\GraphQL\Mutations;
 
 use App\Models\ContributionPlan;
+use App\Models\enums\ContributionType;
 use App\Models\Enums\UserRoles;
 use App\Models\Wallet;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\GraphQL\Helpers\Schema\ContributionQueriesAndMutations;
@@ -35,6 +37,9 @@ class WithdrawFromContributionPlanToWalletTest extends TestCase
             'user_id' => $this->user['id'],
             'goal' => 20000,
             'balance' => 15000,
+            'payback_date' => Carbon::tomorrow(),
+            'type' => ContributionType::FIXED,
+            'activation_date' => Carbon::today()->subDays(100)
         ]);
 
         $wallet = factory(Wallet::class)->create([
@@ -45,7 +50,7 @@ class WithdrawFromContributionPlanToWalletTest extends TestCase
         $mutationInput = [
             'contribution_plan_id' => $contributionPlan->id,
             'wallet_id' => $wallet->id,
-            'amount' => 15000
+            'amount' => 100
         ];
 
         $response = $this->postGraphQL([
@@ -58,7 +63,7 @@ class WithdrawFromContributionPlanToWalletTest extends TestCase
         $response->assertJson([
             'data' => [
                 'WithdrawFromContributionPlanToWallet' => [
-                    'balance' => 0,
+                    'balance' => 14900,
                     'goal' => 20000,
                 ]
             ]
@@ -66,7 +71,7 @@ class WithdrawFromContributionPlanToWalletTest extends TestCase
 
         $this->assertDatabaseHas(with(new Wallet)->getTable(), [
             'id' => $wallet->id,
-            'wallet_balance' => 16000
+            'wallet_balance' => 1100
         ]);
     }
 }
