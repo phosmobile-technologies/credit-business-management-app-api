@@ -5,7 +5,6 @@ namespace Tests\GraphQL\Mutations;
 use App\Models\Company;
 use App\Models\CompanyBranch;
 use App\Models\UserProfile;
-use App\Models\Wallet;
 use App\Models\Enums\UserRoles;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;

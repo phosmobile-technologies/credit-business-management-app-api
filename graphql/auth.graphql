@@ -77,11 +77,46 @@ input RegisterInput {
     branch_id: ID!
 }
 
+input ChangePasswordInput {
+    old_password: String
+    @rules(
+        apply: ["required"],
+        messages: {
+            required: "Please provide your old password"
+        }
+    )
+
+    password: String
+    @rules(
+        apply: ["required", "min:6", "confirmed", "different:input.old_password"],
+        messages: {
+            required: "Please provide your new password",
+            min: "Your new password must contain at least 6 characters",
+            confirmed: "The password and password confirmation values do not match",
+            different: "You cannot reuse your old password"
+        }
+    )
+
+    password_confirmation: String
+    @rules(
+        apply: ["required", "min:6"],
+        messages: {
+            required: "Please provide your new password",
+            min: "Your new password must contain at least 6 characters",
+        }
+    )
+}
+
 extend type Mutation {
     login(input: LoginInput @spread): AuthPayload! @field(resolver: "App\\GraphQL\\Mutations\\Login")
     refreshToken(input: RefreshTokenInput @spread): RefreshTokenPayload! @field(resolver: "Joselfonseca\\LighthouseGraphQLPassport\\GraphQL\\Mutations\\RefreshToken@resolve")
     logout: LogoutResponse! @field(resolver: "Joselfonseca\\LighthouseGraphQLPassport\\GraphQL\\Mutations\\Logout@resolve")
     forgotPassword(input: ForgotPasswordInput! @spread): ForgotPasswordResponse! @field(resolver: "Joselfonseca\\LighthouseGraphQLPassport\\GraphQL\\Mutations\\ForgotPassword@resolve")
-    updateForgottenPassword(input: NewPasswordWithCodeInput @spread): ForgotPasswordResponse! @field(resolver: "Joselfonseca\\LighthouseGraphQLPassport\\GraphQL\\Mutations\\ResetPassword@resolve")
+    updateForgottenPassword(input: NewPasswordWithCodeInput @spread): ForgotPasswordResponse! @field(resolver: "Joselfonseca\\LighthouseGraphQLPassport\\GraphQL\\Mutations\\ResetPasswordNotification@resolve")
     register(input: RegisterInput @spread): RegisterPayload! @field(resolver: "App\\GraphQL\\Mutations\\RegisterUser")
+
+    """ Change the user's password """
+    ChangePassword(input: ChangePasswordInput!): User!
+    @inject(context: "user", name: "user")
+    @middleware(checks: ["auth:api"])
 }
