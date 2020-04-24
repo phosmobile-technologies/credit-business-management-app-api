@@ -3,6 +3,7 @@
 namespace Tests\GraphQL\Mutations;
 
 use App\Models\Enums\LoanConditionStatus;
+use App\Models\enums\TransactionMedium;
 use App\Models\enums\TransactionOwnerType;
 use App\Models\enums\TransactionProcessingActions;
 use App\Models\enums\TransactionStatus;
@@ -286,4 +287,78 @@ class LoanRepaymentTransactionsTest extends TestCase
             'message' => $message
         ]);
     }
+
+    /**
+     * @test
+     * @group active2
+     */
+    public function testAUserCanApproveALoanRepaymentRequestMadeOnline()
+    {
+        $this->loginTestUserAndGetAuthHeaders([UserRoles::CUSTOMER]);
+
+        /**
+         * Create a loan
+         * Create a loan repayment transaction for the loan (ensure it's pending)
+         * Try to approve it, ensure that it's approved
+         */
+
+        $loan = factory(Loan::class)->states('with_default_values')->create([
+            'id' => $this->faker->uuid,
+            'user_id' => $this->user['id'],
+            'loan_balance' => 2000,
+            'loan_condition_status' => LoanConditionStatus::ACTIVE
+        ]);
+
+        $transaction = factory(Transaction::class)->create([
+            'transaction_amount' => 500,
+            'transaction_type' => TransactionType::LOAN_REPAYMENT,
+            'transaction_status' => TransactionStatus::PENDING,
+            'owner_id' => $loan->id,
+            'owner_type' => TransactionOwnerType::LOAN,
+            'transaction_medium' => TransactionMedium::ONLINE
+        ]);
+        $message = $this->faker->text;
+
+        $response = $this->postGraphQL([
+            'query' => TransactionsQueriesAndMutations::processTransaction(),
+            'variables' => [
+                'transaction_id' => $transaction->id,
+                'action' => TransactionProcessingActions::APPROVE,
+                'message' => $message,
+            ],
+        ], $this->headers);
+
+        $response->assertJson([
+            'data' => [
+                'ProcessTransaction' => [
+                    'id' => $transaction->id,
+                    'transaction_amount' => 500,
+                    'transaction_status' => TransactionStatus::COMPLETED
+                ]
+            ]
+        ]);
+
+        $this->assertDatabaseHas(with(new Transaction)->getTable(), [
+            'id' => $transaction->id,
+            'transaction_status' => TransactionStatus::COMPLETED,
+            'transaction_amount' => $transaction->transaction_amount,
+            'transaction_type' => $transaction->transaction_type,
+            'transaction_purpose' => $transaction->transaction_purpose,
+        ]);
+
+        $this->assertDatabaseHas(with(new Loan)->getTable(), [
+            'id' => $loan->id,
+            'loan_balance' => 1500,
+            'loan_condition_status' => LoanConditionStatus::ACTIVE
+        ]);
+
+        $this->assertDatabaseHas(with(new ProcessedTransaction())->getTable(), [
+            'causer_id' => $this->user['id'],
+            'transaction_id' => $transaction->id,
+            'processing_type' => TransactionProcessingActions::APPROVE,
+            'message' => $message
+        ]);
+    }
+
+
 }

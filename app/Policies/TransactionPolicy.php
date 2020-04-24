@@ -104,8 +104,7 @@ class TransactionPolicy
      */
     public function processTransaction(User $user, Transaction $transaction)
     {
-        $isUsersOnlineTransaction = ($transaction->transaction_medium == TransactionMedium::ONLINE)
-            && ($transaction->owner_id == $user->id);
+        $isUsersOnlineTransaction = ($transaction->transaction_medium == TransactionMedium::ONLINE);
 
         return $user->can(UserPermissions::CAN_PROCESS_TRANSACTION) || $isUsersOnlineTransaction;
     }
