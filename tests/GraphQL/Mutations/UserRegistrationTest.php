@@ -4,6 +4,7 @@ namespace Tests\GraphQL\Mutations;
 
 use App\Models\Company;
 use App\Models\CompanyBranch;
+use App\Models\enums\RegistrationSource;
 use App\Models\UserProfile;
 use App\Models\Wallet;
 use App\Models\Enums\UserRoles;
@@ -22,7 +23,7 @@ class UserRegistrationTest extends TestCase
     {
         $this->seed('TestDatabaseSeeder');
 
-        $userData = collect(factory(User::class)->make())->except(['email_verified_at', 'password'])->toArray();
+        $userData = collect(factory(User::class)->make())->except(['email_verified_at'])->toArray();
 
         $company = Company::first();
         $branch = CompanyBranch::inRandomOrder()->first();
@@ -34,7 +35,9 @@ class UserRegistrationTest extends TestCase
         $userProfileData['roles'] = [UserRoles::CUSTOMER];
 
         $registrationData = array_merge($userData, $userProfileData);
-
+        $registrationData['registration_source'] = RegistrationSource::ONLINE;
+        $registrationData['password'] = 'password';
+        $registrationData['password_confirmation'] = 'password';
 
         /** @var \Illuminate\Foundation\Testing\TestResponse $response */
         $response = $this->postGraphQL([
