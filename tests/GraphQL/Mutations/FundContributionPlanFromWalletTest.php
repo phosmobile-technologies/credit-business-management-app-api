@@ -35,7 +35,8 @@ class FundContributionPlanFromWalletTest extends TestCase
             'user_id' => $this->user['id'],
             'goal' => 2000,
             'balance' => 1000,
-            'status' => ContributionPlan::STATUS_INACTIVE
+            'status' => ContributionPlan::STATUS_INACTIVE,
+            'activation_date' => null
         ]);
 
         $wallet = factory(Wallet::class)->create([

@@ -77,7 +77,7 @@ class ContributionRepository implements ContributionRepositoryInterface
         // This is the first payment made to the contribution plan
         if ($contribution->status === ContributionPlan::STATUS_INACTIVE && !isset($contribution->activation_date)) {
             $contribution->status = ContributionPlan::STATUS_ACTIVE;
-            $contribution->activation_date = Carbon::today();
+            $contribution->activation_date = now();
         }
 
         $contribution->save();

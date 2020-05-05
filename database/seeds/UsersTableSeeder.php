@@ -35,14 +35,10 @@ class UsersTableSeeder extends Seeder
         $faker = Faker::create();
 
         // Create the Admin user and assign the admin role
-        $adminUser = User::create([
+        $adminUser = factory(User::class)->create([
             'first_name' => 'admin',
-            'last_name' => 'admin',
-            'phone_number' => $faker->phoneNumber,
+            'last_name' => "admin",
             'email' => 'admin@admin.com',
-            'password' => bcrypt('admin'),
-            'email_verified_at' => now(),
-            'remember_token' => Str::random(10),
         ]);
         $adminUser->assignRole(UserRoles::SUPER_ADMIN);
     }
