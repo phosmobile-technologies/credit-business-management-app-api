@@ -35,7 +35,7 @@ $factory->define(ContributionPlan::class, function (Faker $faker) {
         'balance' => $faker->randomFloat(2, 10000, 5000000),
         'interest_rate' => $faker->randomFloat(2, 1, 50),
         'frequency' => $contributionFrequencies[array_rand($contributionFrequencies)],
-        'payback_date' => (Carbon\Carbon::createFromFormat('Y-m-d', $faker->date('Y-m-d'))->toDateString()),
+        'payback_date' => Carbon\Carbon::createFromFormat('Y-m-d', $faker->date('Y-m-d'))->toDateString(),
         'start_date' => Carbon\Carbon::createFromFormat('Y-m-d', $faker->date('Y-m-d'))->toDateString(),
         'fixed_amount' => $faker->randomFloat(2, 10000, 10000000),
         'status' => $contributionStatuses[array_rand($contributionStatuses)]

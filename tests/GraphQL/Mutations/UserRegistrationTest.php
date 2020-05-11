@@ -55,6 +55,10 @@ class UserRegistrationTest extends TestCase
                             state_of_origin,
                             bvn,
                             bank_account_number
+                        },
+                        wallet {
+                            id,
+                            wallet_balance
                         }  
                     }
                 }
@@ -79,6 +83,9 @@ class UserRegistrationTest extends TestCase
                             'state_of_origin' => $userProfileData['state_of_origin'],
                             'bvn' => $userProfileData['bvn'],
                             'bank_account_number' => $userProfileData['bank_account_number']
+                        ],
+                        'wallet' => [
+                            'wallet_balance' => 0
                         ]
                     ]
                 ]

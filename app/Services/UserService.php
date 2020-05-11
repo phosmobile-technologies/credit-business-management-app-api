@@ -87,6 +87,10 @@ class UserService
         $user = $this->userRepository->createUser($userData);
         $this->userRepository->attachUserProfile($user, $userProfileData);
         $this->userRepository->attachUserRoles($user, $roles, $registration_source);
+        $this->walletRepository->create([
+            'user_id' => $user->id,
+            'wallet_balance' => 0
+        ]);
 
         event(new NewUserRegistered($user, $this->defaultPassword, $registration_source));
 
