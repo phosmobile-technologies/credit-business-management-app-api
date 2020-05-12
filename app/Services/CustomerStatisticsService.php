@@ -89,7 +89,7 @@ class CustomerStatisticsService
     private function getCustomerContributionPlanStatistics(User $user): array
     {
         $contributionPlanStatistics = [
-            'total_goal' => 0.00,
+            'total_contribution_sum' => 0.00,
             'goal_contribution_sum' => 0.00,
             'fixed_contribution_sum' => 0.00,
             'locked_contribution_sum' => 0.00,
