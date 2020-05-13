@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\GraphQL;
+namespace Tests\GraphQL\Mutations;
 
 use App\Models\Wallet;
 use App\Models\enums\TransactionOwnerType;
@@ -17,7 +17,7 @@ use Tests\GraphQL\Helpers\Traits\InteractsWithTestWallets;
 use Tests\GraphQL\Helpers\Traits\InteractsWithTestUsers;
 use Tests\TestCase;
 
-class WalletPaymentTransactionsTest extends TestCase
+class WalletWithdrawalTransactionsTest extends TestCase
 {
     use RefreshDatabase, InteractsWithTestUsers, InteractsWithTestWallets, WithFaker;
 
@@ -31,9 +31,9 @@ class WalletPaymentTransactionsTest extends TestCase
     /**
      * @test
      */
-    public function testItInitiatesWalletPaymentTransactionSuccessfully()
+    public function testItInitiatesWalletWithdrawalTransactionSuccessfully()
     {
-        $walletData = $this->createWalletAndTransactionData(TransactionType::WALLET_PAYMENT);
+        $walletData = $this->createWalletAndTransactionData(TransactionType::WALLET_WITHDRAWAL);
         $wallet = $walletData['wallet'];
         $transactionDetails = $walletData['transactionDetails'];
         $transactionData = $walletData['transactionData'];
@@ -65,7 +65,7 @@ class WalletPaymentTransactionsTest extends TestCase
     /**
      * @test
      */
-    public function testItCorrectlyApprovesAWalletPaymentTransaction()
+    public function testItCorrectlyApprovesAWalletWithdrawalTransaction()
     {
         $this->loginTestUserAndGetAuthHeaders([UserRoles::BRANCH_ACCOUNTANT]);
 
@@ -77,7 +77,7 @@ class WalletPaymentTransactionsTest extends TestCase
 
         $transaction = factory(Transaction::class)->create([
             'transaction_amount' => 500,
-            'transaction_type' => TransactionType::WALLET_PAYMENT,
+            'transaction_type' => TransactionType::WALLET_WITHDRAWAL,
             'transaction_status' => TransactionStatus::PENDING,
             'owner_id' => $wallet->id,
             'owner_type' => TransactionOwnerType::WALLET
@@ -124,7 +124,7 @@ class WalletPaymentTransactionsTest extends TestCase
      * @test
      * @group active
      */
-    public function testItCorrectlyDisapprovesAWalletPaymentTransaction()
+    public function testItCorrectlyDisapprovesAWalletWithdrawalTransaction()
     {
         $this->loginTestUserAndGetAuthHeaders([UserRoles::BRANCH_ACCOUNTANT]);
 
@@ -142,7 +142,7 @@ class WalletPaymentTransactionsTest extends TestCase
 
         $transaction = factory(Transaction::class)->create([
             'transaction_amount' => 500,
-            'transaction_type' => TransactionType::WALLET_PAYMENT,
+            'transaction_type' => TransactionType::WALLET_WITHDRAWAL,
             'transaction_status' => TransactionStatus::PENDING,
             'owner_id' => $wallet->id,
             'owner_type' => TransactionOwnerType::WALLET

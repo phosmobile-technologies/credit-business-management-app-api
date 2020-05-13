@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\GraphQL;
+namespace Tests\GraphQL\Queries;
 
 use App\Models\ContributionPlan;
 use App\Models\enums\ContributionType;
@@ -58,25 +58,25 @@ class CustomerStatisticsQueryTest extends TestCase
         $goalContributionPlans = factory(ContributionPlan::class, 3)->create([
             'id' => $this->faker->uuid,
             'user_id' => $this->user['id'],
-            'contribution_amount' => 2000,
-            'contribution_balance' => 1000,
-            'contribution_type' => ContributionType::GOAL
+            'goal' => 2000,
+            'balance' => 1000,
+            'type' => ContributionType::GOAL
         ]);
 
         $lockedContributionPlans = factory(ContributionPlan::class, 3)->create([
             'id' => $this->faker->uuid,
             'user_id' => $this->user['id'],
-            'contribution_amount' => 2000,
-            'contribution_balance' => 1000,
-            'contribution_type' => ContributionType::LOCKED
+            'goal' => 2000,
+            'balance' => 1000,
+            'type' => ContributionType::LOCKED
         ]);
 
         $fixedContributionPlans = factory(ContributionPlan::class, 3)->create([
             'id' => $this->faker->uuid,
             'user_id' => $this->user['id'],
-            'contribution_amount' => 2000,
-            'contribution_balance' => 1000,
-            'contribution_type' => ContributionType::FIXED
+            'goal' => 2000,
+            'balance' => 1000,
+            'type' => ContributionType::FIXED
         ]);
 
         $wallet = factory(Wallet::class)->create([
@@ -107,7 +107,7 @@ class CustomerStatisticsQueryTest extends TestCase
                     ],
 
                     'contribution_plan_statistics' => [
-                        'total_contribution_amount' => 18000.00,
+                        'total_contribution_sum' => 18000.00,
                         'goal_contribution_sum' => 6000.00,
                         'fixed_contribution_sum' => 6000.00,
                         'locked_contribution_sum' => 6000.00,

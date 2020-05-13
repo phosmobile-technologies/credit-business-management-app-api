@@ -2,7 +2,7 @@ extend type Query {
     """ Get user contribution plans by ID and contribution type """
     GetCustomerContributionPlans(
         customer_id: ID! @where(operator: "=", key: "user_id"),
-        contribution_plan_type: ContributionType @where(operator: "=", key: "contribution_type")
+        contribution_plan_type: ContributionType @where(operator: "=", key: "type")
     ): [ContributionPlan]!
     @all
 }

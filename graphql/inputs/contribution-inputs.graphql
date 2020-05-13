@@ -1,23 +1,50 @@
 """ Input for creating a contribution """
 input CreateContributionInput {
     user_id: ID!
-    contribution_type: ContributionType!
-    contribution_amount: Float
-    contribution_name: String!
-    contribution_duration: Int! #in months
-    contribution_balance: Float!
-    contribution_interest_rate: Float! #per annum, depending on type and duration, rates would be given
-    contribution_frequency: ContributionFrequency!
+    type: ContributionType!
+    goal: Float!
+    name: String!
+    duration: Int! #in months
+    start_date:Date
+    payback_date:Date #contribution end date
+    fixed_amount:Float
+    frequency: ContributionFrequency
 }
 
 """ Input for updating a contribution """
 input UpdateContributionInput {
     id: ID!
-    contribution_type: ContributionType!
-    contribution_amount: Float!
-    contribution_name: String!
-    contribution_duration: Int! #in months
-    contribution_balance: Float!
-    contribution_interest_rate: Float! #per annum, depending on type and duration, rates would be given
-    contribution_frequency: ContributionFrequency!
+    type: ContributionType!
+    goal: Float
+    name: String!
+    duration: Int! #in months
+    balance: Float
+    payback_date:Date #contribution end date
+    start_date:Date
+    fixed_amount:Float
+    frequency: ContributionFrequency
+}
+
+""" Input for funding a contribution plan from a wallet  """
+input FundContributionPlanFromWalletInput {
+    """ The id of the contribution plan to be funded """
+    contribution_plan_id: ID!
+
+    """ The id of the wallet to fund the contribution plan from """
+    wallet_id: ID!
+
+    """ The amount of money to fund the contribution plan with """
+    amount: Float!
+}
+
+""" Input for withdrawing funds from a contribution plan to a wallet  """
+input WithdrawFromContributionPlanToWalletInput {
+    """ The id of the contribution plan to withdraw from """
+    contribution_plan_id: ID!
+
+    """ The id of the wallet to fund """
+    wallet_id: ID!
+
+    """ The amount of money to fund the wallet with """
+    amount: Float!
 }

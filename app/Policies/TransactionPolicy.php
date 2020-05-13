@@ -2,6 +2,8 @@
 
 namespace App\Policies;
 
+use App\Models\enums\TransactionMedium;
+use App\Models\enums\TransactionType;
 use App\Models\Transaction;
 use App\Models\UserPermissions;
 use App\User;
@@ -14,7 +16,7 @@ class TransactionPolicy
     /**
      * Determine whether the user can view any transaction.
      *
-     * @param  \App\User  $user
+     * @param  \App\User $user
      * @return mixed
      */
     public function viewAny(User $user)
@@ -37,7 +39,7 @@ class TransactionPolicy
     /**
      * Determine whether the user can create transaction.
      *
-     * @param  \App\User  $user
+     * @param  \App\User $user
      * @return mixed
      */
     public function create(User $user)
@@ -100,8 +102,11 @@ class TransactionPolicy
      * @param Transaction $transaction
      * @return bool
      */
-    public function processTransaction(User $user, Transaction $transaction) {
-        return $user->can(UserPermissions::CAN_PROCESS_TRANSACTION);
+    public function processTransaction(User $user, Transaction $transaction)
+    {
+        $isUsersOnlineTransaction = ($transaction->transaction_medium == TransactionMedium::ONLINE);
+
+        return $user->can(UserPermissions::CAN_PROCESS_TRANSACTION) || $isUsersOnlineTransaction;
     }
 
     /**
@@ -110,7 +115,8 @@ class TransactionPolicy
      * @param User $user
      * @return bool
      */
-    public function initiateTransaction(User $user) {
+    public function initiateTransaction(User $user)
+    {
         return true;
     }
 }

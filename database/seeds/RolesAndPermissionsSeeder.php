@@ -81,6 +81,7 @@ class RolesAndPermissionsSeeder extends Seeder
     {
         $this->adminStaff->syncPermissions([
             Permission::firstOrCreate(['name' => UserPermissions::CAN_CREATE_LOANS]),
+            Permission::firstOrCreate(['name' => UserPermissions::CAN_CREATE_CONTRIBUTION]),
             Permission::firstOrCreate(['name' => UserPermissions::CAN_UPDATE_CONTRIBUTION]),
             Permission::firstOrCreate(['name' => UserPermissions::CAN_UPDATE_WALLET]),
             Permission::firstOrCreate(['name' => UserPermissions::CAN_DELETE_CONTRIBUTION]),

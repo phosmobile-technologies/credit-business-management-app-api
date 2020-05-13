@@ -52,24 +52,17 @@ trait InteractsWithTestWallets
     /**
      * Create a test wallet.
      *
-     * @param null $user
-     * @param null $numberofWallets
+     * @param null $user_id
      * @return mixed
      */
-    public function createTestWallet($user = null, $numberofWallets = null)
+    public function createTestWallet($user_id = null)
     {
-        if (!$user) {
-            $user = $this->createUser();
+        if (!$user_id) {
+            $user_id = $this->createUser()->id;
         }
 
-        if (!$numberofWallets) {
-            return factory(Wallet::class)->create([
-                'user_id' => $user->id
-            ]);
-        }
-
-        return factory(Wallet::class, $numberofWallets)->create([
-            'user_id' => $user->id
+        return factory(Wallet::class)->create([
+            'user_id' => $user_id
         ]);
     }
 }

@@ -27,6 +27,7 @@ type Company {
     id: ID!
     name: String!
     location: String
+    branches: [CompanyBranch]! @hasMany
 }
 
 """ A branch operated by a company """

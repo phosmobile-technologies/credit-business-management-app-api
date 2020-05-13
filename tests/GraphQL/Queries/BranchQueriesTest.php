@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\GraphQL;
+namespace Tests\GraphQL\Queries;
 
 use App\Models\Company;
 use App\Models\CompanyBranch;
@@ -167,4 +167,33 @@ class BranchQueriesTest extends TestCase
     public function testSearchBranchCustomersQuery() {
         $this->markTestSkipped("The test for searching a branch's customers needs to be implemented");
     }
+
+    /**
+     * @test
+     */
+    public function testGetCompanyQuery()
+    {
+        $this->loginTestUserAndGetAuthHeaders();
+        $branches = CompanyBranch::all();
+        $company = Company::first();
+
+
+        $response = $this->postGraphQL([
+            'query' => BranchQueriesAndMutations::GetCompany(),
+        ], $this->headers);
+
+        $response->assertJson([
+            'data' => [
+                'GetCompany' => [
+                    'id' => $company->id,
+                    'branches' => [
+                        ['id' => $branches[0]['id']],
+                        ['id' => $branches[1]['id']],
+                        ['id' => $branches[2]['id']],
+                    ]
+                ]
+            ]
+        ]);
+    }
+
 }

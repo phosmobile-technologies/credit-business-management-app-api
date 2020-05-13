@@ -29,8 +29,8 @@ trait InteractsWithTestContributionPlans
         $contributionPlan = factory(ContributionPlan::class)->create([
             'id' => $this->faker->uuid,
             'user_id' => $this->user['id'],
-            'contribution_amount' => 2000,
-            'contribution_balance' => 1000,
+            'goal' => 2000,
+            'balance' => 1000,
         ]);
 
         $transactionDetails = factory(Transaction::class)->make([

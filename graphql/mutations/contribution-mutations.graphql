@@ -13,4 +13,14 @@ extend type Mutation @middleware(checks: ["auth:api"]){
     @delete(model: "App\\Models\\ContributionPlan")
     @can(ability: "delete", model: "App\\Models\\ContributionPlan", find: "contribution_id")
 
+    """ Fund a user's contribution plan from their wallet """
+    FundContributionPlanFromWallet(input: FundContributionPlanFromWalletInput! @spread): ContributionPlan!
+    @can(ability: "fund", model: "App\\Models\\ContributionPlan", find: "contribution_plan_id")
+    @inject(context: "user", name: "user")
+
+    """ Withdraw from a user's contribution plan to their wallet """
+    WithdrawFromContributionPlanToWallet(input: WithdrawFromContributionPlanToWalletInput! @spread): ContributionPlan!
+    @can(ability: "withdraw", model: "App\\Models\\ContributionPlan", find: "contribution_plan_id")
+    @inject(context: "user", name: "user")
+
 }

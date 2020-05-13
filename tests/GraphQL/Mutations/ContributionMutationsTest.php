@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\GraphQL;
+namespace Tests\GraphQL\Mutations;
 
 use App\Models\enums\ContributionFrequency;
 use App\Models\Enums\UserRoles;
@@ -28,6 +28,12 @@ class ContributionMutationsTest extends TestCase
         $contributionData = factory(ContributionPlan::class)->make()->toArray();
         $contributionData['user_id'] = $this->user['id'];
 
+        $contributionData =  collect($contributionData)->except([
+            'balance',
+            'interest_rate',
+            'status'
+        ])->toArray();
+
         $response = $this->postGraphQL([
             'query' => ContributionQueriesAndMutations::createContribution(),
             'variables' => [
@@ -38,9 +44,9 @@ class ContributionMutationsTest extends TestCase
         $response->assertJson([
             'data' => [
                 'CreateContribution' => [
-                    'contribution_type' => $contributionData['contribution_type'],
-                    'contribution_frequency' => $contributionData['contribution_frequency'],
-                    'contribution_amount' => $contributionData['contribution_amount'],
+                    'type' => $contributionData['type'],
+                    'frequency' => $contributionData['frequency'],
+                    'goal' => $contributionData['goal'],
                 ]
             ]
         ]);
@@ -59,10 +65,13 @@ class ContributionMutationsTest extends TestCase
         $contributionData = collect($contribution)->except([
             'created_at',
             'updated_at',
-            'user_id'
+            'user_id',
+            'balance',
+            'interest_rate',
+            'status'
         ])->toArray();
-        $contributionData['contribution_amount'] = 2500;
-        $contributionData['contribution_frequency'] = ContributionFrequency::DAILY;
+        $contributionData['goal'] = 2500;
+        $contributionData['frequency'] = ContributionFrequency::DAILY;
 
         $response = $this->postGraphQL([
             'query' => ContributionQueriesAndMutations::updateContribution(),
@@ -74,9 +83,9 @@ class ContributionMutationsTest extends TestCase
         $response->assertJson([
             'data' => [
                 'UpdateContribution' => [
-                    'contribution_type' => $contributionData['contribution_type'],
-                    'contribution_frequency' => ContributionFrequency::DAILY,
-                    'contribution_amount' => 2500,
+                    'type' => $contributionData['type'],
+                    'frequency' => ContributionFrequency::DAILY,
+                    'goal' => 2500,
                 ]
             ]
         ]);
@@ -102,9 +111,9 @@ class ContributionMutationsTest extends TestCase
         $response->assertJson([
             'data' => [
                 'DeleteContribution' => [
-                    'contribution_type' => $contributionData['contribution_type'],
-                    'contribution_frequency' => $contributionData['contribution_frequency'],
-                    'contribution_amount' => $contributionData['contribution_amount'],
+                    'type' => $contributionData['type'],
+                    'frequency' => $contributionData['frequency'],
+                    'goal' => $contributionData['goal'],
                 ]
             ]
         ]);

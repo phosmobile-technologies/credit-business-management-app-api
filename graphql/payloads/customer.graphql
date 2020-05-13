@@ -22,7 +22,7 @@ type CustomerLoanStatistics {
 """ Contribution plan statistics for a customer """
 type CustomerContributionPlanStatistics {
     """ This is the sum of the balance of all the contribution plans the client has """
-    total_contribution_amount: Float!
+    total_contribution_sum: Float!
     goal_contribution_sum: Float!
     fixed_contribution_sum: Float!
     locked_contribution_sum: Float!

@@ -63,12 +63,12 @@ class UserService
         ])->toArray();
 
         // Generate a random password for the user registration via backend
-        if(RegistrationSource::BACKEND){
+        if( $attributes['registration_source'] === RegistrationSource::BACKEND){
             $this->defaultPassword = Str::random(8);
             $userData['password'] = $this->defaultPassword;
         }else{
             // mailing event requires defaultPassword not to be null
-            $this->defaultPassword = $userData['password'];
+            $this->defaultPassword = $attributes['password'];
         }
 
         // TODO: Figure why the 'directive' index is added by Lighthouse-php to the args it passes down
@@ -80,13 +80,17 @@ class UserService
             'roles',
             'directive',
             'password',
-            'password_confirmation'
+            'password_confirmation',
         ])->toArray();
         $userProfileData['customer_identifier'] = $this->generateCustomerIdentifier();
 
         $user = $this->userRepository->createUser($userData);
         $this->userRepository->attachUserProfile($user, $userProfileData);
         $this->userRepository->attachUserRoles($user, $roles, $registration_source);
+        $this->walletRepository->create([
+            'user_id' => $user->id,
+            'wallet_balance' => 0
+        ]);
 
         event(new NewUserRegistered($user, $this->defaultPassword, $registration_source));
 

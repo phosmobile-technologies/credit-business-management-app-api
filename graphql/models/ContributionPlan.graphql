@@ -2,13 +2,16 @@
 type ContributionPlan {
     id: ID!
     user_id: ID!
-    contribution_type: ContributionType!
-    contribution_amount: Float!
-    contribution_name: String!
-    contribution_duration: Int! #in months
-    contribution_balance: Float!
-    contribution_interest_rate: Float! #per annum, depending on type and duration, rates would be given
-    contribution_frequency: ContributionFrequency!
+    type: ContributionType!
+    goal: Float!
+    name: String!
+    duration: Int! #in months
+    balance: Float
+    start_date:Date
+    payback_date:Date #contribution end date
+    fixed_amount:Float
+    interest_rate: Float #per annum, depending on type and duration, rates would be given
+    frequency: ContributionFrequency
     contribution_id: String! #id to identify the contribution
     created_at: DateTime!
     updated_at: DateTime!
