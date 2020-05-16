@@ -41,7 +41,8 @@ class LoanRepaymentTransactionsTest extends TestCase
         $loan = factory(Loan::class)->states('with_default_values')->create([
             'id' => $this->faker->uuid,
             'user_id' => $this->user['id'],
-            'loan_balance' => 2000
+            'loan_balance' => 2000,
+            'loan_condition_status' => LoanConditionStatus::ACTIVE
         ]);
 
         $transactionDetails = factory(Transaction::class)->make([

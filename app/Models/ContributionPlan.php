@@ -24,10 +24,10 @@ class ContributionPlan extends Model
      */
     protected $guarded = [];
 
-    protected $dates = [
-        'payback_date',
-        'activation_date'
-    ];
+//    protected $dates = [
+//        'payback_date',
+//        'activation_date'
+//    ];
 
 //    protected $dateFormat = "Y-m-d";
 

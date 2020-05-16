@@ -5,6 +5,7 @@ namespace App\Services;
 
 use App\GraphQL\Errors\GraphqlError;
 use App\Models\Enums\LoanApplicationStatus;
+use App\Models\Enums\LoanConditionStatus;
 use App\Models\enums\TransactionOwnerType;
 use App\Models\enums\TransactionProcessingActions;
 use App\Models\enums\TransactionStatus;
@@ -185,8 +186,8 @@ class TransactionService
     public function initiateLoanRepaymentTransaction(string $loan_id, array $transactionDetails)
     {
         $loan = $this->loanRepository->find($loan_id);
-        if($loan->application_status === LoanApplicationStatus::PENDING) {
-            throw new GraphqlError('Cannot repay a loan that is pending');
+        if($loan->loan_condition_status !== LoanConditionStatus::ACTIVE && $loan->loan_condition_status !== LoanConditionStatus::NONPERFORMING) {
+            throw new GraphqlError('Cannot repay a loan that is inactive or completed');
         }
 
         return $this->createTransaction(TransactionOwnerType::LOAN, $loan_id, $transactionDetails);

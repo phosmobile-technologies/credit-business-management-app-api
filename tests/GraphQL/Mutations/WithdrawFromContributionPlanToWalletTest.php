@@ -170,7 +170,6 @@ class WithdrawFromContributionPlanToWalletTest extends TestCase
 
     /**
      * @test
-     * @group active
      */
     public function testItCanRedeemFundsFromCompletedContributionPlanToWallet()
     {
