@@ -35,7 +35,7 @@ class ContributionRepository implements ContributionRepositoryInterface
      * Update a contribution in the database.
      *
      * @param string $id
-     * @param array $contributionData
+     * @param array  $contributionData
      * @return ContributionPlan
      */
     public function update(string $id, array $contributionData): ContributionPlan
@@ -62,7 +62,7 @@ class ContributionRepository implements ContributionRepositoryInterface
      * Add a payment to a contribution plan.
      *
      * @param ContributionPlan $contribution
-     * @param Transaction $transaction
+     * @param Transaction      $transaction
      * @return ContributionPlan
      * @throws GraphqlError
      */
@@ -76,7 +76,7 @@ class ContributionRepository implements ContributionRepositoryInterface
 
         // This is the first payment made to the contribution plan
         if ($contribution->status === ContributionPlan::STATUS_INACTIVE && !isset($contribution->activation_date)) {
-            $contribution->status = ContributionPlan::STATUS_ACTIVE;
+            $contribution->status          = ContributionPlan::STATUS_ACTIVE;
             $contribution->activation_date = now();
         }
 
@@ -88,23 +88,23 @@ class ContributionRepository implements ContributionRepositoryInterface
      * Withdraw from a contribution plan.
      *
      * @param ContributionPlan $contribution
-     * @param Transaction $transaction
+     * @param Transaction      $transaction
      * @return ContributionPlan
      * @throws GraphqlError
      */
     public function withdraw(ContributionPlan $contribution, Transaction $transaction): ContributionPlan
     {
-        if ($contribution->contributionStatus === ContributionPlan::STATUS_COMPLETED) {
-            throw new GraphqlError("Cannot withdraw from a completed plan. Redeem your funds instead");
+        if (($contribution->contributionStatus === ContributionPlan::STATUS_COMPLETED) && ($contribution->balance > $transaction->transaction_amount)) {
+            throw new GraphqlError("Cannot partially withdraw from a completed plan. Redeem all funds from the completed plan instead");
         }
 
-        if($contribution->contributionStatus === ContributionPlan::STATUS_INACTIVE) {
+        if ($contribution->contributionStatus === ContributionPlan::STATUS_INACTIVE) {
             throw new GraphqlError("Cannot withdraw from an inactive plan.");
         }
 
         $withdrawableAmount = 0;
 
-        switch($contribution->type) {
+        switch ($contribution->type) {
             case ContributionType::LOCKED:
                 throw new GraphqlError("Cannot withdraw from an locked plan.");
                 break;
@@ -118,7 +118,7 @@ class ContributionRepository implements ContributionRepositoryInterface
                 break;
         }
 
-        if($transaction->transaction_amount > $withdrawableAmount) {
+        if ($transaction->transaction_amount > $withdrawableAmount) {
             throw new GraphqlError("Withdrawal failed, you can only withdraw a maximum of {$withdrawableAmount} from this plan at this time");
         }
 
