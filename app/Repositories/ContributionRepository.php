@@ -89,10 +89,10 @@ class ContributionRepository implements ContributionRepositoryInterface
      *
      * @param ContributionPlan $contribution
      * @param Transaction      $transaction
-     * @return ContributionPlan
+     * @return array
      * @throws GraphqlError
      */
-    public function withdraw(ContributionPlan $contribution, Transaction $transaction): ContributionPlan
+    public function withdraw(ContributionPlan $contribution, Transaction $transaction): array
     {
         if (($contribution->contributionStatus === ContributionPlan::STATUS_COMPLETED) && ($contribution->balance > $transaction->transaction_amount)) {
             throw new GraphqlError("Cannot partially withdraw from a completed plan. Redeem all funds from the completed plan instead");
@@ -102,29 +102,28 @@ class ContributionRepository implements ContributionRepositoryInterface
             throw new GraphqlError("Cannot withdraw from an inactive plan.");
         }
 
-        $withdrawableAmount = 0;
-
+        $amountSentToWallet = $transaction->transaction_amount;
         switch ($contribution->type) {
             case ContributionType::LOCKED:
                 throw new GraphqlError("Cannot withdraw from an locked plan.");
                 break;
 
             case ContributionType::FIXED:
-                $withdrawableAmount = (0.05 * $contribution->balance) + $contribution->interest;
+                if (!$contribution->isCompleted) {
+                    $amountSentToWallet = (0.95 * $transaction->transaction_amount);
+                }
                 break;
 
             case ContributionType::GOAL:
-                $withdrawableAmount = (0.02 * $contribution->balance) + $contribution->interest;
+                if (!$contribution->isCompleted) {
+                    $amountSentToWallet = (0.98 * $transaction->transaction_amount);
+                }
                 break;
-        }
-
-        if ($transaction->transaction_amount > $withdrawableAmount) {
-            throw new GraphqlError("Withdrawal failed, you can only withdraw a maximum of {$withdrawableAmount} from this plan at this time");
         }
 
         $contribution->balance = $contribution->balance - $transaction->transaction_amount;
         $contribution->save();
 
-        return $contribution;
+        return [$contribution, $amountSentToWallet];
     }
 }

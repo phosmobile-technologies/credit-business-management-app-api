@@ -2,6 +2,7 @@
 
 namespace Tests\GraphQL\Mutations;
 
+use App\GraphQL\Errors\GraphqlError;
 use App\Models\ContributionPlan;
 use App\Models\enums\ContributionType;
 use App\Models\Enums\UserRoles;
@@ -29,32 +30,33 @@ class WithdrawFromContributionPlanToWalletTest extends TestCase
     /**
      * @test
      */
-    public function testItCanWithdrawFundsFromContributionPlanToWallet() {
+    public function testItCanWithdrawFundsFromNoneCompletedFixedContributionPlanToWallet()
+    {
         $this->loginTestUserAndGetAuthHeaders([UserRoles::CUSTOMER]);
 
         $contributionPlan = factory(ContributionPlan::class)->create([
-            'id' => $this->faker->uuid,
-            'user_id' => $this->user['id'],
-            'goal' => 20000,
-            'balance' => 15000,
-            'payback_date' => Carbon::tomorrow(),
-            'type' => ContributionType::FIXED,
+            'id'              => $this->faker->uuid,
+            'user_id'         => $this->user['id'],
+            'goal'            => 20000,
+            'balance'         => 10000,
+            'payback_date'    => Carbon::tomorrow(),
+            'type'            => ContributionType::FIXED,
             'activation_date' => Carbon::today()->subDays(100)
         ]);
 
         $wallet = factory(Wallet::class)->create([
-            'user_id' => $this->user['id'],
-            'wallet_balance' => 1000
+            'user_id'        => $this->user['id'],
+            'wallet_balance' => 0
         ]);
 
         $mutationInput = [
             'contribution_plan_id' => $contributionPlan->id,
-            'wallet_id' => $wallet->id,
-            'amount' => 100
+            'wallet_id'            => $wallet->id,
+            'amount'               => 1000
         ];
 
         $response = $this->postGraphQL([
-            'query' => ContributionQueriesAndMutations::withdrawFromContributionPlanToWallet(),
+            'query'     => ContributionQueriesAndMutations::withdrawFromContributionPlanToWallet(),
             'variables' => [
                 'input' => $mutationInput
             ],
@@ -63,15 +65,157 @@ class WithdrawFromContributionPlanToWalletTest extends TestCase
         $response->assertJson([
             'data' => [
                 'WithdrawFromContributionPlanToWallet' => [
-                    'balance' => 14900,
-                    'goal' => 20000,
+                    'balance' => 9000,
+                    'goal'    => 20000,
                 ]
             ]
         ]);
 
         $this->assertDatabaseHas(with(new Wallet)->getTable(), [
-            'id' => $wallet->id,
-            'wallet_balance' => 1100
+            'id'             => $wallet->id,
+            'wallet_balance' => 950
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function testItCanWithdrawFundsFromNoneCompletedGoalContributionPlanToWallet()
+    {
+        $this->loginTestUserAndGetAuthHeaders([UserRoles::CUSTOMER]);
+
+        $contributionPlan = factory(ContributionPlan::class)->create([
+            'id'              => $this->faker->uuid,
+            'user_id'         => $this->user['id'],
+            'goal'            => 20000,
+            'balance'         => 10000,
+            'payback_date'    => Carbon::tomorrow(),
+            'type'            => ContributionType::GOAL,
+            'activation_date' => Carbon::today()->subDays(100)
+        ]);
+
+        $wallet = factory(Wallet::class)->create([
+            'user_id'        => $this->user['id'],
+            'wallet_balance' => 0
+        ]);
+
+        $mutationInput = [
+            'contribution_plan_id' => $contributionPlan->id,
+            'wallet_id'            => $wallet->id,
+            'amount'               => 1000
+        ];
+
+        $response = $this->postGraphQL([
+            'query'     => ContributionQueriesAndMutations::withdrawFromContributionPlanToWallet(),
+            'variables' => [
+                'input' => $mutationInput
+            ],
+        ], $this->headers);
+
+        $response->assertJson([
+            'data' => [
+                'WithdrawFromContributionPlanToWallet' => [
+                    'balance' => 9000,
+                    'goal'    => 20000,
+                ]
+            ]
+        ]);
+
+        $this->assertDatabaseHas(with(new Wallet)->getTable(), [
+            'id'             => $wallet->id,
+            'wallet_balance' => 980
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function testItCannotPartiallyWithdrawFundsFromCompletedContributionPlanToWallet()
+    {
+        $this->loginTestUserAndGetAuthHeaders([UserRoles::CUSTOMER]);
+
+        $contributionPlan = factory(ContributionPlan::class)->create([
+            'id'              => $this->faker->uuid,
+            'user_id'         => $this->user['id'],
+            'goal'            => 20000,
+            'balance'         => 10000,
+            'payback_date'    => Carbon::yesterday(),
+            'type'            => ContributionType::FIXED,
+            'activation_date' => Carbon::today()->subDays(100)
+        ]);
+
+        $wallet = factory(Wallet::class)->create([
+            'user_id'        => $this->user['id'],
+            'wallet_balance' => 0
+        ]);
+
+        $mutationInput = [
+            'contribution_plan_id' => $contributionPlan->id,
+            'wallet_id'            => $wallet->id,
+            'amount'               => 1000
+        ];
+
+        $response = $this->postGraphQL([
+            'query'     => ContributionQueriesAndMutations::withdrawFromContributionPlanToWallet(),
+            'variables' => [
+                'input' => $mutationInput
+            ],
+        ], $this->headers);
+
+        $response->assertJsonStructure([
+            'errors'
+
+        ]);
+    }
+
+    /**
+     * @test
+     * @group active
+     */
+    public function testItCanRedeemFundsFromCompletedContributionPlanToWallet()
+    {
+        $this->loginTestUserAndGetAuthHeaders([UserRoles::CUSTOMER]);
+
+        $contributionPlan = factory(ContributionPlan::class)->create([
+            'id'              => $this->faker->uuid,
+            'user_id'         => $this->user['id'],
+            'goal'            => 20000,
+            'balance'         => 10000,
+            'payback_date'    => Carbon::yesterday(),
+            'type'            => ContributionType::FIXED,
+            'activation_date' => Carbon::today()->subDays(100)
+        ]);
+
+        $wallet = factory(Wallet::class)->create([
+            'user_id'        => $this->user['id'],
+            'wallet_balance' => 0
+        ]);
+
+        $mutationInput = [
+            'contribution_plan_id' => $contributionPlan->id,
+            'wallet_id'            => $wallet->id,
+            'amount'               => 10000
+        ];
+
+        $response = $this->postGraphQL([
+            'query'     => ContributionQueriesAndMutations::withdrawFromContributionPlanToWallet(),
+            'variables' => [
+                'input' => $mutationInput
+            ],
+        ], $this->headers);
+
+        $response->assertJson([
+            'data' => [
+                'WithdrawFromContributionPlanToWallet' => [
+                    'balance' => 0,
+                    'goal'    => 20000,
+                ]
+            ]
+        ]);
+
+        $this->assertDatabaseHas(with(new Wallet)->getTable(), [
+            'id'             => $wallet->id,
+            'wallet_balance' => 10000
         ]);
     }
 }

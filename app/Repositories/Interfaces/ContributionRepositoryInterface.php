@@ -51,8 +51,8 @@ interface ContributionRepositoryInterface
      *
      * @param ContributionPlan $contribution
      * @param Transaction $transaction
-     * @return ContributionPlan
+     * @return array
      */
-    public function withdraw(ContributionPlan $contribution, Transaction $transaction): ContributionPlan;
+    public function withdraw(ContributionPlan $contribution, Transaction $transaction): array;
 }
 

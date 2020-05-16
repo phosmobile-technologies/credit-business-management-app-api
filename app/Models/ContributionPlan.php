@@ -38,7 +38,7 @@ class ContributionPlan extends Model
      */
     public function getContributionIdAttribute()
     {
-        return "Loan - {$this->contribution_id}";
+        return "Contribution Plan - {$this->contribution_id}";
     }
 
     /**
@@ -110,5 +110,14 @@ class ContributionPlan extends Model
 
         $today = Carbon::today();
         return $today->diffInDays($this->payback_date, false) <= 0;
+    }
+
+    /**
+     * Determine if a contribution plan is completed
+     * @return bool
+     */
+    public function getIsCompletedAttribute()
+    {
+        return $this->contributionStatus === self::STATUS_COMPLETED;
     }
 }

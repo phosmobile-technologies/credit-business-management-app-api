@@ -157,16 +157,16 @@ class ContributionService
                 'transaction_purpose' => "Online withdrawing from user contribution plan to fund wallet",
             ]);
 
+            list($contributionPlanWithdrawalTransaction, $amountSentToWallet) = $this->transactionService->processTransaction($user, $contributionPlanWithdrawalTransaction->id,
+                TransactionProcessingActions::APPROVE, "Approved as an online user contribution plan withdrawal transaction");
+            
             $walletFundingTransaction = $this->transactionService->initiateTransaction($wallet_id, [
                 'transaction_date' => Carbon::now()->toDateString(),
                 'transaction_type' => TransactionType::WALLET_PAYMENT,
-                'transaction_amount' => $amount,
+                'transaction_amount' => $amountSentToWallet,
                 'transaction_medium' => TransactionMedium::ONLINE,
                 'transaction_purpose' => "Online Wallet funding from user contribution plan",
             ]);
-
-            $this->transactionService->processTransaction($user, $contributionPlanWithdrawalTransaction->id,
-                TransactionProcessingActions::APPROVE, "Approved as an online user contribution plan withdrawal transaction");
 
             $this->transactionService->processTransaction($user, $walletFundingTransaction->id,
                 TransactionProcessingActions::APPROVE, "Approved as an online user wallet funding transaction");

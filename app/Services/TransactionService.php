@@ -93,9 +93,9 @@ class TransactionService
      * @param string $transaction_id
      * @param string $action
      * @param null|string $message
-     * @return Transaction
+     * @return Transaction|array
      */
-    public function processTransaction(User $user, string $transaction_id, string $action, ?string $message): Transaction
+    public function processTransaction(User $user, string $transaction_id, string $action, ?string $message)
     {
         $transaction = $this->transactionRepository->find($transaction_id);
 
@@ -188,7 +188,7 @@ class TransactionService
         if($loan->application_status === LoanApplicationStatus::PENDING) {
             throw new GraphqlError('Cannot repay a loan that is pending');
         }
-        
+
         return $this->createTransaction(TransactionOwnerType::LOAN, $loan_id, $transactionDetails);
     }
 
@@ -267,15 +267,17 @@ class TransactionService
      * @param Transaction $transaction
      * @param string $action
      * @param null|string $message
-     * @return Transaction
+     * @return array
      */
     private function processContributionWithdrawalTransaction(User $user, Transaction $transaction, string $action, ?string $message)
     {
-        DB::transaction(function () use ($transaction, $action, $user, $message) {
+        $amountSentToWallet = $transaction->transaction_amount;
+        DB::transaction(function () use ($transaction, $action, $user, $message, &$amountSentToWallet) {
+
             switch ($action) {
                 case TransactionProcessingActions::APPROVE:
                     $contributionPlan = $this->contributionRepository->find($transaction->owner_id);
-                    $this->contributionRepository->withdraw($contributionPlan, $transaction);
+                    list ($contributionPlan, $amountSentToWallet) = $this->contributionRepository->withdraw($contributionPlan, $transaction);
                     $this->transactionRepository->updateTransactionStatus($transaction, TransactionStatus::COMPLETED);
                     break;
 
@@ -287,7 +289,7 @@ class TransactionService
             $this->transactionRepository->storeProcessedTransaction($transaction, $user->id, $action, $message);
         });
 
-        return $transaction;
+        return [$transaction, $amountSentToWallet];
     }
 
     /**
