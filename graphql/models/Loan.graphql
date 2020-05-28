@@ -19,7 +19,7 @@ type Loan {
     amount_disbursed: Float
     application_status: LoanApplicationStatus!
     loan_condition_status: LoanConditionStatus!
-    loan_default_status: LoanDefaultStatus!
+    loan_default_status: LoanDefaultStatus
     num_of_default_days: Int
     transactions: [Transaction]! @morphMany
     activities: [Activity]! @hasMany
