@@ -35,6 +35,7 @@ type LoanApplication {
     loan_repayment_source: String!
     loan_amount: Float!
     loan_repayment_frequency: LoanRepaymentFrequency!
+    status: OnlineLoanApplicationStatus!
     tenure: Int!
     expected_disbursement_date: Date
     created_at: Date!
@@ -84,4 +85,10 @@ enum LoanConditionStatus {
 enum LoanDefaultStatus {
     DEFAULTING,
     NOT_DEFAULTING
+}
+
+enum OnlineLoanApplicationStatus {
+    PENDING,
+    APPROVED,
+    DISAPPROVED
 }

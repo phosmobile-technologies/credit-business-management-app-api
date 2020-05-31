@@ -137,8 +137,8 @@ class LoanService
         $loan = $this->loanRepository->find($loanID);
         $loanBalance = $loan->loan_balance;
 
-        if($loanBalance < $amountDisbursed) {
-            throw new GraphqlError("Cannot disburse {$amountDisbursed}, the loan balance is only {$loanBalance}");
+        if($loan->disbursement_status === DisbursementStatus::DISBURSED) {
+            throw new GraphqlError("Cannot disburse funds for a loan that has already been disbursed");
         }
 
         if($loan->application_status !== LoanApplicationStatus::APPROVED_BY_GLOBAL_MANAGER()->getValue()) {

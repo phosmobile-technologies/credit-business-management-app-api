@@ -15,6 +15,7 @@ use App\Models\Enums\LoanApplicationStatus;
 use App\Models\Enums\LoanConditionStatus;
 use App\Models\Loan;
 use App\Repositories\Interfaces\LoanRepositoryInterface;
+use Carbon\Carbon;
 
 class LoanRepository implements LoanRepositoryInterface
 {
@@ -66,8 +67,11 @@ class LoanRepository implements LoanRepositoryInterface
     public function disburseLoan(Loan $loan, float $amountDisbursed): Loan
     {
         $loan->disbursement_status = DisbursementStatus::DISBURSED;
-        $loan->loan_balance = $loan->loan_amount - ($loan->amount_disbursed + $amountDisbursed);
-        $loan->amount_disbursed = $loan->amount_disbursed + $amountDisbursed;
+        $loan->loan_condition_status = LoanConditionStatus::ACTIVE;
+        $loan->loan_balance = $amountDisbursed;
+        $loan->amount_disbursed = $amountDisbursed;
+        $loan->disbursement_date = Carbon::today();
+        $loan->due_date = Carbon::today()->addMonths($loan->tenure);
         $loan->save();
 
         return $loan;

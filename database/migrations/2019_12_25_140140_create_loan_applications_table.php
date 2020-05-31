@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Enums\LoanRepaymentFrequency;
+use App\Models\enums\OnlineLoanApplicationStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -24,6 +25,11 @@ class CreateLoanApplicationsTable extends Migration
                 LoanRepaymentFrequency::MONTHLY,
                 LoanRepaymentFrequency::WEEKLY
             ]);
+            $table->enum('status', [
+                OnlineLoanApplicationStatus::PENDING,
+                OnlineLoanApplicationStatus::DISAPPROVED,
+                OnlineLoanApplicationStatus::APPROVED
+            ])->default(OnlineLoanApplicationStatus::PENDING);
             $table->integer('tenure');
             $table->date('expected_disbursement_date');
             $table->timestamps();
