@@ -68,8 +68,8 @@ class LoanRepository implements LoanRepositoryInterface
     {
         $loan->disbursement_status = DisbursementStatus::DISBURSED;
         $loan->loan_condition_status = LoanConditionStatus::ACTIVE;
-        $loan->loan_balance = $amountDisbursed;
         $loan->amount_disbursed = $amountDisbursed;
+        $loan->loan_balance = $amountDisbursed + $loan->totalInterestAmount;
         $loan->disbursement_date = Carbon::today();
         $loan->due_date = Carbon::today()->addMonths($loan->tenure);
         $loan->save();

@@ -2,6 +2,7 @@
 
 namespace Tests\GraphQL\Mutations;
 
+use App\Models\Enums\DisbursementStatus;
 use App\Models\Enums\LoanApplicationStatus;
 use App\Models\Enums\UserRoles;
 use App\Models\Loan;
@@ -36,13 +37,15 @@ class LoanDisbursementTest extends TestCase
             'application_status' => LoanApplicationStatus::APPROVED_BY_GLOBAL_MANAGER(),
             'user_id' => $this->user['id'],
             'loan_amount' => 1000,
-            'loan_balance' => 1000,
-            'amount_disbursed' => 0
+            'loan_balance' => 0,
+            'disbursement_status' => DisbursementStatus::NOT_DISBURSED,
+            'amount_disbursed' => null,
+            'interest_rate' => 10
         ]);
 
         $loanDisbursementInput = [
             'loan_id' => $loan->id,
-            'amount_disbursed' => 600,
+            'amount_disbursed' => 1000,
             'message' => 'We are only able to disburse 500 for now'
         ];
 
@@ -57,8 +60,8 @@ class LoanDisbursementTest extends TestCase
             'data' => [
                 'DisburseLoan' => [
                     "id" => $loan->id,
-                    "amount_disbursed" => 600,
-                    "loan_balance" => 400,
+                    "amount_disbursed" => 1000,
+                    "loan_balance" => 1100,
                     "loan_amount" => 1000
                 ]
             ]
@@ -149,7 +152,7 @@ class LoanDisbursementTest extends TestCase
         $loanDisbursementInput = [
             'loan_id' => $loan->id,
             'amount_disbursed' => 1600,
-            'message' => 'We are only able to disburse 500 for now'
+            'message' => 'We are only able to disburse 1600 for now'
         ];
 
         $response = $this->postGraphQL([

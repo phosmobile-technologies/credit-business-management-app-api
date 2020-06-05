@@ -21,6 +21,8 @@ type Loan {
     loan_condition_status: LoanConditionStatus!
     loan_default_status: LoanDefaultStatus
     num_of_default_days: Int
+    totalInterestAmount: Float
+    nextDueAmount: Float
     transactions: [Transaction]! @morphMany
     activities: [Activity]! @hasMany
     created_at: DateTime!
