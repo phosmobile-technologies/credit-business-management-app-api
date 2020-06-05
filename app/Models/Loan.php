@@ -93,7 +93,7 @@ class Loan extends Model
             $cumulativeInterest += ($reducingBalance * $interestRate);
         }
 
-        return $cumulativeInterest;
+        return round($cumulativeInterest, 2);
     }
 
     /**

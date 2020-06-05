@@ -72,6 +72,7 @@ class UserServiceTest extends TestCase
         $registrationData = array_merge($userData, $walletData);
         $registrationData['roles'] = [UserRoles::CUSTOMER];
         $registrationData['registration_source'] = [RegistrationSource::BACKEND];
+        $registrationData['password'] = 'password';
 
         $this->userRepository->shouldReceive('createUser')
             ->andReturn($user);
@@ -87,6 +88,8 @@ class UserServiceTest extends TestCase
 
         $this->userProfileRepository->shouldReceive('customerIdentifierExists')
             ->andReturn(false);
+
+        $this->walletRepository->shouldReceive('create');
 
         $response = $this->userService->registerUser($registrationData);
 

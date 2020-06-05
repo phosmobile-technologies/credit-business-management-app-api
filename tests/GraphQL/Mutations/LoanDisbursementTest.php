@@ -40,7 +40,8 @@ class LoanDisbursementTest extends TestCase
             'loan_balance' => 0,
             'disbursement_status' => DisbursementStatus::NOT_DISBURSED,
             'amount_disbursed' => null,
-            'interest_rate' => 10
+            'interest_rate' => 10,
+            'tenure' => 5
         ]);
 
         $loanDisbursementInput = [
@@ -61,8 +62,9 @@ class LoanDisbursementTest extends TestCase
                 'DisburseLoan' => [
                     "id" => $loan->id,
                     "amount_disbursed" => 1000,
-                    "loan_balance" => 1100,
-                    "loan_amount" => 1000
+                    "loan_balance" => 1300,
+                    "loan_amount" => 1000,
+                    "totalInterestAmount" => 300
                 ]
             ]
         ]);
