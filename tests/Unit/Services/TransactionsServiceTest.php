@@ -2,11 +2,13 @@
 
 namespace Tests\Unit;
 
+use App\Models\Enums\LoanConditionStatus;
 use App\Models\enums\TransactionOwnerType;
 use App\Models\enums\TransactionStatus;
 use App\Models\enums\TransactionType;
 use App\Models\Loan;
 use App\Models\Transaction;
+use App\Repositories\LoanRepository;
 use App\Repositories\TransactionRepository;
 use App\Services\TransactionService;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -28,6 +30,11 @@ class TransactionsServiceTest extends TestCase
     private $transactionRepository;
 
     /**
+     * @var LoanRepository
+     */
+    private $loanRepository;
+
+    /**
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     protected function setUp(): void
@@ -35,20 +42,24 @@ class TransactionsServiceTest extends TestCase
         parent::setUp();
 
         $this->transactionRepository = Mockery::mock(TransactionRepository::class);
+        $this->loanRepository = Mockery::mock(LoanRepository::class);
 
         $this->app->instance(TransactionRepository::class, $this->transactionRepository);
+        $this->app->instance(LoanRepository::class, $this->loanRepository);
 
         $this->transactionsService = $this->app->make(TransactionService::class);
     }
 
     /**
      * @test
+     * @throws \App\GraphQL\Errors\GraphqlError
      */
     public function testItCreatesLoanRepaymentTransactionSuccessfully()
     {
         $loan = factory(Loan::class)->make([
             'id' => $this->faker->uuid,
-            'loan_balance' => 1000
+            'loan_balance' => 1000,
+            'loan_condition_status' => LoanConditionStatus::ACTIVE
         ]);
 
         $transactionDetails = factory(Transaction::class)->make([
@@ -58,6 +69,8 @@ class TransactionsServiceTest extends TestCase
             'transaction_type' => TransactionType::LOAN_REPAYMENT,
             'transaction_status' => TransactionStatus::PENDING
         ]);
+
+        $this->loanRepository->shouldReceive('find')->with($loan->id)->andReturn($loan);
 
         $this->transactionRepository->shouldReceive('create')
             ->andReturnUsing(function ($arg1) use ($transactionDetails) {
