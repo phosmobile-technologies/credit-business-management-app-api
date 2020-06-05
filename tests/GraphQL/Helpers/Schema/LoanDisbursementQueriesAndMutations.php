@@ -19,6 +19,7 @@ class LoanDisbursementQueriesAndMutations
                     loan_amount
                     loan_balance
                     totalInterestAmount
+                    nextDueAmount
                 }
             }
         ';

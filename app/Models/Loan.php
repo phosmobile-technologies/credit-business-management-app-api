@@ -102,7 +102,7 @@ class Loan extends Model
     public function getNextDueAmountAttribute()
     {
         $totalLoanBalance = $this->loan_balance + $this->totalDefaultAmount;
-        return ($totalLoanBalance) / $this->monthsLeft;
+        return round(($totalLoanBalance) / $this->monthsLeft, 2);
     }
 
     /**

@@ -64,7 +64,8 @@ class LoanDisbursementTest extends TestCase
                     "amount_disbursed" => 1000,
                     "loan_balance" => 1300,
                     "loan_amount" => 1000,
-                    "totalInterestAmount" => 300
+                    "totalInterestAmount" => 300,
+                    "nextDueAmount" => 260,
                 ]
             ]
         ]);
