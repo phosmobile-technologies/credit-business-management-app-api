@@ -51,9 +51,9 @@ input NewPasswordWithCodeInput {
 input RegisterInput {
     first_name: String! @rules(apply: ["required", "string"])
     last_name: String! @rules(apply: ["required", "string"])
-    phone_number: String! @rules(apply: ["required", "string"])
+    phone_number: String! @rules(apply: ["required", "string", "unique:users,phone_number"])
     password:String @rules(apply:["min:6","same:input.password_confirmation"])
-    email: String @rules(apply: ["email"])
+    email: String @rules(apply: ["email", "unique:users,email"])
     roles: [UserRoles!]!
     password_confirmation: String
     registration_source:RegistrationSource!
