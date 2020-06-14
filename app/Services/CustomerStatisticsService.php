@@ -72,7 +72,7 @@ class CustomerStatisticsService
         if (isset($loan) && $loan->loan_condition_status === LoanConditionStatus::ACTIVE) {
             $loanStatistics['active_loan'] = true;
             $loanStatistics['loan_balance'] = $loan->loan_balance;
-            $loanStatistics['total_paid_amount'] = $loan->loan_amount - $loan->loan_balance;
+            $loanStatistics['total_paid_amount'] = $loan->amount_disbursed + $loan->totalInterestAmount - $loan->loan_balance;
 
             if (($loan->loan_default_status === LoanDefaultStatus::DEFAULTING) && isset($loan->num_of_default_days)) {
                 $loanStatistics['default_charges'] = $loan->default_amount * $loan->num_of_default_days;

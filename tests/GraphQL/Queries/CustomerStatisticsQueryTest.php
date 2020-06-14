@@ -102,7 +102,7 @@ class CustomerStatisticsQueryTest extends TestCase
                         'next_due_payment' => 0,
                         'next_repayment_date' => "N/A",
                         'default_charges' => $loan->num_of_default_days * $loan->default_amount,
-                        'total_paid_amount' => $loan->loan_amount - $loan->loan_balance,
+                        'total_paid_amount' => $loan->amount_disbursed + $loan->totalInterestAmount - $loan->loan_balance,
                         'active_loan' => true,
                     ],
 
