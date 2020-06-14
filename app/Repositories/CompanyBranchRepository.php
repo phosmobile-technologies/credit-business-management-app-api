@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Date;
+use Illuminate\Support\Facades\DB;
 
 class CompanyBranchRepository implements CompanyBranchRepositoryInterface
 {
@@ -106,9 +107,10 @@ class CompanyBranchRepository implements CompanyBranchRepositoryInterface
 
         return $branch->customers()->role([UserRoles::CUSTOMER])->where(function ($query) use ($search_query, $start_date, $end_date) {
 
+
             if(isset($search_query)) {
-                $query->where('first_name', 'like', "{$search_query}")
-                    ->orWhere('last_name', 'like', "{$search_query}");
+                $query->where(DB::raw('lower(users.first_name)'), 'like', "%{$search_query}%")
+                    ->orWhere(DB::raw('lower(users.last_name)'), 'like', "%{$search_query}%");
             }
 
             if(isset($start_date)) {
