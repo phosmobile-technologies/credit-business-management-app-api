@@ -164,8 +164,39 @@ class BranchQueriesTest extends TestCase
         }
     }
 
+    /**
+     * @test
+     * @group now-active
+     */
     public function testSearchBranchCustomersQuery() {
-        $this->markTestSkipped("The test for searching a branch's customers needs to be implemented");
+        $this->loginTestUserAndGetAuthHeaders();
+
+        $branch = CompanyBranch::first();
+        $users = [];
+
+        for ($i = 0; $i < 3; $i++) {
+            $user = $this->createUser();
+
+            array_push($users, $user);
+        }
+
+        $response = $this->postGraphQL([
+            'query' => BranchQueriesAndMutations::searchBranchCustomers(),
+            'variables' => [
+                'branch_id' => $branch->id,
+                'search_query' => $users[0]->last_name
+            ],
+        ], $this->headers);
+
+        $response->assertJson([
+            'data' => [
+                'SearchBranchCustomers' => [
+                    'data' => [
+                        ['id' => $users[0]['id']],
+                    ]
+                ]
+            ]
+        ]);
     }
 
     /**

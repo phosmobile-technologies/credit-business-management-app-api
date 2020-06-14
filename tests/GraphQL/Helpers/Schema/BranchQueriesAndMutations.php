@@ -50,6 +50,32 @@ class BranchQueriesAndMutations
     }
 
     /**
+     * Search the customers that belong to a branch.
+     *
+     * @return string
+     */
+    public static function searchBranchCustomers()
+    {
+        return '
+            query SearchBranchCustomers($branch_id: ID!, $search_query: String) {
+                SearchBranchCustomers(branch_id: $branch_id, search_query: $search_query) {
+                   paginatorInfo {
+                      count
+                      currentPage
+                      firstItem
+                      total
+                    }
+                    data {
+                      id
+                      first_name
+                      last_name
+                    }
+                  }
+            }
+        ';
+    }
+
+    /**
      * Get the loans that belong to a branch.
      *
      * @return string
