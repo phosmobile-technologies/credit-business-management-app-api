@@ -107,8 +107,8 @@ class CompanyBranchRepository implements CompanyBranchRepositoryInterface
         return $branch->customers()->role([UserRoles::CUSTOMER])->where(function ($query) use ($search_query, $start_date, $end_date) {
 
             if(isset($search_query)) {
-                $query->where('first_name', 'like', "%{$search_query}%")
-                    ->orWhere('last_name', 'like', "%{$search_query}%");
+                $query->where('first_name', 'like', "{$search_query}")
+                    ->orWhere('last_name', 'like', "{$search_query}");
             }
 
             if(isset($start_date)) {
