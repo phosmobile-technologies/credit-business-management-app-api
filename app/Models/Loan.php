@@ -6,6 +6,8 @@ use App\GraphQL\Errors\GraphqlError;
 use App\Models\Concerns\UsesUuid;
 use App\Models\Enums\LoanConditionStatus;
 use App\Models\Enums\LoanDefaultStatus;
+use App\Models\enums\TransactionMedium;
+use App\Models\enums\TransactionType;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
@@ -33,7 +35,7 @@ class Loan extends Model
      */
     public function getTotalDefaultAmountAttribute()
     {
-        if($this->loan_default_status === LoanDefaultStatus::NOT_DEFAULTING) {
+        if ($this->loan_default_status === LoanDefaultStatus::NOT_DEFAULTING) {
             return 0;
         }
 
@@ -43,7 +45,8 @@ class Loan extends Model
     /**
      * Determine if the due date for the loan has been reached
      */
-    public function dueDateReached() {
+    public function dueDateReached()
+    {
         if (!isset($this->due_date)) {
             return false;
         }
@@ -58,15 +61,15 @@ class Loan extends Model
      */
     public function getMonthsLeftAttribute()
     {
-        if($this->loan_condition_status === LoanConditionStatus::INACTIVE ||
+        if ($this->loan_condition_status === LoanConditionStatus::INACTIVE ||
             $this->loan_condition_status === LoanConditionStatus::COMPLETED) {
             return null;
         }
 
-        if($this->dueDateReached()) {
+        if ($this->dueDateReached()) {
             return 0;
-        }else {
-            if(isset($this->due_date)) {
+        } else {
+            if (isset($this->due_date)) {
                 $today = Carbon::today();
                 return $today->diffInMonths($this->due_date, false);
             } else {
@@ -84,12 +87,12 @@ class Loan extends Model
     public function getTotalInterestAmountAttribute()
     {
         $monthlyPrincipalRepayment = $this->amount_disbursed / $this->tenure;
-        $reducingBalance = $this->amount_disbursed + $monthlyPrincipalRepayment;
-        $cumulativeInterest = 0 ;
-        $interestRate = $this->interest_rate / 100;
+        $reducingBalance           = $this->amount_disbursed + $monthlyPrincipalRepayment;
+        $cumulativeInterest        = 0;
+        $interestRate              = $this->interest_rate / 100;
 
-        for($i = 0; $i < $this->tenure; $i++) {
-            $reducingBalance -= $monthlyPrincipalRepayment;
+        for ($i = 0; $i < $this->tenure; $i++) {
+            $reducingBalance    -= $monthlyPrincipalRepayment;
             $cumulativeInterest += ($reducingBalance * $interestRate);
         }
 
@@ -106,11 +109,34 @@ class Loan extends Model
     }
 
     /**
+     * Get the next due payment date for a loan.
+     */
+    public function getNextDuePaymentDateAttribute()
+    {
+        if ($this->dueDateReached()) {
+            return "LOAN EXPIRED";
+        }
+
+        $mostRecentLoanRepayment = $this->mostRecentLoanRepaymentTransaction();
+
+        if ($mostRecentLoanRepayment) {
+            return $mostRecentLoanRepayment->updated_at->addDays(30);
+        }
+
+        if ($this->disbursement_date) {
+            return $this->disbursement_date->addDays(30);
+        }
+
+        return null;
+    }
+
+    /**
      * Get all of the loan's transactions.
      *
      * @return \Illuminate\Database\Eloquent\Relations\MorphMany
      */
-    public function transactions() {
+    public function transactions()
+    {
         return $this->morphMany(Transaction::class, 'owner');
     }
 
@@ -119,7 +145,8 @@ class Loan extends Model
      *
      * @return BelongsTo
      */
-    public function user(): BelongsTo {
+    public function user(): BelongsTo
+    {
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
@@ -128,8 +155,22 @@ class Loan extends Model
      *
      * @return HasMany
      */
-    public function activities(): HasMany {
+    public function activities(): HasMany
+    {
         return $this->hasMany(Activity::class, 'subject_id', 'id');
+    }
+
+    /**
+     *
+     */
+    public function mostRecentLoanRepaymentTransaction()
+    {
+        return Transaction::query()
+            ->where([
+                ['transaction_type', TransactionType::LOAN_REPAYMENT],
+                ['owner_id', $this->id]
+            ])
+            ->orderBy('created_at', 'desc')->first();
     }
 
 }

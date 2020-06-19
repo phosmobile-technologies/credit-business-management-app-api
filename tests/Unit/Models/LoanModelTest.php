@@ -64,5 +64,4 @@ class LoanModelTest extends TestCase
         $this->assertEquals(300, $loanOne->totalInterestAmount);
     }
 
-
 }
