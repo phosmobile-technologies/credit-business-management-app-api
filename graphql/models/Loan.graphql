@@ -23,6 +23,7 @@ type Loan {
     num_of_default_days: Int
     totalInterestAmount: Float
     nextDueAmount: Float
+    NextDuePaymentDate: String
     transactions: [Transaction]! @morphMany
     activities: [Activity]! @hasMany
     created_at: DateTime!
