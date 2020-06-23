@@ -13,4 +13,12 @@ extend type Mutation @middleware(checks: ["auth:api"]){
     @can(ability: "processTransaction", model: "App\\Models\\Transaction", find: "transaction_id")
     @inject(context: "user", name: "user")
 
+    """ Make a loan repayment from a user's wallet """
+    MakeLoanRepaymentFromWallet(
+        loan_id: ID!
+        wallet_id: ID!
+        amount: Float!
+    ): Transaction!
+    @can(ability: "initiateTransaction", model: "App\\Models\\Transaction")
+    @inject(context: "user", name: "user")
 }

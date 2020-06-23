@@ -12,6 +12,7 @@ use App\Models\Enums\UserRoles;
 use App\Models\Loan;
 use App\Models\ProcessedTransaction;
 use App\Models\Transaction;
+use App\Models\Wallet;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -79,7 +80,6 @@ class LoanRepaymentTransactionsTest extends TestCase
 
     /**
      * @test
-     * @group
      */
     public function testItCorrectlyApprovesALoanRepaymentRequest()
     {
@@ -150,7 +150,6 @@ class LoanRepaymentTransactionsTest extends TestCase
 
     /**
      * @test
-     * @group
      */
     public function testItCorrectlyCompletesALoanWhenTheTotalRepaymentIsMade()
     {
@@ -291,7 +290,6 @@ class LoanRepaymentTransactionsTest extends TestCase
 
     /**
      * @test
-     * @group active2
      */
     public function testAUserCanApproveALoanRepaymentRequestMadeOnline()
     {
@@ -358,6 +356,73 @@ class LoanRepaymentTransactionsTest extends TestCase
             'transaction_id' => $transaction->id,
             'processing_type' => TransactionProcessingActions::APPROVE,
             'message' => $message
+        ]);
+    }
+
+    /**
+     * @group activex
+     */
+    public function testAUserCanMakeLoanRepaymentFromWalletBalance() {
+        $this->loginTestUserAndGetAuthHeaders([UserRoles::CUSTOMER]);
+
+        $loan = factory(Loan::class)->states('with_default_values')->create([
+            'id' => $this->faker->uuid,
+            'user_id' => $this->user['id'],
+            'loan_balance' => 2000,
+            'loan_condition_status' => LoanConditionStatus::ACTIVE
+        ]);
+
+        $wallet = factory(Wallet::class)->create([
+            'id' => $this->faker->uuid,
+            'user_id' => $this->user['id'],
+            'wallet_balance' => 2000,
+        ]);
+
+        $amount = 1000;
+
+        /**
+         * +) Ensure the user has money in wallet ✅
+         * +) Create a loan that needs repaying ✅
+         * +) Repay from wallet
+         * +) Ensure wallet balance is reduced ✅
+         * +) Ensure loan balance is reduced accordingly ✅
+         * +) Check that wallet withdrawal transaction is initiated and completed
+         * +) Check that the loan repayment transaction is initiated and completed
+         */
+
+        $transactionData = [
+            'loan_id' => $loan->id,
+            'wallet_id' => $wallet->id,
+            'amount' => $amount
+        ];
+
+        $response = $this->postGraphQL([
+           'query' => TransactionsQueriesAndMutations::MakeLoanRepaymentFromWallet(),
+           'variables' => $transactionData
+        ], $this->headers);
+
+        $this->assertDatabaseHas(with(new Loan)->getTable(), [
+            'id' => $loan->id,
+            'loan_balance' => 1000,
+        ]);
+
+        $this->assertDatabaseHas(with(new Wallet)->getTable(), [
+            'id' => $wallet->id,
+            'wallet_balance' => 1000,
+        ]);
+
+        $this->assertDatabaseHas(with(new Transaction)->getTable(), [
+            'transaction_status' => TransactionStatus::COMPLETED,
+            'transaction_amount' => $amount,
+            'transaction_type' => TransactionType::WALLET_WITHDRAWAL,
+            'owner_id' => $wallet->id,
+        ]);
+
+        $this->assertDatabaseHas(with(new Transaction)->getTable(), [
+            'transaction_status' => TransactionStatus::COMPLETED,
+            'transaction_amount' => $amount,
+            'transaction_type' => TransactionType::LOAN_REPAYMENT,
+            'owner_id' => $loan->id,
         ]);
     }
 
