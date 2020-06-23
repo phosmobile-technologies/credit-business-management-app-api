@@ -101,4 +101,34 @@ class TransactionsQueriesAndMutations
             }
         ';
     }
+
+    /**
+     * Mutation for making a loan repayment from a user's wallet balance.
+     *
+     * @return string
+     */
+    public static function MakeLoanRepaymentFromWallet()
+    {
+        return '
+            mutation MakeLoanRepaymentFromWallet(
+                $loan_id: ID!
+                $wallet_id: ID!
+                $amount: Float!
+            ) {
+                MakeLoanRepaymentFromWallet(
+                loan_id: $loan_id
+                wallet_id: $wallet_id
+                amount: $amount
+                ) {
+                    id
+                    transaction_date
+                    transaction_type
+                    transaction_amount
+                    transaction_medium
+                    transaction_purpose
+                    transaction_status
+                }
+            }
+        ';
+    }
 }

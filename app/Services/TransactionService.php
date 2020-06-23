@@ -6,6 +6,7 @@ namespace App\Services;
 use App\GraphQL\Errors\GraphqlError;
 use App\Models\Enums\LoanApplicationStatus;
 use App\Models\Enums\LoanConditionStatus;
+use App\Models\enums\TransactionMedium;
 use App\Models\enums\TransactionOwnerType;
 use App\Models\enums\TransactionProcessingActions;
 use App\Models\enums\TransactionStatus;
@@ -17,7 +18,9 @@ use App\Repositories\Interfaces\ContributionRepositoryInterface;
 use App\Repositories\Interfaces\WalletRepositoryInterface;
 use App\Repositories\Interfaces\LoanRepositoryInterface;
 use App\Repositories\Interfaces\TransactionRepositoryInterface;
+use App\Repositories\UserRepository;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class TransactionService
@@ -43,21 +46,37 @@ class TransactionService
     private $walletRepository;
 
     /**
+     * @var UserRepository
+     */
+    private $userRepository;
+
+    /**
      * TransactionService constructor.
      *
-     * @param TransactionRepositoryInterface $transactionRepository
+     * @param TransactionRepositoryInterface  $transactionRepository
      * @param ContributionRepositoryInterface $contributionRepository
-     * @param LoanRepositoryInterface $loanRepository
-     * @param WalletRepositoryInterface $walletRepository
+     * @param LoanRepositoryInterface         $loanRepository
+     * @param WalletRepositoryInterface       $walletRepository
+     * @param UserRepository                  $userRepository
      */
-    public function __construct(TransactionRepositoryInterface $transactionRepository, ContributionRepositoryInterface $contributionRepository, LoanRepositoryInterface $loanRepository, WalletRepositoryInterface $walletRepository)
+    public function __construct(TransactionRepositoryInterface $transactionRepository, ContributionRepositoryInterface $contributionRepository,
+                                LoanRepositoryInterface $loanRepository,
+                                WalletRepositoryInterface $walletRepository,
+                                UserRepository $userRepository)
     {
-        $this->transactionRepository = $transactionRepository;
+        $this->transactionRepository  = $transactionRepository;
         $this->contributionRepository = $contributionRepository;
-        $this->loanRepository = $loanRepository;
-        $this->walletRepository = $walletRepository;
+        $this->loanRepository         = $loanRepository;
+        $this->walletRepository       = $walletRepository;
+        $this->userRepository         = $userRepository;
     }
 
+    /**
+     * @param string $owner_id
+     * @param array  $transactionDetails
+     * @return Transaction
+     * @throws GraphqlError
+     */
     public function initiateTransaction(string $owner_id, array $transactionDetails)
     {
         switch ($transactionDetails['transaction_type']) {
@@ -90,9 +109,9 @@ class TransactionService
     /**
      * Process (approve or disapprove) a transaction.
      *
-     * @param User $user
-     * @param string $transaction_id
-     * @param string $action
+     * @param User        $user
+     * @param string      $transaction_id
+     * @param string      $action
      * @param null|string $message
      * @return Transaction|array
      */
@@ -131,7 +150,7 @@ class TransactionService
      * Initiate a contribution plan payment transaction.
      *
      * @param string $contribution_plan_id
-     * @param array $transactionDetails
+     * @param array  $transactionDetails
      * @return Transaction
      */
     public function initiateContributionPlanPaymentTransaction(string $contribution_plan_id, array $transactionDetails): Transaction
@@ -143,7 +162,7 @@ class TransactionService
      * Initiate a contribution plan payment transaction.
      *
      * @param string $contribution_plan_id
-     * @param array $transactionDetails
+     * @param array  $transactionDetails
      * @return Transaction
      */
     public function initiateContributionPlanWithdrawalTransaction(string $contribution_plan_id, array $transactionDetails): Transaction
@@ -155,7 +174,7 @@ class TransactionService
      * Initiate a wallet payment transaction.
      *
      * @param string $wallet_id
-     * @param array $transactionDetails
+     * @param array  $transactionDetails
      * @return Transaction
      */
     public function initiateWalletPaymentTransaction(string $wallet_id, array $transactionDetails): Transaction
@@ -167,7 +186,7 @@ class TransactionService
      * Initiate a wallet withdrawal transaction.
      *
      * @param string $wallet_id
-     * @param array $transactionDetails
+     * @param array  $transactionDetails
      * @return Transaction
      */
     public function initiateWalletWithdrawalTransaction(string $wallet_id, array $transactionDetails): Transaction
@@ -186,7 +205,7 @@ class TransactionService
     public function initiateLoanRepaymentTransaction(string $loan_id, array $transactionDetails)
     {
         $loan = $this->loanRepository->find($loan_id);
-        if($loan->loan_condition_status !== LoanConditionStatus::ACTIVE && $loan->loan_condition_status !== LoanConditionStatus::NONPERFORMING) {
+        if ($loan->loan_condition_status !== LoanConditionStatus::ACTIVE && $loan->loan_condition_status !== LoanConditionStatus::NONPERFORMING) {
             throw new GraphqlError('Cannot repay a loan that is inactive or completed');
         }
 
@@ -197,7 +216,7 @@ class TransactionService
      * Create a branch fund disbursement transaction.
      *
      * @param string $branch_id
-     * @param array $transactionDetails
+     * @param array  $transactionDetails
      * @return Transaction
      */
     public function initiateBranchFundDisbursementTransaction(string $branch_id, array $transactionDetails)
@@ -206,24 +225,68 @@ class TransactionService
     }
 
     /**
+     * Withdraw from a user's wallet and use it to repay a loan
+     *
+     * @param string $loan_id
+     * @param string $wallet_id
+     * @param float  $amount
+     * @param string $user_id
+     * @return Transaction|null
+     */
+    public function makeLoanRepaymentFromWallet(string $loan_id, string $wallet_id, float $amount, string $user_id)
+    {
+        $loan   = $this->loanRepository->find($loan_id);
+        $wallet = $this->walletRepository->find($wallet_id);
+        $user   = $this->userRepository->find($user_id);
+        $loanRepaymentTransaction = null;
+
+        DB::transaction(function () use ($loan, $wallet, $user, $amount, &$loanRepaymentTransaction) {
+            $walletWithdrawalTransaction = $this->initiateTransaction($wallet->id, [
+                'transaction_date'    => Carbon::now()->toDateString(),
+                'transaction_type'    => TransactionType::WALLET_WITHDRAWAL,
+                'transaction_amount'  => $amount,
+                'transaction_medium'  => TransactionMedium::ONLINE,
+                'transaction_purpose' => "Online withdrawing from user wallet for the purpose of repaying a loan",
+            ]);
+
+            $walletWithdrawalTransaction = $this->processTransaction($user, $walletWithdrawalTransaction->id,
+                TransactionProcessingActions::APPROVE, "Approved as an online user wallet withdrawal transaction");
+
+            $loanRepaymentTransaction = $this->initiateTransaction($loan->id, [
+                'transaction_date' => Carbon::now()->toDateString(),
+                'transaction_type' => TransactionType::LOAN_REPAYMENT,
+                'transaction_amount' => $amount,
+                'transaction_medium' => TransactionMedium::ONLINE,
+                'transaction_purpose' => "Online Loan repayment from funds withdrawn for user's wallet",
+            ]);
+
+            $this->processTransaction($user, $loanRepaymentTransaction->id,
+                TransactionProcessingActions::APPROVE, "Approved as an online user loan repayment from funds gotten from user wallet");
+
+        });
+
+        return $this->transactionRepository->find($loanRepaymentTransaction->id);
+    }
+
+    /**
      * Create a new transaction.
      *
      * @param string $transactionOwnerType
      * @param string $ownerId
-     * @param array $transactionDetails
+     * @param array  $transactionDetails
      * @return \App\Models\Transaction
      */
     private function createTransaction(string $transactionOwnerType, string $ownerId, array $transactionDetails)
     {
         $transactionData = [
-            'owner_id' => $ownerId,
-            'owner_type' => $transactionOwnerType,
-            'transaction_date' => $transactionDetails['transaction_date'],
-            'transaction_type' => $transactionDetails['transaction_type'],
-            'transaction_amount' => $transactionDetails['transaction_amount'],
-            'transaction_medium' => $transactionDetails['transaction_medium'],
+            'owner_id'            => $ownerId,
+            'owner_type'          => $transactionOwnerType,
+            'transaction_date'    => $transactionDetails['transaction_date'],
+            'transaction_type'    => $transactionDetails['transaction_type'],
+            'transaction_amount'  => $transactionDetails['transaction_amount'],
+            'transaction_medium'  => $transactionDetails['transaction_medium'],
             'transaction_purpose' => $transactionDetails['transaction_purpose'],
-            'transaction_status' => TransactionStatus::PENDING
+            'transaction_status'  => TransactionStatus::PENDING
         ];
 
         $transaction = $this->transactionRepository->create($transactionData);
@@ -234,9 +297,9 @@ class TransactionService
     /**
      * Process (approve or disapprove) a contribution payment transaction.
      *
-     * @param User $user
+     * @param User        $user
      * @param Transaction $transaction
-     * @param string $action
+     * @param string      $action
      * @param null|string $message
      * @return Transaction
      */
@@ -264,9 +327,9 @@ class TransactionService
     /**
      * Process (approve or disapprove) a contribution withdrawal transaction.
      *
-     * @param User $user
+     * @param User        $user
      * @param Transaction $transaction
-     * @param string $action
+     * @param string      $action
      * @param null|string $message
      * @return array
      */
@@ -296,9 +359,9 @@ class TransactionService
     /**
      * Process (approve or disapprove) a wallet payment transaction.
      *
-     * @param User $user
+     * @param User        $user
      * @param Transaction $transaction
-     * @param string $action
+     * @param string      $action
      * @param null|string $message
      * @return Transaction
      */
@@ -326,9 +389,9 @@ class TransactionService
     /**
      * Process (approve or disapprove) a wallet withdrawal transaction.
      *
-     * @param User $user
+     * @param User        $user
      * @param Transaction $transaction
-     * @param string $action
+     * @param string      $action
      * @param null|string $message
      * @return Transaction
      */
@@ -354,9 +417,9 @@ class TransactionService
     }
 
     /**
-     * @param User $user The user processing the transaction
+     * @param User        $user The user processing the transaction
      * @param Transaction $transaction
-     * @param string $action
+     * @param string      $action
      * @param null|string $message
      * @return Transaction|null
      */
@@ -382,9 +445,9 @@ class TransactionService
     }
 
     /**
-     * @param User $user The user processing the transaction
+     * @param User        $user The user processing the transaction
      * @param Transaction $transaction
-     * @param string $action
+     * @param string      $action
      * @param null|string $message
      * @return Transaction|null
      */
