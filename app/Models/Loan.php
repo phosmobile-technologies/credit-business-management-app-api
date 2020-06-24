@@ -105,6 +105,14 @@ class Loan extends Model
     public function getNextDueAmountAttribute()
     {
         $totalLoanBalance = $this->loan_balance + $this->totalDefaultAmount;
+
+        if ($this->dueDateReached() || (
+                $this->loan_condition_status === LoanConditionStatus::INACTIVE ||
+                $this->loan_condition_status === LoanConditionStatus::COMPLETED
+            )) {
+            return null;
+        }
+
         return round(($totalLoanBalance) / $this->monthsLeft, 2);
     }
 
