@@ -107,7 +107,7 @@ class CustomerStatisticsQueryTest extends TestCase
                     ],
 
                     'contribution_plan_statistics' => [
-                        'total_contribution_sum' => 9000.00,
+                        'total_contribution_sum' => 18000.00,
                         'goal_contribution_sum' => 3000.00,
                         'fixed_contribution_sum' => 3000.00,
                         'locked_contribution_sum' => 3000.00,
