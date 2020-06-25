@@ -100,9 +100,9 @@ class CustomerStatisticsService
 
         if (count($contributionPlans)) {
             $contributionPlanStatistics['total_contribution_sum'] = $contributionPlans->sum('goal');
-            $contributionPlanStatistics['goal_contribution_sum'] = $contributionPlans->where('type', ContributionType::GOAL)->sum('goal');
-            $contributionPlanStatistics['fixed_contribution_sum'] = $contributionPlans->where('type', ContributionType::FIXED)->sum('goal');
-            $contributionPlanStatistics['locked_contribution_sum'] = $contributionPlans->where('type', ContributionType::LOCKED)->sum('goal');
+            $contributionPlanStatistics['goal_contribution_sum'] = $contributionPlans->where('type', ContributionType::GOAL)->sum('balance');
+            $contributionPlanStatistics['fixed_contribution_sum'] = $contributionPlans->where('type', ContributionType::FIXED)->sum('balance');
+            $contributionPlanStatistics['locked_contribution_sum'] = $contributionPlans->where('type', ContributionType::LOCKED)->sum('balance');
         }
 
         return $contributionPlanStatistics;
