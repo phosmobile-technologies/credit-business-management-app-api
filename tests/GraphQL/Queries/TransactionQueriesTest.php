@@ -40,7 +40,8 @@ class TransactionQueriesTest extends TestCase
         $transaction = factory(Transaction::class)->create([
             'transaction_status' => TransactionStatus::PENDING,
             'owner_type' => TransactionOwnerType::LOAN,
-            'owner_id' => $loan->id
+            'owner_id' => $loan->id,
+            'branch_id' => $this->user['profile']['branch']['id']
         ]);
 
 

@@ -23,4 +23,5 @@ input TransactionDetailsInput {
     transaction_amount: Float!
     transaction_medium: TransactionMedium!
     transaction_purpose: String
+    branch_id: ID!
 }

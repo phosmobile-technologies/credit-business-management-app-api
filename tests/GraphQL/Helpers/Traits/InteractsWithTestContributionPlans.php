@@ -14,7 +14,7 @@ trait InteractsWithTestContributionPlans
     /**
      * Create a test contribution plan.
      *
-     * @param string $transactionType
+     * @param string     $transactionType
      * @param array|null $userRoles
      * @return array
      */
@@ -27,26 +27,27 @@ trait InteractsWithTestContributionPlans
         }
 
         $contributionPlan = factory(ContributionPlan::class)->create([
-            'id' => $this->faker->uuid,
+            'id'      => $this->faker->uuid,
             'user_id' => $this->user['id'],
-            'goal' => 2000,
+            'goal'    => 2000,
             'balance' => 1000,
         ]);
 
         $transactionDetails = factory(Transaction::class)->make([
             'transaction_amount' => 500,
-            'transaction_type' => $transactionType,
+            'transaction_type'   => $transactionType,
+            'branch_id'          => $this->user['profile']['branch']['id']
         ])->toArray();
 
         $transactionData = [
-            'owner_id' => $contributionPlan->id,
+            'owner_id'            => $contributionPlan->id,
             'transaction_details' => $transactionDetails
         ];
 
         return [
-            'contributionPlan' => $contributionPlan,
+            'contributionPlan'   => $contributionPlan,
             'transactionDetails' => $transactionDetails,
-            'transactionData' => $transactionData,
+            'transactionData'    => $transactionData,
         ];
     }
 }

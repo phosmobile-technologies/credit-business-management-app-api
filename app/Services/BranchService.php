@@ -89,4 +89,16 @@ class BranchService
     public function searchBranchCustomersQuery(string $branch_id, ?string $search_query, ?Date $start_date, ?Date $end_date) {
         return $this->branchRepository->searchBranchCustomers($branch_id, $search_query, $start_date, $end_date);
     }
+
+    /**
+     * Get the query builder for transactions that a belong to a branch.
+     *
+     * @param string $branch_id
+     * @param array  $queryParameters
+     * @return mixed
+     */
+    public function getBranchTransactionsQuery(string $branch_id, array $queryParameters)
+    {
+        return $this->branchRepository->findTransactionsQuery($branch_id, $queryParameters);
+    }
 }

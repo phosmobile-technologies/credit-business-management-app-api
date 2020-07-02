@@ -49,6 +49,7 @@ class LoanRepaymentTransactionsTest extends TestCase
         $transactionDetails = factory(Transaction::class)->make([
             'transaction_amount' => 500,
             'transaction_type' => TransactionType::LOAN_REPAYMENT,
+            'branch_id' => $this->user['profile']['branch']['id']
         ])->toArray();
 
         $transactionData = [
@@ -103,7 +104,8 @@ class LoanRepaymentTransactionsTest extends TestCase
             'transaction_type' => TransactionType::LOAN_REPAYMENT,
             'transaction_status' => TransactionStatus::PENDING,
             'owner_id' => $loan->id,
-            'owner_type' => TransactionOwnerType::LOAN
+            'owner_type' => TransactionOwnerType::LOAN,
+            'branch_id' => $this->user['profile']['branch']['id']
         ]);
         $message = $this->faker->text;
 
@@ -173,7 +175,8 @@ class LoanRepaymentTransactionsTest extends TestCase
             'transaction_type' => TransactionType::LOAN_REPAYMENT,
             'transaction_status' => TransactionStatus::PENDING,
             'owner_id' => $loan->id,
-            'owner_type' => TransactionOwnerType::LOAN
+            'owner_type' => TransactionOwnerType::LOAN,
+            'branch_id' => $this->user['profile']['branch']['id']
         ]);
         $message = $this->faker->text;
 
@@ -243,7 +246,8 @@ class LoanRepaymentTransactionsTest extends TestCase
             'transaction_type' => TransactionType::LOAN_REPAYMENT,
             'transaction_status' => TransactionStatus::PENDING,
             'owner_id' => $loan->id,
-            'owner_type' => TransactionOwnerType::LOAN
+            'owner_type' => TransactionOwnerType::LOAN,
+            'branch_id' => $this->user['profile']['branch']['id']
         ]);
         $message = $this->faker->text();
 
@@ -314,7 +318,8 @@ class LoanRepaymentTransactionsTest extends TestCase
             'transaction_status' => TransactionStatus::PENDING,
             'owner_id' => $loan->id,
             'owner_type' => TransactionOwnerType::LOAN,
-            'transaction_medium' => TransactionMedium::ONLINE
+            'transaction_medium' => TransactionMedium::ONLINE,
+            'branch_id' => $this->user['profile']['branch']['id']
         ]);
         $message = $this->faker->text;
 

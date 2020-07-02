@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\CompanyBranch;
 use App\Models\ContributionPlan;
 use App\Models\enums\TransactionOwnerType;
 use App\Models\enums\TransactionStatus;
@@ -26,6 +27,7 @@ class TransactionsTableSeeder extends Seeder
     private function seedLoanTransactions()
     {
         $loans = Loan::limit(5)->get();
+        $branches = CompanyBranch::all()->toArray();
 
         foreach ($loans as $loan) {
             $transactionTypes = [
@@ -39,11 +41,12 @@ class TransactionsTableSeeder extends Seeder
                 TransactionStatus::FAILED
             ];
 
-            factory(Transaction::class, 2)->create([
+            factory(Transaction::class, 5)->create([
                 'transaction_type' => $transactionTypes[array_rand($transactionTypes)],
                 'owner_id' => $loan->id,
                 'owner_type' => TransactionOwnerType::LOAN,
-                'transaction_status' => $transactionStatustes[array_rand($transactionStatustes)]
+                'transaction_status' => $transactionStatustes[array_rand($transactionStatustes)],
+                'branch_id' => $branches[array_rand($branches)]['id']
             ]);
         }
     }
@@ -51,6 +54,7 @@ class TransactionsTableSeeder extends Seeder
     private function seedContributionTransactions()
     {
         $contributionPlans = ContributionPlan::limit(5)->get();
+        $branches = CompanyBranch::all()->toArray();
 
         foreach ($contributionPlans as $contributionPlan) {
             $transactionTypes = [
@@ -63,11 +67,12 @@ class TransactionsTableSeeder extends Seeder
                 TransactionStatus::FAILED
             ];
 
-            factory(Transaction::class, 2)->create([
+            factory(Transaction::class, 5)->create([
                 'transaction_type' => $transactionTypes[array_rand($transactionTypes)],
                 'owner_id' => $contributionPlan->id,
                 'owner_type' => TransactionOwnerType::CONTRIBUTION_PLAN,
-                'transaction_status' => $transactionStatustes[array_rand($transactionStatustes)]
+                'transaction_status' => $transactionStatustes[array_rand($transactionStatustes)],
+                'branch_id' => $branches[array_rand($branches)]['id']
             ]);
         }
     }
@@ -75,6 +80,7 @@ class TransactionsTableSeeder extends Seeder
     private function seedWalletTransactions ()
     {
         $wallets = Wallet::limit(5)->get();
+        $branches = CompanyBranch::all()->toArray();
 
         foreach ($wallets as $wallet) {
             $transactionTypes = [
@@ -82,10 +88,19 @@ class TransactionsTableSeeder extends Seeder
                 TransactionType::WALLET_WITHDRAWAL
             ];
 
-            factory(Transaction::class, 2)->create([
+            $transactionStatustes = [
+                TransactionStatus::PENDING,
+                TransactionStatus::COMPLETED,
+                TransactionStatus::FAILED
+            ];
+
+
+            factory(Transaction::class, 5)->create([
                 'transaction_type' => $transactionTypes[array_rand($transactionTypes)],
                 'owner_id' => $wallet->id,
-                'owner_type' => TransactionOwnerType::WALLET
+                'owner_type' => TransactionOwnerType::WALLET,
+                'transaction_status' => $transactionStatustes[array_rand($transactionStatustes)],
+                'branch_id' => $branches[array_rand($branches)]['id']
             ]);
     }
 }

@@ -18,6 +18,7 @@ class CreateTransactionsTable extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->uuid('id');
+            $table->uuid('branch_id');
             $table->dateTime('transaction_date');
             $table->enum('transaction_type', [
                 TransactionType::BRANCH_EXPENSE,
@@ -48,6 +49,11 @@ class CreateTransactionsTable extends Migration
             $table->uuid('owner_id');
             $table->string('owner_type');
             $table->timestamps();
+
+
+            $table->foreign('branch_id')
+                ->references('id')
+                ->on('company_branches');
         });
     }
 

@@ -8,7 +8,10 @@
 
 namespace Tests\GraphQL\Helpers\Traits;
 
+use App\Models\Company;
+use App\Models\CompanyBranch;
 use App\Models\Enums\UserRoles;
+use App\Models\UserProfile;
 use App\User;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
@@ -52,8 +55,21 @@ trait InteractsWithGraphQLRequests
     public function loginTestUser($roles): TestResponse
     {
         $this->setUpPassportClient();
-        $user = factory(User::class)->create();
 
+//        $user = factory(User::class)->create();
+//        $user->assignRole($roles);
+
+        $company = Company::first();
+        $branch = CompanyBranch::first();
+        $user = factory(User::class)->create();
+        $user->profile()->save(
+            factory(UserProfile::class)->make([
+                'company_id' => $company->id,
+                'branch_id' => $branch->id
+            ])
+        );
+        $user->user_profile_id = $user->profile->id;
+        $user->save();
         $user->assignRole($roles);
 
         $response = $this->postGraphQL([

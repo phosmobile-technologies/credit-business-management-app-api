@@ -30,6 +30,11 @@ class AuthenticationQueriesAndMutations
                   first_name
                   last_name
                   email
+                  profile {
+                    branch {
+                        id
+                    }
+                  }
                 }
               }
             }

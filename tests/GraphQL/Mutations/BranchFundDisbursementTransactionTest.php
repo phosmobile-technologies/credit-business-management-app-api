@@ -37,13 +37,14 @@ class BranchFundDisbursementTransactionTest extends TestCase
         $branch = CompanyBranch::first();
 
         $transactionData = $this->makeTransaction(TransactionOwnerType::COMPANY_BRANCH, $branch->id, [
-            'transaction_type' => TransactionType::BRANCH_FUND_DISBURSEMENT
+            'transaction_type' => TransactionType::BRANCH_FUND_DISBURSEMENT,
+            'branch_id'        => $this->user['profile']['branch']['id']
         ]);
 
         $transactionDetails = $transactionData['transaction_details'];
 
         $response = $this->postGraphQL([
-            'query' => TransactionsQueriesAndMutations::initiateTransaction(),
+            'query'     => TransactionsQueriesAndMutations::initiateTransaction(),
             'variables' => [
                 'input' => $transactionData
             ],
@@ -58,10 +59,10 @@ class BranchFundDisbursementTransactionTest extends TestCase
         ]);
 
         $this->assertDatabaseHas(with(new Transaction)->getTable(), [
-            'owner_type' => TransactionOwnerType::COMPANY_BRANCH,
-            'owner_id' => $branch->id,
-            'transaction_amount' => $transactionDetails['transaction_amount'],
-            'transaction_type' => $transactionDetails['transaction_type'],
+            'owner_type'          => TransactionOwnerType::COMPANY_BRANCH,
+            'owner_id'            => $branch->id,
+            'transaction_amount'  => $transactionDetails['transaction_amount'],
+            'transaction_type'    => $transactionDetails['transaction_type'],
             'transaction_purpose' => $transactionDetails['transaction_purpose'],
         ]);
     }
@@ -77,26 +78,27 @@ class BranchFundDisbursementTransactionTest extends TestCase
 
         $transaction = factory(Transaction::class)->create([
             'transaction_amount' => 500,
-            'transaction_type' => TransactionType::BRANCH_FUND_DISBURSEMENT,
+            'transaction_type'   => TransactionType::BRANCH_FUND_DISBURSEMENT,
             'transaction_status' => TransactionStatus::PENDING,
-            'owner_id' => $branch->id,
-            'owner_type' => TransactionOwnerType::COMPANY_BRANCH
+            'owner_id'           => $branch->id,
+            'owner_type'         => TransactionOwnerType::COMPANY_BRANCH,
+            'branch_id'          => $this->user['profile']['branch']['id']
         ]);
-        $message = $this->faker->realText();
+        $message     = $this->faker->realText();
 
         $response = $this->postGraphQL([
-            'query' => TransactionsQueriesAndMutations::processTransaction(),
+            'query'     => TransactionsQueriesAndMutations::processTransaction(),
             'variables' => [
                 'transaction_id' => $transaction->id,
-                'action' => TransactionProcessingActions::APPROVE,
-                'message' => $message,
+                'action'         => TransactionProcessingActions::APPROVE,
+                'message'        => $message,
             ],
         ], $this->headers);
 
         $response->assertJson([
             'data' => [
                 'ProcessTransaction' => [
-                    'id' => $transaction->id,
+                    'id'                 => $transaction->id,
                     'transaction_amount' => 500,
                     'transaction_status' => TransactionStatus::COMPLETED
                 ]
@@ -104,18 +106,18 @@ class BranchFundDisbursementTransactionTest extends TestCase
         ]);
 
         $this->assertDatabaseHas(with(new Transaction)->getTable(), [
-            'id' => $transaction->id,
-            'transaction_status' => TransactionStatus::COMPLETED,
-            'transaction_amount' => $transaction->transaction_amount,
-            'transaction_type' => $transaction->transaction_type,
+            'id'                  => $transaction->id,
+            'transaction_status'  => TransactionStatus::COMPLETED,
+            'transaction_amount'  => $transaction->transaction_amount,
+            'transaction_type'    => $transaction->transaction_type,
             'transaction_purpose' => $transaction->transaction_purpose,
         ]);
 
         $this->assertDatabaseHas(with(new ProcessedTransaction())->getTable(), [
-            'causer_id' => $this->user['id'],
-            'transaction_id' => $transaction->id,
+            'causer_id'       => $this->user['id'],
+            'transaction_id'  => $transaction->id,
             'processing_type' => TransactionProcessingActions::APPROVE,
-            'message' => $message
+            'message'         => $message
         ]);
     }
 
@@ -130,26 +132,27 @@ class BranchFundDisbursementTransactionTest extends TestCase
 
         $transaction = factory(Transaction::class)->create([
             'transaction_amount' => 500,
-            'transaction_type' => TransactionType::BRANCH_FUND_DISBURSEMENT,
+            'transaction_type'   => TransactionType::BRANCH_FUND_DISBURSEMENT,
             'transaction_status' => TransactionStatus::PENDING,
-            'owner_id' => $branch->id,
-            'owner_type' => TransactionOwnerType::COMPANY_BRANCH
+            'owner_id'           => $branch->id,
+            'owner_type'         => TransactionOwnerType::COMPANY_BRANCH,
+            'branch_id'          => $this->user['profile']['branch']['id']
         ]);
-        $message = $this->faker->realText();
+        $message     = $this->faker->realText();
 
         $response = $this->postGraphQL([
-            'query' => TransactionsQueriesAndMutations::processTransaction(),
+            'query'     => TransactionsQueriesAndMutations::processTransaction(),
             'variables' => [
                 'transaction_id' => $transaction->id,
-                'action' => TransactionProcessingActions::DISAPPROVE,
-                'message' => $message,
+                'action'         => TransactionProcessingActions::DISAPPROVE,
+                'message'        => $message,
             ],
         ], $this->headers);
 
         $response->assertJson([
             'data' => [
                 'ProcessTransaction' => [
-                    'id' => $transaction->id,
+                    'id'                 => $transaction->id,
                     'transaction_amount' => 500,
                     'transaction_status' => TransactionStatus::FAILED
                 ]
@@ -157,18 +160,18 @@ class BranchFundDisbursementTransactionTest extends TestCase
         ]);
 
         $this->assertDatabaseHas(with(new Transaction)->getTable(), [
-            'id' => $transaction->id,
-            'transaction_status' => TransactionStatus::FAILED,
-            'transaction_amount' => $transaction->transaction_amount,
-            'transaction_type' => $transaction->transaction_type,
+            'id'                  => $transaction->id,
+            'transaction_status'  => TransactionStatus::FAILED,
+            'transaction_amount'  => $transaction->transaction_amount,
+            'transaction_type'    => $transaction->transaction_type,
             'transaction_purpose' => $transaction->transaction_purpose,
         ]);
 
         $this->assertDatabaseHas(with(new ProcessedTransaction())->getTable(), [
-            'causer_id' => $this->user['id'],
-            'transaction_id' => $transaction->id,
+            'causer_id'       => $this->user['id'],
+            'transaction_id'  => $transaction->id,
             'processing_type' => TransactionProcessingActions::DISAPPROVE,
-            'message' => $message
+            'message'         => $message
         ]);
     }
 

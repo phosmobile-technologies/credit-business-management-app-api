@@ -19,7 +19,8 @@ trait InteractsWithTestTransactions
         $transaction = $transaction = factory(Transaction::class)->create([
             'transaction_status' => TransactionStatus::PENDING,
             'owner_type' => $owner_type,
-            'owner_id' => $owner_id
+            'owner_id' => $owner_id,
+            'branch_id' => $this->user['profile']['branch']['id']
         ]);
 
         return $transaction;

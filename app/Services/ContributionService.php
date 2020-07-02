@@ -49,17 +49,17 @@ class ContributionService
     /**
      * ContributionService constructor.
      * @param ContributionRepositoryInterface $contributionRepository
-     * @param TransactionService $transactionService
-     * @param WalletRepository $walletRepository
-     * @param UserRepository $userRepository
+     * @param TransactionService              $transactionService
+     * @param WalletRepository                $walletRepository
+     * @param UserRepository                  $userRepository
      */
     public function __construct(ContributionRepositoryInterface $contributionRepository, TransactionService $transactionService,
                                 WalletRepository $walletRepository, UserRepository $userRepository)
     {
         $this->contributionRepository = $contributionRepository;
-        $this->transactionService = $transactionService;
-        $this->walletRepository = $walletRepository;
-        $this->userRepository = $userRepository;
+        $this->transactionService     = $transactionService;
+        $this->walletRepository       = $walletRepository;
+        $this->userRepository         = $userRepository;
     }
 
     /**
@@ -73,28 +73,31 @@ class ContributionService
         // Ensure that the default value when creating a contribution is set
         $contributionData['balance'] = null;
 
-        switch ($contributionData['type']){
-            case ContributionType::GOAL:{
-                $contributionData['interest_rate'] = 10;
-                break;
-            }
-            case ContributionType::LOCKED:{
-                if($contributionData['duration'] <= 3){
-                    $contributionData['interest_rate'] = 6;
-                }elseif($contributionData['duration'] <= 6){
-                    $contributionData['interest_rate'] = 8;
-                }elseif ($contributionData['duration'] <= 9){
+        switch ($contributionData['type']) {
+            case ContributionType::GOAL:
+                {
                     $contributionData['interest_rate'] = 10;
-                }else{
-                    $contributionData['interest_rate'] = 12;
+                    break;
                 }
+            case ContributionType::LOCKED:
+                {
+                    if ($contributionData['duration'] <= 3) {
+                        $contributionData['interest_rate'] = 6;
+                    } elseif ($contributionData['duration'] <= 6) {
+                        $contributionData['interest_rate'] = 8;
+                    } elseif ($contributionData['duration'] <= 9) {
+                        $contributionData['interest_rate'] = 10;
+                    } else {
+                        $contributionData['interest_rate'] = 12;
+                    }
 
-                break;
-            }
-            case ContributionType::FIXED:{
-                $contributionData['interest_rate'] = 10;
-                break;
-            }
+                    break;
+                }
+            case ContributionType::FIXED:
+                {
+                    $contributionData['interest_rate'] = 10;
+                    break;
+                }
         }
 
         return $this->contributionRepository->create($contributionData);
@@ -109,8 +112,8 @@ class ContributionService
     public function update(array $contributionData): ContributionPlan
     {
         $contributionData = collect($contributionData);
-        $id = $contributionData['id'];
-        $data = $contributionData->except(['id'])->toArray();
+        $id               = $contributionData['id'];
+        $data             = $contributionData->except(['id'])->toArray();
 
         return $this->contributionRepository->update($id, $data);
     }
@@ -119,7 +122,7 @@ class ContributionService
      * Initiate a new contribution plan transaction
      *
      * @param string $contribution_plan_id
-     * @param array $transactionDetails
+     * @param array  $transactionDetails
      * @return Transaction
      */
     public function initiateTransaction(string $contribution_plan_id, array $transactionDetails): Transaction
@@ -132,40 +135,43 @@ class ContributionService
      *
      * @param string $contribution_plan_id
      * @param string $wallet_id
-     * @param float $amount
+     * @param float  $amount
      * @param string $user_id
      * @return ContributionPlan
      * @throws GraphqlError
      */
-    public function withdrawToWallet(string $contribution_plan_id, string $wallet_id, float $amount, string $user_id): ContributionPlan {
+    public function withdrawToWallet(string $contribution_plan_id, string $wallet_id, float $amount, string $user_id): ContributionPlan
+    {
         $contributionPlan = $this->contributionRepository->find($contribution_plan_id);
 
-        if($amount > $contributionPlan->balance) {
+        if ($amount > $contributionPlan->balance) {
             throw new GraphqlError("Cannot withdraw {$amount} from contribution plan with {$contributionPlan->balance} as balance");
         }
 
         $user = $this->userRepository->find($user_id);
 
         // Start a database for initiating and approving the necessary transactions
-        DB::transaction(function() use ($contribution_plan_id, $amount, $wallet_id, $user) {
+        DB::transaction(function () use ($contribution_plan_id, $amount, $wallet_id, $user) {
             // Initiate Transaction For Funding wallet and approve it, do the same for withdrawing from contribution plan
             $contributionPlanWithdrawalTransaction = $this->transactionService->initiateTransaction($contribution_plan_id, [
-                'transaction_date' => Carbon::now()->toDateString(),
-                'transaction_type' => TransactionType::CONTRIBUTION_WITHDRAWAL,
-                'transaction_amount' => $amount,
-                'transaction_medium' => TransactionMedium::ONLINE,
+                'transaction_date'    => Carbon::now()->toDateString(),
+                'transaction_type'    => TransactionType::CONTRIBUTION_WITHDRAWAL,
+                'transaction_amount'  => $amount,
+                'transaction_medium'  => TransactionMedium::ONLINE,
                 'transaction_purpose' => "Online withdrawing from user contribution plan to fund wallet",
+                'branch_id'           => $user->profile->branch->id
             ]);
 
             list($contributionPlanWithdrawalTransaction, $amountSentToWallet) = $this->transactionService->processTransaction($user, $contributionPlanWithdrawalTransaction->id,
                 TransactionProcessingActions::APPROVE, "Approved as an online user contribution plan withdrawal transaction");
 
             $walletFundingTransaction = $this->transactionService->initiateTransaction($wallet_id, [
-                'transaction_date' => Carbon::now()->toDateString(),
-                'transaction_type' => TransactionType::WALLET_PAYMENT,
-                'transaction_amount' => $amountSentToWallet,
-                'transaction_medium' => TransactionMedium::ONLINE,
+                'transaction_date'    => Carbon::now()->toDateString(),
+                'transaction_type'    => TransactionType::WALLET_PAYMENT,
+                'transaction_amount'  => $amountSentToWallet,
+                'transaction_medium'  => TransactionMedium::ONLINE,
                 'transaction_purpose' => "Online Wallet funding from user contribution plan",
+                'branch_id'           => $user->profile->branch->id
             ]);
 
             $this->transactionService->processTransaction($user, $walletFundingTransaction->id,

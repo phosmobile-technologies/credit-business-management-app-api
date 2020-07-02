@@ -69,4 +69,12 @@ interface CompanyBranchRepositoryInterface
      * @return HasManyThrough
      */
     public function searchBranchCustomers(string $branch_id, ?string $search_query, ?Date $start_date, ?Date $end_date): HasManyThrough;
+
+    /**
+     * Get the eloquent query builder that can get transactions that belong to a branch.
+     *
+     * @param string $branch_id
+     * @return mixed
+     */
+    public function findTransactionsQuery(string $branch_id);
 }

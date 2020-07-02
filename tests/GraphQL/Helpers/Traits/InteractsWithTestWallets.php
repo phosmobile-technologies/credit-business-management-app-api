@@ -14,7 +14,7 @@ trait InteractsWithTestWallets
     /**
      * Create a test wallet Transaction.
      *
-     * @param string $transactionType
+     * @param string     $transactionType
      * @param array|null $userRoles
      * @return array
      */
@@ -27,25 +27,26 @@ trait InteractsWithTestWallets
         }
 
         $wallet = factory(Wallet::class)->create([
-            'id' => $this->faker->uuid,
-            'user_id' => $this->user['id'],
+            'id'             => $this->faker->uuid,
+            'user_id'        => $this->user['id'],
             'wallet_balance' => 1000,
         ]);
 
         $transactionDetails = factory(Transaction::class)->make([
             'transaction_amount' => 500,
-            'transaction_type' => $transactionType,
+            'transaction_type'   => $transactionType,
+            'branch_id'          => $this->user['profile']['branch']['id']
         ])->toArray();
 
         $transactionData = [
-            'owner_id' => $wallet->id,
+            'owner_id'            => $wallet->id,
             'transaction_details' => $transactionDetails
         ];
 
         return [
-            'wallet' => $wallet,
+            'wallet'             => $wallet,
             'transactionDetails' => $transactionDetails,
-            'transactionData' => $transactionData,
+            'transactionData'    => $transactionData,
         ];
     }
 

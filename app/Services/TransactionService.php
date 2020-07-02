@@ -235,9 +235,9 @@ class TransactionService
      */
     public function makeLoanRepaymentFromWallet(string $loan_id, string $wallet_id, float $amount, string $user_id)
     {
-        $loan   = $this->loanRepository->find($loan_id);
-        $wallet = $this->walletRepository->find($wallet_id);
-        $user   = $this->userRepository->find($user_id);
+        $loan                     = $this->loanRepository->find($loan_id);
+        $wallet                   = $this->walletRepository->find($wallet_id);
+        $user                     = $this->userRepository->find($user_id);
         $loanRepaymentTransaction = null;
 
         DB::transaction(function () use ($loan, $wallet, $user, $amount, &$loanRepaymentTransaction) {
@@ -247,17 +247,19 @@ class TransactionService
                 'transaction_amount'  => $amount,
                 'transaction_medium'  => TransactionMedium::ONLINE,
                 'transaction_purpose' => "Online withdrawing from user wallet for the purpose of repaying a loan",
+                'branch_id'           => $user->profile->branch->id
             ]);
 
             $walletWithdrawalTransaction = $this->processTransaction($user, $walletWithdrawalTransaction->id,
                 TransactionProcessingActions::APPROVE, "Approved as an online user wallet withdrawal transaction");
 
             $loanRepaymentTransaction = $this->initiateTransaction($loan->id, [
-                'transaction_date' => Carbon::now()->toDateString(),
-                'transaction_type' => TransactionType::LOAN_REPAYMENT,
-                'transaction_amount' => $amount,
-                'transaction_medium' => TransactionMedium::ONLINE,
+                'transaction_date'    => Carbon::now()->toDateString(),
+                'transaction_type'    => TransactionType::LOAN_REPAYMENT,
+                'transaction_amount'  => $amount,
+                'transaction_medium'  => TransactionMedium::ONLINE,
                 'transaction_purpose' => "Online Loan repayment from funds withdrawn for user's wallet",
+                'branch_id'           => $user->profile->branch->id
             ]);
 
             $this->processTransaction($user, $loanRepaymentTransaction->id,
@@ -286,6 +288,7 @@ class TransactionService
             'transaction_amount'  => $transactionDetails['transaction_amount'],
             'transaction_medium'  => $transactionDetails['transaction_medium'],
             'transaction_purpose' => $transactionDetails['transaction_purpose'],
+            'branch_id'           => $transactionDetails['branch_id'],
             'transaction_status'  => TransactionStatus::PENDING
         ];
 

@@ -50,18 +50,16 @@ class BranchQueriesTest extends TestCase
             ],
         ], $this->headers);
 
-        $response->assertJson([
-            'data' => [
-                'GetBranchById' => [
-                    'id' => $branch->id,
-                    'customers' => [
-                        ['id' => $users[0]['id']],
-                        ['id' => $users[1]['id']],
-                        ['id' => $users[2]['id']],
-                    ]
-                ]
-            ]
-        ]);
+        $testUserIds = [
+            $users[0]['id'],
+            $users[1]['id'],
+            $users[2]['id'],
+        ];
+        $userIds = $response->json("data.GetBranchById.customers.*.id");
+
+        foreach ($testUserIds as $testUserId) {
+            $this->assertContains($testUserId, $userIds);
+        }
     }
 
     /**
@@ -87,17 +85,16 @@ class BranchQueriesTest extends TestCase
             ],
         ], $this->headers);
 
-        $response->assertJson([
-            'data' => [
-                'GetBranchCustomers' => [
-                    'data' => [
-                        ['id' => $users[0]['id']],
-                        ['id' => $users[1]['id']],
-                        ['id' => $users[2]['id']],
-                    ]
-                ]
-            ]
-        ]);
+        $testUserIds = [
+            $users[0]['id'],
+            $users[1]['id'],
+            $users[2]['id'],
+        ];
+        $userIds = $response->json("data.GetBranchCustomers.data.*.id");
+
+        foreach ($testUserIds as $testUserId) {
+            $this->assertContains($testUserId, $userIds);
+        }
     }
 
     /**
@@ -226,5 +223,9 @@ class BranchQueriesTest extends TestCase
             ]
         ]);
     }
+
+//    public function testItCorrectlyGetsBranchTransactions() {
+//
+//    }
 
 }

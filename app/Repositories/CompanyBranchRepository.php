@@ -95,10 +95,10 @@ class CompanyBranchRepository implements CompanyBranchRepositoryInterface
     /**
      * Search/Filter the customers for a branch.
      *
-     * @param string $branch_id
+     * @param string      $branch_id
      * @param null|string $search_query
-     * @param Date|null $start_date
-     * @param Date|null $end_date
+     * @param Date|null   $start_date
+     * @param Date|null   $end_date
      * @return HasManyThrough
      */
     public function searchBranchCustomers(string $branch_id, ?string $search_query, ?Date $start_date, ?Date $end_date): HasManyThrough
@@ -108,17 +108,49 @@ class CompanyBranchRepository implements CompanyBranchRepositoryInterface
         return $branch->customers()->role([UserRoles::CUSTOMER])->where(function ($query) use ($search_query, $start_date, $end_date) {
 
 
-            if(isset($search_query)) {
+            if (isset($search_query)) {
                 $query->where(DB::raw('lower(users.first_name)'), 'like', "%{$search_query}%")
                     ->orWhere(DB::raw('lower(users.last_name)'), 'like', "%{$search_query}%");
             }
 
-            if(isset($start_date)) {
+            if (isset($start_date)) {
                 $query->whereDate('created_at', '>=', $start_date);
             }
 
-            if(isset($end_date)) {
+            if (isset($end_date)) {
                 $query->whereDate('created_at', '<=', $end_date);
+            }
+
+        });
+    }
+
+    /**
+     * Get the eloquent query builder that can get transactions that belong to a branch.
+     *
+     * @param string $branch_id
+     * @param array  $queryParameters
+     * @return mixed
+     */
+    public function findTransactionsQuery(string $branch_id, array $queryParameters = [])
+    {
+        $branch = $this->find($branch_id);
+
+        return $branch->transactions()->where(function ($query) use ($queryParameters) {
+
+            if (isset($queryParameters['min_amount'])) {
+                $query->where('transaction_amount', '>=', floatval($queryParameters['min_amount']));
+            }
+
+            if (isset($queryParameters['max_amount'])) {
+                $query->where('transaction_amount', '<=', floatval($queryParameters['max_amount']));
+            }
+
+            if (isset($queryParameters['start_date'])) {
+                $query->whereDate('created_at', '>=', $queryParameters['start_date']);
+            }
+
+            if (isset($queryParameters['end_date'])) {
+                $query->whereDate('created_at', '<=', $queryParameters['end_date']);
             }
 
         });

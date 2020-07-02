@@ -33,4 +33,18 @@ extend type Query @middleware(checks: ["auth:api"]){
         orderBy: [OrderByClause!] @orderBy(columns: ["created_at"])
     ): [User]!
     @paginate(builder: "App\\GraphQL\\Queries\\SearchBranchCustomers", defaultCount: 10)
+
+    """ Get the transactions for a particular branch """
+    GetBranchTransactions(
+        branch_id: ID!,
+        start_date: Date
+        end_date: Date
+        min_amount: Float
+        max_amount: Float
+        transaction_type: TransactionType @where(operator: "=")
+        transaction_medium: TransactionMedium @where(operator: "=")
+        transaction_status: TransactionStatus @where(operator: "=")
+        orderBy: [OrderByClause!] @orderBy(columns: ["created_at"])
+    ): [Transaction]!
+    @paginate(builder: "App\\GraphQL\\Queries\\GetBranchTransactions", defaultCount: 10)
 }

@@ -137,6 +137,7 @@ class WalletService
                 'transaction_amount' => $amount,
                 'transaction_medium' => TransactionMedium::ONLINE,
                 'transaction_purpose' => "Withdrawn to fund user contribution plan",
+                'branch_id' => $user->profile->branch->id
             ]);
 
             $contributionPlanFundingTransaction = $this->transactionService->initiateTransaction($contribution_plan_id, [
@@ -145,6 +146,7 @@ class WalletService
                 'transaction_amount' => $amount,
                 'transaction_medium' => TransactionMedium::ONLINE,
                 'transaction_purpose' => "Funding user contribution plan with money withdrawn from wallet",
+                'branch_id' => $user->profile->branch->id
             ]);
 
             $this->transactionService->processTransaction($user, $walletWithdrawalTransaction->id,

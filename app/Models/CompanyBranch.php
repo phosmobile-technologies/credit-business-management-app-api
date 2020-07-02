@@ -6,6 +6,7 @@ use App\Models\Concerns\UsesUuid;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class CompanyBranch extends Model
@@ -52,5 +53,15 @@ class CompanyBranch extends Model
     public function loanApplications(): HasManyThrough
     {
         return $this->hasManyThrough(LoanApplication::class, UserProfile::class, 'branch_id', 'user_id', 'id', 'user_id');
+    }
+
+    /**
+     * The transactions that belong to a branch
+     *
+     * @return HasMany
+     */
+    public function transactions(): HasMany
+    {
+        return $this->hasMany(Transaction::class, 'branch_id', 'id');
     }
 }

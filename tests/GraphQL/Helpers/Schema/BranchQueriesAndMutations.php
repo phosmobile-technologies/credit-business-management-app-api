@@ -130,4 +130,34 @@ class BranchQueriesAndMutations
         ';
     }
 
+    /**
+     * Get the transactions that belong to a branch.
+     *
+     * @return string
+     */
+    public static function getBranchTransactions()
+    {
+        return '
+            query GetBranchTransactions($branch_id: ID!, $loan_condition_status: LoanConditionStatus) {
+                GetBranchLoans(branch_id: $branch_id, loan_condition_status: $loan_condition_status) {
+                   paginatorInfo {
+                      count
+                      currentPage
+                      firstItem
+                      total
+                    }
+                    data {
+                      id
+                      loan_amount
+                      loan_condition_status
+                      user {
+                        first_name
+                        last_name
+                      }
+                    }
+                  }
+            }
+        ';
+    }
+
 }
