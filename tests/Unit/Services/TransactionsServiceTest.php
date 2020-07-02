@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit;
+namespace Tests\Unit\Services;
 
 use App\Models\Enums\LoanConditionStatus;
 use App\Models\enums\TransactionOwnerType;
@@ -67,7 +67,8 @@ class TransactionsServiceTest extends TestCase
             'owner_type' => TransactionOwnerType::LOAN,
             'transaction_amount' => 500,
             'transaction_type' => TransactionType::LOAN_REPAYMENT,
-            'transaction_status' => TransactionStatus::PENDING
+            'transaction_status' => TransactionStatus::PENDING,
+            'branch_id' => $this->faker->uuid
         ]);
 
         $this->loanRepository->shouldReceive('find')->with($loan->id)->andReturn($loan);
