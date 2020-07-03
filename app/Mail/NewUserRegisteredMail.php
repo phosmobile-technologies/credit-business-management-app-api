@@ -27,6 +27,11 @@ class NewUserRegisteredMail extends Mailable
     public $registration_source;
 
     /**
+     * @var string
+     */
+    public $loginUrl;
+
+    /**
      * Create a new message instance.
      *
      * @param User $user
@@ -38,6 +43,8 @@ class NewUserRegisteredMail extends Mailable
         $this->user = $user;
         $this->defaultPassword = $defaultPassword;
         $this->registration_source = $registration_source;
+        $frontEndUrl = env('FRONT_END_URL');
+        $this->loginUrl = "{$frontEndUrl}/login";
     }
 
     /**
@@ -47,7 +54,7 @@ class NewUserRegisteredMail extends Mailable
      */
     public function build()
     {
-        return $this->subject('Springverse - New User Registration')
+        return $this->subject('UMC - New User Sign Up')
             ->markdown('email.signup.user');
     }
 }

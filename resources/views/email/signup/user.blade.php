@@ -14,7 +14,10 @@
             }
         @endif
 
-        <a href="{{env('FRONT_END_URL')}}/login">Login</a>
+        @component('mail::button', ['url' => $loginUrl])
+            Log in to your account
+        @endcomponent
+
         If you are not a Springverse customer, please disregard this email.
         please disregard this email.
 
