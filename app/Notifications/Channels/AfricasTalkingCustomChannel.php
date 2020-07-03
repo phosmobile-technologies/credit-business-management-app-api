@@ -5,6 +5,7 @@ namespace App\Notifications\Channels;
 
 use App\Services\AfricasTalkingService;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Log;
 
 class AfricasTalkingCustomChannel
 {
@@ -35,6 +36,10 @@ class AfricasTalkingCustomChannel
     {
         $message = $notification->toAfricasTalkingCustom($notifiable);
 
-        return $this->africasTalkingService->sendSms($notifiable->phone_number, $message);
+        $response =  $this->africasTalkingService->sendSms($notifiable->phone_number, $message);
+
+        Log::info($response);
+
+        $response;
     }
 }
