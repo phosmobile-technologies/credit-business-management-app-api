@@ -2,6 +2,7 @@
 
 namespace Tests\GraphQL\Mutations;
 
+use App\Events\TransactionProcessedEvent;
 use App\Models\ContributionPlan;
 use App\Models\enums\TransactionOwnerType;
 use App\Models\enums\TransactionProcessingActions;
@@ -12,6 +13,7 @@ use App\Models\ProcessedTransaction;
 use App\Models\Transaction;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Event;
 use Tests\GraphQL\Helpers\Schema\TransactionsQueriesAndMutations;
 use Tests\GraphQL\Helpers\Traits\InteractsWithTestContributionPlans;
 use Tests\GraphQL\Helpers\Traits\InteractsWithTestUsers;
@@ -63,10 +65,14 @@ class ContributionPlanPaymentTransactionsTest extends TestCase
 
     /**
      * @test
+     * @group active
      */
     public function testItCorrectlyApprovesAContributionPaymentTransaction()
     {
         $this->loginTestUserAndGetAuthHeaders([UserRoles::BRANCH_ACCOUNTANT]);
+        Event::fake([
+            TransactionProcessedEvent::class
+        ]);
 
         /**
          * Create a contribution plan
@@ -125,6 +131,8 @@ class ContributionPlanPaymentTransactionsTest extends TestCase
             'processing_type' => TransactionProcessingActions::APPROVE,
             'message'         => $message
         ]);
+
+        Event::assertDispatched(TransactionProcessedEvent::class);
     }
 
     /**
@@ -134,6 +142,9 @@ class ContributionPlanPaymentTransactionsTest extends TestCase
     public function testItCorrectlyDisapprovesAContributionPlanPaymentTransaction()
     {
         $this->loginTestUserAndGetAuthHeaders([UserRoles::BRANCH_ACCOUNTANT]);
+        Event::fake([
+            TransactionProcessedEvent::class
+        ]);
 
         /**
          * Create a contribution plan
@@ -191,5 +202,7 @@ class ContributionPlanPaymentTransactionsTest extends TestCase
             'processing_type' => TransactionProcessingActions::DISAPPROVE,
             'message'         => $message
         ]);
+
+        Event::assertDispatched(TransactionProcessedEvent::class);
     }
 }

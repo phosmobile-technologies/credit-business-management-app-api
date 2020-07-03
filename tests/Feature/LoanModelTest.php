@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\CompanyBranch;
 use App\Models\Enums\LoanConditionStatus;
 use App\Models\enums\TransactionMedium;
 use App\Models\enums\TransactionStatus;
@@ -27,39 +28,43 @@ class LoanModelTest extends TestCase
 
     /**
      * @test
-     * @group activex
+     * @group
      */
-    public function testItCorrectlyGetsNextDuePaymentDate() {
+    public function testItCorrectlyGetsNextDuePaymentDate()
+    {
         $today = Carbon::today();
 
-        $user = factory(User::class)->create();
+        $user   = factory(User::class)->create();
+        $branch = CompanyBranch::first();
+
         $loanOne = factory(Loan::class)->create([
-            'due_date' => Carbon::today()->addMonths(5),
+            'due_date'              => Carbon::today()->addMonths(5),
             'loan_condition_status' => LoanConditionStatus::ACTIVE,
-            'amount_disbursed' => 1000,
-            'interest_rate' => 10,
-            'tenure' => 5,
-            'user_id' => $user->id
+            'amount_disbursed'      => 1000,
+            'interest_rate'         => 10,
+            'tenure'                => 5,
+            'user_id'               => $user->id
         ]);
         $loanTwo = factory(Loan::class)->create([
-            'due_date' => Carbon::today()->addMonths(5),
+            'due_date'              => Carbon::today()->addMonths(5),
             'loan_condition_status' => LoanConditionStatus::ACTIVE,
-            'amount_disbursed' => 1000,
-            'disbursement_date' => Carbon::today()->subMonth(1),
-            'interest_rate' => 10,
-            'tenure' => 5,
-            'user_id' => $user->id
+            'amount_disbursed'      => 1000,
+            'disbursement_date'     => Carbon::today()->subMonth(1),
+            'interest_rate'         => 10,
+            'tenure'                => 5,
+            'user_id'               => $user->id
         ]);
 
         $transaction = Transaction::create([
-           'transaction_type' => TransactionType::LOAN_REPAYMENT,
-            'transaction_date' => Carbon::today()->subMonths(1),
-           'transaction_status' => TransactionStatus::COMPLETED,
-           'transaction_amount' => 100,
-           'transaction_medium' => TransactionMedium::ONLINE,
-           'transaction_purpose' => 'TESTING',
-            'owner_type' => 'LOAN',
-            'owner_id' => $loanOne->id
+            'transaction_type'    => TransactionType::LOAN_REPAYMENT,
+            'transaction_date'    => Carbon::today()->subMonths(1),
+            'transaction_status'  => TransactionStatus::COMPLETED,
+            'transaction_amount'  => 100,
+            'transaction_medium'  => TransactionMedium::ONLINE,
+            'transaction_purpose' => 'TESTING',
+            'owner_type'          => 'LOAN',
+            'owner_id'            => $loanOne->id,
+            'branch_id'           => $branch->id
         ]);
 
         $this->assertEqualsWithDelta(Carbon::today()->addMonths(1)->format('Y/M/d'), $loanOne->nextDuePaymentDate->format('Y/M/d'), 100);

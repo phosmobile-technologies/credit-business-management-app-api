@@ -3,6 +3,7 @@
 namespace App\Services;
 
 
+use App\Events\TransactionProcessedEvent;
 use App\GraphQL\Errors\GraphqlError;
 use App\Models\Enums\LoanApplicationStatus;
 use App\Models\Enums\LoanConditionStatus;
@@ -313,15 +314,16 @@ class TransactionService
                 case TransactionProcessingActions::APPROVE:
                     $contributionPlan = $this->contributionRepository->find($transaction->owner_id);
                     $this->contributionRepository->addPayment($contributionPlan, $transaction);
-                    $this->transactionRepository->updateTransactionStatus($transaction, TransactionStatus::COMPLETED);
+                    $transaction = $this->transactionRepository->updateTransactionStatus($transaction, TransactionStatus::COMPLETED);
                     break;
 
                 case TransactionProcessingActions::DISAPPROVE:
-                    $this->transactionRepository->updateTransactionStatus($transaction, TransactionStatus::FAILED);
+                    $transaction = $this->transactionRepository->updateTransactionStatus($transaction, TransactionStatus::FAILED);
                     break;
             }
 
-            $this->transactionRepository->storeProcessedTransaction($transaction, $user->id, $action, $message);
+            $processedTransaction = $this->transactionRepository->storeProcessedTransaction($transaction, $user->id, $action, $message);
+            event(new TransactionProcessedEvent($user, $transaction, $processedTransaction));
         });
 
         return $transaction;
@@ -375,15 +377,16 @@ class TransactionService
                 case TransactionProcessingActions::APPROVE:
                     $wallet = $this->walletRepository->find($transaction->owner_id);
                     $this->walletRepository->addPayment($wallet, $transaction);
-                    $this->transactionRepository->updateTransactionStatus($transaction, TransactionStatus::COMPLETED);
+                    $transaction = $this->transactionRepository->updateTransactionStatus($transaction, TransactionStatus::COMPLETED);
                     break;
 
                 case TransactionProcessingActions::DISAPPROVE:
-                    $this->transactionRepository->updateTransactionStatus($transaction, TransactionStatus::FAILED);
+                    $transaction = $this->transactionRepository->updateTransactionStatus($transaction, TransactionStatus::FAILED);
                     break;
             }
 
-            $this->transactionRepository->storeProcessedTransaction($transaction, $user->id, $action, $message);
+            $processedTransaction = $this->transactionRepository->storeProcessedTransaction($transaction, $user->id, $action, $message);
+            event(new TransactionProcessedEvent($user, $transaction, $processedTransaction));
         });
 
         return $transaction;
@@ -405,15 +408,16 @@ class TransactionService
                 case TransactionProcessingActions::APPROVE:
                     $wallet = $this->walletRepository->find($transaction->owner_id);
                     $this->walletRepository->withdraw($wallet, $transaction);
-                    $this->transactionRepository->updateTransactionStatus($transaction, TransactionStatus::COMPLETED);
+                    $transaction = $this->transactionRepository->updateTransactionStatus($transaction, TransactionStatus::COMPLETED);
                     break;
 
                 case TransactionProcessingActions::DISAPPROVE:
-                    $this->transactionRepository->updateTransactionStatus($transaction, TransactionStatus::FAILED);
+                    $transaction = $this->transactionRepository->updateTransactionStatus($transaction, TransactionStatus::FAILED);
                     break;
             }
 
-            $this->transactionRepository->storeProcessedTransaction($transaction, $user->id, $action, $message);
+            $processedTransaction = $this->transactionRepository->storeProcessedTransaction($transaction, $user->id, $action, $message);
+            event(new TransactionProcessedEvent($user, $transaction, $processedTransaction));
         });
 
         return $transaction;
@@ -433,15 +437,16 @@ class TransactionService
                 case TransactionProcessingActions::APPROVE:
                     $loan = $this->loanRepository->find($transaction->owner_id);
                     $this->loanRepository->repayLoan($loan, $transaction->transaction_amount);
-                    $this->transactionRepository->updateTransactionStatus($transaction, TransactionStatus::COMPLETED);
+                    $transaction = $this->transactionRepository->updateTransactionStatus($transaction, TransactionStatus::COMPLETED);
                     break;
 
                 case TransactionProcessingActions::DISAPPROVE:
-                    $this->transactionRepository->updateTransactionStatus($transaction, TransactionStatus::FAILED);
+                    $transaction = $this->transactionRepository->updateTransactionStatus($transaction, TransactionStatus::FAILED);
                     break;
             }
 
-            $this->transactionRepository->storeProcessedTransaction($transaction, $user->id, $action, $message);
+            $processedTransaction = $this->transactionRepository->storeProcessedTransaction($transaction, $user->id, $action, $message);
+            event(new TransactionProcessedEvent($user, $transaction, $processedTransaction));
         });
 
         return $transaction;
@@ -459,15 +464,16 @@ class TransactionService
         DB::transaction(function () use ($transaction, $action, $user, $message) {
             switch ($action) {
                 case TransactionProcessingActions::APPROVE:
-                    $this->transactionRepository->updateTransactionStatus($transaction, TransactionStatus::COMPLETED);
+                    $transaction = $this->transactionRepository->updateTransactionStatus($transaction, TransactionStatus::COMPLETED);
                     break;
 
                 case TransactionProcessingActions::DISAPPROVE:
-                    $this->transactionRepository->updateTransactionStatus($transaction, TransactionStatus::FAILED);
+                    $transaction = $this->transactionRepository->updateTransactionStatus($transaction, TransactionStatus::FAILED);
                     break;
             }
 
-            $this->transactionRepository->storeProcessedTransaction($transaction, $user->id, $action, $message);
+            $processedTransaction = $this->transactionRepository->storeProcessedTransaction($transaction, $user->id, $action, $message);
+            event(new TransactionProcessedEvent($user, $transaction, $processedTransaction));
         });
 
         return $transaction;
