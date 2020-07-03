@@ -33,7 +33,12 @@ class SendTransactionProcessedNotification implements ShouldQueue
         $transaction = $event->transaction;
         $processedTransaction = $event->processedTransaction;
 
+        /**
+         * @TODO to be updated later
+         */
         if($transaction->transaction_type === TransactionType::LOAN_REPAYMENT) {
+            $user->notify(new \App\Notifications\TransactionProcessedNotification($user, $transaction, $processedTransaction));
+        } else {
             $user->notify(new \App\Notifications\TransactionProcessedNotification($user, $transaction, $processedTransaction));
         }
 
