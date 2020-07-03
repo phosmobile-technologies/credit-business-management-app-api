@@ -68,10 +68,10 @@ class TransactionProcessedNotification extends Notification implements ShouldQue
         str_replace($formattedTransactionType, '_', ' ');
         $formattedTransactionDate = Carbon::parse($this->transaction->created_at)->format('Y-M-d');
 
-        $message = "Dear {$this->user->first_name} {$this->user->last_name}, the {$formattedTransactionType} request you made on {$formattedTransactionDate} for the sum of ₦{$this->transaction->transaction_amount} has been {$this->processedTransaction->processing_type}";
+        $message = "Dear {$this->user->first_name} {$this->user->last_name}, the {$formattedTransactionType} request you made on {$formattedTransactionDate} for the sum of ₦{$this->transaction->transaction_amount} has been {$this->processedTransaction->processing_type}D";
 
         if(isset($this->processedTransaction->message) && $this->processedTransaction->message !== '') {
-            $message .= " because {$this->processedTransaction->message}";
+//            $message .= " because {$this->processedTransaction->message}";
         }
 
         return (new AfricasTalkingCustomChannelMessage())
