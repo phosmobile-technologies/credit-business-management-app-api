@@ -2,6 +2,8 @@
 
 namespace Tests\Feature;
 
+use App\Models\Company;
+use App\Models\CompanyBranch;
 use App\Models\Enums\LoanApplicationStatus;
 use App\Models\enums\TransactionOwnerType;
 use App\Models\enums\TransactionProcessingActions;
@@ -9,6 +11,7 @@ use App\Models\enums\TransactionStatus;
 use App\Models\enums\TransactionType;
 use App\Models\Loan;
 use App\Models\Transaction;
+use App\Models\UserProfile;
 use App\Notifications\TransactionProcessedNotification;
 use App\Services\TransactionService;
 use App\User;
@@ -45,9 +48,20 @@ class TransactionNotificationsTest extends TestCase
     {
         Notification::fake();
 
-        $user = factory(User::class)->create([
-            'phone_number' => '+2348168849160'
-        ]);
+        $company = Company::first();
+        $branch = CompanyBranch::first();
+
+        $user = factory(User::class)->create();
+        $user->profile()->save(
+            factory(UserProfile::class)->make([
+                'company_id' => $company->id,
+                'branch_id' => $branch->id
+            ])
+        );
+        $user->user_profile_id = $user->profile->id;
+        $user->save();
+
+
         $loan = factory(Loan::class)->create([
             'application_status' => LoanApplicationStatus::APPROVED_BY_GLOBAL_MANAGER,
             'user_id' => $user->id,
@@ -59,7 +73,8 @@ class TransactionNotificationsTest extends TestCase
             'owner_type' => TransactionOwnerType::LOAN,
             'owner_id' => $loan->id,
             'transaction_type' => TransactionType::LOAN_REPAYMENT,
-            'transaction_amount' => 100
+            'transaction_amount' => 100,
+            'branch_id' => $user->profile->branch->id
         ]);
         $message = "Approved by manager";
 

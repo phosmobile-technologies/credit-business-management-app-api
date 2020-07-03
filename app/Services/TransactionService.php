@@ -3,6 +3,7 @@
 namespace App\Services;
 
 
+use App\Events\TransactionProcessedEvent;
 use App\GraphQL\Errors\GraphqlError;
 use App\Models\Enums\LoanApplicationStatus;
 use App\Models\Enums\LoanConditionStatus;
