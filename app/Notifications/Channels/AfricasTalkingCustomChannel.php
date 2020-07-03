@@ -36,10 +36,11 @@ class AfricasTalkingCustomChannel
     {
         $message = $notification->toAfricasTalkingCustom($notifiable);
 
-        $response =  $this->africasTalkingService->sendSms($notifiable->phone_number, $message);
+        $phoneNumber = "+234{$notifiable->phone_number}";
+        $response =  $this->africasTalkingService->sendSms($phoneNumber, $message);
 
         Log::info($response);
 
-        $response;
+        return $response;
     }
 }

@@ -27,7 +27,7 @@ class AfricasTalkingServiceTest extends TestCase
      * @test
      */
     public function testItSendsSms() {
-        $to = "+2348089026730";
+        $to = "+23408089026730";
         $message = "Hello there Abraham";
 
         $response = $this->africasTalkingService->sendSms($to, $message);
