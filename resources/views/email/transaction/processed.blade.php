@@ -3,7 +3,7 @@
     @component('mail::panel')
         Dear **{{ $user["first_name"] }} {{ $user["last_name"] }},**
 
-        A transaction has been processed on your springverse account.
+        A transaction has been processed on your umc account.
 
         Please see the transaction details below:
 
@@ -13,11 +13,11 @@
             * Transaction Message - {{ $defaultPassword }}
             * Transaction Date - {{ $defaultPassword }}
 
-        If you are not a Springverse customer, please disregard this email.
+        If you are not a UMC customer, please disregard this email.
         please disregard this email.
 
         Warm Regards,<br>
-        The Springverse Team
+        The UMC Team
 
     @endcomponent
 
