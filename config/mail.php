@@ -56,8 +56,8 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'support@springverse.com'),
-        'name' => env('MAIL_FROM_NAME', 'SpringVerse Support'),
+        'address' => env('MAIL_FROM_ADDRESS', 'from@example.com'),
+        'name' => env('MAIL_FROM_NAME', 'Example'),
     ],
 
     /*
