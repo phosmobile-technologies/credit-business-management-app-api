@@ -40,6 +40,11 @@ class AppServiceProvider extends ServiceProvider
         Passport::ignoreMigrations();
 
         $this->registerRepositories();
+
+        if ($this->app->environment('local')) {
+            $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
+            $this->app->register(TelescopeServiceProvider::class);
+        }
     }
 
     /**
@@ -54,7 +59,7 @@ class AppServiceProvider extends ServiceProvider
          *
          * @for-serverless
          */
-        if (! is_dir(config('view.compiled'))) {
+        if (!is_dir(config('view.compiled'))) {
             mkdir(config('view.compiled'), 0755, true);
         }
 
@@ -66,19 +71,20 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    private function registerRepositories() {
+    private function registerRepositories()
+    {
         $repositories = [
-            UserRepositoryInterface::class => UserRepository::class,
-            UserProfileRepositoryInterface::class => UserProfileRepository::class,
-            LoanRepositoryInterface::class => LoanRepository::class,
+            UserRepositoryInterface::class            => UserRepository::class,
+            UserProfileRepositoryInterface::class     => UserProfileRepository::class,
+            LoanRepositoryInterface::class            => LoanRepository::class,
             LoanApplicationRepositoryInterface::class => LoanApplicationRepository::class,
-            ContributionRepositoryInterface::class => ContributionRepository::class,
-            WalletRepositoryInterface::class => WalletRepository::class,
-            TransactionRepositoryInterface::class => TransactionRepository::class,
-            CompanyBranchRepositoryInterface::class => CompanyBranchRepository::class
+            ContributionRepositoryInterface::class    => ContributionRepository::class,
+            WalletRepositoryInterface::class          => WalletRepository::class,
+            TransactionRepositoryInterface::class     => TransactionRepository::class,
+            CompanyBranchRepositoryInterface::class   => CompanyBranchRepository::class
         ];
 
-        foreach($repositories as $interface => $repository) {
+        foreach ($repositories as $interface => $repository) {
             $this->app->bind($interface, $repository);
         }
     }
@@ -87,12 +93,13 @@ class AppServiceProvider extends ServiceProvider
      * Register the Morph Map for custom polymorphic relationships.
      *
      */
-    private function registerMorphMap() {
+    private function registerMorphMap()
+    {
         Relation::morphMap([
-            TransactionOwnerType::LOAN => Loan::class,
+            TransactionOwnerType::LOAN              => Loan::class,
             TransactionOwnerType::CONTRIBUTION_PLAN => ContributionPlan::class,
-            TransactionOwnerType::COMPANY_BRANCH => CompanyBranch::class,
-            TransactionOwnerType::WALLET => Wallet::class
+            TransactionOwnerType::COMPANY_BRANCH    => CompanyBranch::class,
+            TransactionOwnerType::WALLET            => Wallet::class
         ]);
     }
 

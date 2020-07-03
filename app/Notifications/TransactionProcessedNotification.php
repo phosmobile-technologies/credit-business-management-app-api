@@ -7,6 +7,7 @@ use App\Models\Transaction;
 use App\Notifications\Channels\AfricasTalkingCustomChannel;
 use App\Notifications\Messages\AfricasTalkingCustomChannelMessage;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -63,8 +64,18 @@ class TransactionProcessedNotification extends Notification implements ShouldQue
      */
     public function toAfricasTalkingCustom()
     {
+        $formattedTransactionType = strtolower($this->transaction->transaction_type);
+        str_replace($formattedTransactionType, '_', ' ');
+        $formattedTransactionDate = Carbon::parse($this->transaction->created_at)->format('Y-M-d');
+
+        $message = "Dear {$this->user->first_name} {$this->user->last_name}, the {$formattedTransactionType} request you made on {$formattedTransactionDate} for the sum of ₦{$this->transaction->transaction_amount} has been {$this->processedTransaction->processing_type}";
+
+        if(isset($this->processedTransaction->message) && $this->processedTransaction->message !== '') {
+            $message .= " because {$this->processedTransaction->message}";
+        }
+
         return (new AfricasTalkingCustomChannelMessage())
-            ->message("Test message from springverse");
+            ->message($message);
     }
 
     /**

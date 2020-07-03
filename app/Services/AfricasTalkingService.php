@@ -49,10 +49,11 @@ class AfricasTalkingService
     {
         $smsService = $this->africasTalkingApi->sms();
 
+        // @TODO Add sender id back when AlphaNumeric has been purchased
         return $smsService->send([
             'to' => $to,
             'message' => $message,
-            'from' => $this->senderId
+//            'from' => $this->senderId
         ]);
     }
 }
