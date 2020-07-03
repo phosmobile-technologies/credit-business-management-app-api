@@ -68,6 +68,17 @@ class User extends Authenticatable
     }
 
     /**
+     * Route notifications for the Africas Talking channel.
+     *
+     * @param  \Illuminate\Notifications\Notification  $notification
+     * @return string
+     */
+    public function routeNotificationForAfricasTalking($notification)
+    {
+        return $this->phone_number;
+    }
+
+    /**
      * Converts the user email to lowercase when setting it.
      *
      * @param $value
@@ -153,7 +164,7 @@ class User extends Authenticatable
 
 
     /**
-     * Relationship between a user and their wallet transactions.
+     * Relationship between a user and their wallet transaction.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
      */

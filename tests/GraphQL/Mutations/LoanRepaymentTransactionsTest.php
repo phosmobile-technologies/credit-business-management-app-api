@@ -2,6 +2,7 @@
 
 namespace Tests\GraphQL\Mutations;
 
+use App\Events\TransactionProcessedEvent;
 use App\Models\Enums\LoanConditionStatus;
 use App\Models\enums\TransactionMedium;
 use App\Models\enums\TransactionOwnerType;
@@ -16,6 +17,7 @@ use App\Models\Wallet;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Support\Facades\Event;
 use Tests\GraphQL\Helpers\Schema\TransactionsQueriesAndMutations;
 use Tests\GraphQL\Helpers\Traits\InteractsWithTestUsers;
 use Tests\TestCase;
@@ -85,6 +87,9 @@ class LoanRepaymentTransactionsTest extends TestCase
     public function testItCorrectlyApprovesALoanRepaymentRequest()
     {
         $this->loginTestUserAndGetAuthHeaders([UserRoles::BRANCH_MANAGER]);
+        Event::fake([
+            TransactionProcessedEvent::class
+        ]);
 
         /**
          * Create a loan
@@ -148,6 +153,8 @@ class LoanRepaymentTransactionsTest extends TestCase
             'processing_type' => TransactionProcessingActions::APPROVE,
             'message' => $message
         ]);
+
+        Event::assertDispatched(TransactionProcessedEvent::class);
     }
 
     /**
@@ -156,6 +163,9 @@ class LoanRepaymentTransactionsTest extends TestCase
     public function testItCorrectlyCompletesALoanWhenTheTotalRepaymentIsMade()
     {
         $this->loginTestUserAndGetAuthHeaders([UserRoles::BRANCH_MANAGER]);
+        Event::fake([
+            TransactionProcessedEvent::class
+        ]);
 
         /**
          * Create a loan
@@ -219,6 +229,8 @@ class LoanRepaymentTransactionsTest extends TestCase
             'processing_type' => TransactionProcessingActions::APPROVE,
             'message' => $message
         ]);
+
+        Event::assertDispatched(TransactionProcessedEvent::class);
     }
 
     /**
@@ -227,6 +239,9 @@ class LoanRepaymentTransactionsTest extends TestCase
     public function testItCorrectlyDisapprovesALoanRepaymentRequest()
     {
         $this->loginTestUserAndGetAuthHeaders([UserRoles::BRANCH_MANAGER]);
+        Event::fake([
+            TransactionProcessedEvent::class
+        ]);
 
         /**
          * Create a loan
@@ -290,6 +305,8 @@ class LoanRepaymentTransactionsTest extends TestCase
             'processing_type' => TransactionProcessingActions::DISAPPROVE,
             'message' => $message
         ]);
+
+        Event::assertDispatched(TransactionProcessedEvent::class);
     }
 
     /**

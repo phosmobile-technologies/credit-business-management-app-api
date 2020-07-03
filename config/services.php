@@ -30,4 +30,9 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'africastalking' => [
+        'username' => env('AFRICAS_TALKING_USERNAME'),
+        'key' => env('AFRICAS_TALKING_API_KEY'),
+    ]
+
 ];

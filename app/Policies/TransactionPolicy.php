@@ -14,7 +14,7 @@ class TransactionPolicy
     use HandlesAuthorization;
 
     /**
-     * Determine whether the user can view any transactions.
+     * Determine whether the user can view any transaction.
      *
      * @param  \App\User $user
      * @return mixed
@@ -37,7 +37,7 @@ class TransactionPolicy
     }
 
     /**
-     * Determine whether the user can create transactions.
+     * Determine whether the user can create transaction.
      *
      * @param  \App\User $user
      * @return mixed
