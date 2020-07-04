@@ -70,6 +70,7 @@ class TransactionProcessedNotification extends Notification implements ShouldQue
 
         $message = "Dear {$this->user->first_name} {$this->user->last_name}, the {$formattedTransactionType} request you made on {$formattedTransactionDate} for the sum of ₦{$this->transaction->transaction_amount} has been {$this->processedTransaction->processing_type}D";
 
+        // Removed the message for now because it makes the sms too lengthy.
         if(isset($this->processedTransaction->message) && $this->processedTransaction->message !== '') {
 //            $message .= " because {$this->processedTransaction->message}";
         }

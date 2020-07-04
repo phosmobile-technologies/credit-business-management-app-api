@@ -7,6 +7,7 @@ type Transaction {
     transaction_medium: TransactionMedium!
     transaction_purpose: String
     transaction_status: TransactionStatus!
+    owner: TransactionOwner! @belongsTo
     created_at: Date!
     updated_at: Date
 }
@@ -61,3 +62,5 @@ enum TransactionProcessingType {
     APPROVE
     DISAPPROVE
 }
+
+union TransactionOwner = Loan | ContributionPlan | CompanyBranch | Wallet
