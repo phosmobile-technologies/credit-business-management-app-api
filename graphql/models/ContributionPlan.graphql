@@ -1,7 +1,7 @@
 """ A contribution made by a user """
 type ContributionPlan {
     id: ID!
-    user_id: ID!
+    user: User! @belongsTo
     type: ContributionType!
     goal: Float!
     name: String!
