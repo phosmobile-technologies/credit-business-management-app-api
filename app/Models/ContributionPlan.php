@@ -31,15 +31,15 @@ class ContributionPlan extends Model
 
 //    protected $dateFormat = "Y-m-d";
 
-    /**
-     * Make the contribution_id into a custom readable format.
-     *
-     * @return string
-     */
-    public function getContributionIdAttribute()
-    {
-        return "Contribution Plan - {$this->contribution_id}";
-    }
+//    /**
+//     * Make the contribution_id into a custom readable format.
+//     *
+//     * @return string
+//     */
+//    public function getContribution_IdAttribute()
+//    {
+//        return "Contribution Plan - {$this->contribution_id}";
+//    }
 
     /**
      * Get all of the contribution plan's transactions.
