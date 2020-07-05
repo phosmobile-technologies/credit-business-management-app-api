@@ -2,6 +2,7 @@
 type ContributionPlan {
     id: ID!
     user_id: ID!
+    user: User! @belongsTo
     type: ContributionType!
     goal: Float!
     name: String!

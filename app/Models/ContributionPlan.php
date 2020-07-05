@@ -3,8 +3,10 @@
 namespace App\Models;
 
 use App\Models\Concerns\UsesUuid;
+use App\User;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ContributionPlan extends Model
 {
@@ -49,6 +51,16 @@ class ContributionPlan extends Model
     public function transactions()
     {
         return $this->morphMany(Transaction::class, 'owner');
+    }
+
+    /**
+     * The user who owns the loan.
+     *
+     * @return BelongsTo
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
     /**
