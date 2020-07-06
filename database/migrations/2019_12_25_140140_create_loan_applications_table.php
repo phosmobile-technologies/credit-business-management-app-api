@@ -32,6 +32,9 @@ class CreateLoanApplicationsTable extends Migration
             ])->default(OnlineLoanApplicationStatus::PENDING);
             $table->integer('tenure');
             $table->date('expected_disbursement_date');
+            $table->uuid('assignee_id')->nullable();
+            $table->uuid('assigned_by')->nullable();
+            $table->string('processing_message')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')

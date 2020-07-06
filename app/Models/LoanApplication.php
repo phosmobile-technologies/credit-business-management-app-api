@@ -31,4 +31,31 @@ class LoanApplication extends Model
     public function user(): BelongsTo {
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
+
+    /**
+     * The admin staff to handle the Loan Application.
+     *
+     * @return BelongsTo
+     */
+    public function assignedTo(): BelongsTo {
+        return $this->belongsTo(User::class, 'assigned_to', 'id');
+    }
+
+    /**
+     * The branch manager who assigned Loan Application to an admin staff.
+     *
+     * @return BelongsTo
+     */
+    public function assignedBy(): BelongsTo {
+        return $this->belongsTo(User::class, 'assigned_by', 'id');
+    }
+
+    /**
+     * Determine if the loan application has been assigned to an admin staff for processing
+     *
+     * @return bool
+     */
+    public function getIsAssignedAttribute(): bool {
+        return is_null($this->assigned_to);
+    }
 }

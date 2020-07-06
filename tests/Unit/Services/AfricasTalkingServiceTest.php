@@ -31,6 +31,6 @@ class AfricasTalkingServiceTest extends TestCase
         $message = "Hello there Abraham";
 
         $response = $this->africasTalkingService->sendSms($to, $message);
-        dd($response);
+        $this->assertEquals('success', $response['status']);
     }
 }

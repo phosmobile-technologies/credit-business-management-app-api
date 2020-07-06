@@ -33,13 +33,17 @@ type Loan {
 """ An application made by a customer requesting for a loan """
 type LoanApplication {
     id: ID!
-    user: User!
+    user: User! @belongsTo
+    assignedTo: User! @belongsTo
+    assignedBy: User! @belongsTo
     loan_purpose: String!
     loan_repayment_source: String!
     loan_amount: Float!
     loan_repayment_frequency: LoanRepaymentFrequency!
     status: OnlineLoanApplicationStatus!
     tenure: Int!
+    processing_message: String
+    isAssigned: Boolean!
     expected_disbursement_date: Date
     created_at: Date!
     updated_at: Date

@@ -15,6 +15,18 @@ extend type Mutation @middleware(checks: ["auth:api"]){
     CreateLoanApplication(input: CreateLoanApplicationInput! @spread): LoanApplication!
     @can(ability: "create", model: "App\\Models\\LoanApplication")
 
+    AssignLoanApplicationToAdminStaff(
+        loan_application_id: ID!
+        admin_staff_id: ID!
+        branch_manager_id: ID!
+    ): LoanApplication!
+
+    ProcessLoanApplication(
+        loan_application_id: ID!
+        status: OnlineLoanApplicationStatus!
+        message: String
+    ): LoanApplication!
+
     """ Disburse a loan """
     DisburseLoan(input: DisburseLoanInput! @spread): Loan!
     @can(ability: "disburse", model: "App\\Models\\Loan")
