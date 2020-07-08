@@ -17,7 +17,7 @@ You have successfully been registered on the UMC platform.
     Log in to your account
 @endcomponent
 
-If you are not a Springverse customer, please disregard this email.
+If you are not a UMC customer, please disregard this email.
 please disregard this email.
 
 Welcome on board,<br>
