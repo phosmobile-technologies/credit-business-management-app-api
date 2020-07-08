@@ -43,7 +43,7 @@ type LoanApplication {
     status: OnlineLoanApplicationStatus!
     tenure: Int!
     processing_message: String
-    isAssigned: String
+    isAssigned: Boolean!
     expected_disbursement_date: Date
     created_at: Date!
     updated_at: Date
