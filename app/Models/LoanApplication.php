@@ -56,6 +56,6 @@ class LoanApplication extends Model
      * @return bool
      */
     public function getIsAssignedAttribute(): bool {
-        return isset($this->assignee_id);
+        return is_null($this->assignee_id);
     }
 }
