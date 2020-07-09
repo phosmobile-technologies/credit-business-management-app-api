@@ -55,6 +55,6 @@ class NewUserRegisteredMail extends Mailable
     public function build()
     {
         return $this->subject('UMC - New User Sign Up')
-            ->view('email.signup.user');
+            ->markdown('email.signup.user');
     }
 }

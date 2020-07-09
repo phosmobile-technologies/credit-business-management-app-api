@@ -11,15 +11,15 @@ class ShareWithAFriend
     /**
      * @var ShareWithAFriendService
      */
-    private $share_with_a_friend_service;
+    private $shareWitAFriendService;
 
     /**
      * ShareWithAFriend constructor.
-     * @param ShareWithAFriendService $share_with_a_friend_service
+     * @param ShareWithAFriendService $shareWithAFriendService
      */
-    public function __construct(ShareWithAFriendService $share_with_a_friend_service)
+    public function __construct(ShareWithAFriendService $shareWithAFriendService)
     {
-        $this->share_with_a_friend_service = $share_with_a_friend_service;
+        $this->shareWitAFriendService = $shareWithAFriendService;
     }
 
     /**
@@ -31,8 +31,8 @@ class ShareWithAFriend
      * @param  \GraphQL\Type\Definition\ResolveInfo  $resolveInfo Information about the query itself, such as the execution state, the field name, path to the field from the root, and more.
      * @return mixed
      */
-    public function  resolve($rootValue, array $args, GraphQLContext $context, ResolveInfo $resolveInfo)
+    public function  __invoke($rootValue, array $args, GraphQLContext $context, ResolveInfo $resolveInfo)
     {
-        return $this->share_with_a_friend_service->inviteFriend($args);
+        return $this->shareWitAFriendService->inviteFriend($args);
     }
 }

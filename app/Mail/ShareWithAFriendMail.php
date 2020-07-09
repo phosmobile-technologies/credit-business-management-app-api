@@ -50,6 +50,6 @@ class ShareWithAFriendMail extends Mailable
     public function build()
     {
         return $this->subject('Invitation to join UMC Upspring Multipurpose Cooperative')
-            ->markdown('email.share-with-a-friend');
+            ->markdown('email.shareWithAFriend');
     }
 }
