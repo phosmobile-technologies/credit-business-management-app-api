@@ -3,7 +3,7 @@
     <br>
     <div style="width: 80%;">
        <p>
-           You have been invited to join UMC Upspring Multipurpose Cooperative by {{ $user->first_name . " ". $user->last_name}}
+           You have been invited to join UMC Upspring Multipurpose Cooperative by {{ $data['user']->first_name . " ". $data['user']->last_name}}
            Upspring is an investment platform where you can save money with good returns and apply for loans with the cheapest interest rates
        </p>
     </div>

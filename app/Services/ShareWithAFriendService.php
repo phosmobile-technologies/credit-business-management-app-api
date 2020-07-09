@@ -12,7 +12,7 @@ class ShareWithAFriendService
 {
     public function inviteFriend(array $data)
     {
-        Mail::to($data['email'])->send(new ShareWithAFriendMail($data,$data['user']));
+        Mail::to($data['email'])->send(new ShareWithAFriendMail($data));
         return 'Invite email was sent to'. $data['email'];
     }
 }
