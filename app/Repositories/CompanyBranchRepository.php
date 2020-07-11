@@ -6,6 +6,7 @@ namespace App\Repositories;
 use App\Models\CompanyBranch;
 use App\Models\Enums\UserRoles;
 use App\Repositories\Interfaces\CompanyBranchRepositoryInterface;
+use App\User;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Support\Collection;
@@ -54,6 +55,20 @@ class CompanyBranchRepository implements CompanyBranchRepositoryInterface
     }
 
     /**
+     * Get the eloquent query builder that can get admins that belong to a branch.
+     *
+     * @param string $branch_id
+     * @return HasManyThrough
+     */
+    public function findAdminsQuery(string $branch_id): HasManyThrough
+    {
+        $branch = $this->find($branch_id);
+
+        return $branch->customers()->role([UserRoles::ADMIN_STAFF, UserRoles::BRANCH_ACCOUNTANT, UserRoles::BRANCH_MANAGER,
+            UserRoles::ADMIN_MANAGER, UserRoles::ADMIN_ACCOUNTANT]);
+    }
+
+    /**
      * Find the loans that belong to a branch.
      *
      * @param string $branch_id
@@ -89,12 +104,12 @@ class CompanyBranchRepository implements CompanyBranchRepositoryInterface
     public function findLoanApplicationsQuery(string $branch_id, ?string $isAssigned): HasManyThrough
     {
         $branch = $this->find($branch_id);
-        $query = $branch->loanApplications();
+        $query  = $branch->loanApplications();
 
-        if(isset($isAssigned)) {
-            if($isAssigned) {
+        if (isset($isAssigned)) {
+            if ($isAssigned) {
                 $query->whereNotNull('loan_applications.assignee_id');
-            }else {
+            } else {
                 $query->whereNull('loan_applications.assignee_id');
             }
         }

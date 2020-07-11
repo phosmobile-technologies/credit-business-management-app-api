@@ -45,6 +45,17 @@ class BranchService
     }
 
     /**
+     * Get the query builder for customers that a belong to a branch.
+     *
+     * @param string $branch_id
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     */
+    public function getBranchAdminsQuery(string $branch_id)
+    {
+        return $this->branchRepository->findAdminsQuery($branch_id);
+    }
+
+    /**
      * Get the loans that a belong to a branch.
      *
      * @param string $branch_id

@@ -1,4 +1,4 @@
-extend type Query @middleware(checks: ["auth:api"]){
+extend type Query {
     """ Get a company branch by their ID """
     GetBranchById(id: ID! @eq): CompanyBranch @find(model: "App\\Models\\CompanyBranch")
 
@@ -8,6 +8,13 @@ extend type Query @middleware(checks: ["auth:api"]){
         orderBy: [OrderByClause!] @orderBy(columns: ["created_at"])
     ): [User]!
     @paginate(builder: "App\\GraphQL\\Queries\\GetBranchCustomers", defaultCount: 10)
+
+    """ Get all customers that belong to a branch """
+    GetBranchAdmins(
+        branch_id: ID!,
+        orderBy: [OrderByClause!] @orderBy(columns: ["created_at"])
+    ): [User]!
+    @paginate(builder: "App\\GraphQL\\Queries\\GetBranchAdmins", defaultCount: 10)
 
     """ Get all loans that belong to a branch """
     GetBranchLoans(
