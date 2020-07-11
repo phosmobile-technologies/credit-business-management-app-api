@@ -13,6 +13,8 @@ extend type Query @middleware(checks: ["auth:api"]){
     GetBranchLoans(
         branch_id: ID!,
         loan_condition_status: LoanConditionStatus @where(operator: "="),
+        loan_default_status: LoanDefaultStatus @where(operator: "="),
+        application_status: LoanApplicationStatus @where(operator: "="),
         orderBy: [OrderByClause!] @orderBy(columns: ["created_at"])
     ): [Loan]!
     @paginate(builder: "App\\GraphQL\\Queries\\GetBranchLoans", defaultCount: 10)
@@ -20,6 +22,8 @@ extend type Query @middleware(checks: ["auth:api"]){
     """ Get all loan applications that belong to a branch """
     GetBranchLoanApplications(
         branch_id: ID!,
+        admin_staff_id: ID @where(operator: "=", key: "assignee_id"),
+        is_assigned: Boolean,
         orderBy: [OrderByClause!] @orderBy(columns: ["created_at"])
     ): [LoanApplication]!
     @paginate(builder: "App\\GraphQL\\Queries\\GetBranchLoanApplications", defaultCount: 10)

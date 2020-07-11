@@ -82,14 +82,24 @@ class CompanyBranchRepository implements CompanyBranchRepositoryInterface
     /**
      * Get the eloquent query builder that can get loan applications that belong to a branch.
      *
-     * @param string $branch_id
+     * @param string      $branch_id
+     * @param null|string $isAssigned
      * @return HasManyThrough
      */
-    public function findLoanApplicationsQuery(string $branch_id): HasManyThrough
+    public function findLoanApplicationsQuery(string $branch_id, ?string $isAssigned): HasManyThrough
     {
         $branch = $this->find($branch_id);
+        $query = $branch->loanApplications();
 
-        return $branch->loanApplications();
+        if(isset($isAssigned)) {
+            if($isAssigned) {
+                $query->whereNotNull('loan_applications.assignee_id');
+            }else {
+                $query->whereNull('loan_applications.assignee_id');
+            }
+        }
+
+        return $query;
     }
 
     /**
