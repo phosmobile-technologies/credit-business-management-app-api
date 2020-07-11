@@ -69,12 +69,13 @@ class BranchService
     /**
      * Get the query builder for loan applications that a belong to a branch.
      *
-     * @param string $branch_id
+     * @param string      $branch_id
+     * @param null|string $isAssigned
      * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
      */
-    public function getBranchLoanApplicationsQuery(string $branch_id)
+    public function getBranchLoanApplicationsQuery(string $branch_id, ?string $isAssigned)
     {
-        return $this->branchRepository->findLoanApplicationsQuery($branch_id);
+        return $this->branchRepository->findLoanApplicationsQuery($branch_id, $isAssigned);
     }
 
     /**
