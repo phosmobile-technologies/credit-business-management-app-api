@@ -20,10 +20,11 @@ services:
       - postgresql-database
       - redis_cache
     environment:
-      - "APP_NAME=SpringVerse-investment-app-api"
+      - "APP_NAME=UMC"
       - "DATABASE_URL=postgres://springVerseUser:springVersePassword@postgresql-database:5432/springVerseDB"
       - "REDIS_PORT=6379"
       - "REDIS_HOST=redis_cache"
+      - "FRONT_END_URL=https://upspringvest.com"
 
   # Database
   postgresql-database:

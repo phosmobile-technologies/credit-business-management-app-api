@@ -9,6 +9,8 @@ use App\Models\Loan;
 use App\Models\Wallet;
 use App\Models\Transaction;
 use App\Models\UserProfile;
+use App\Notifications\ResetPasswordNotification;
+use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -24,7 +26,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use Notifiable, HasApiTokens, UsesUuid, LogsActivity, HasRoles, CausesActivity;
+    use Notifiable, HasApiTokens, UsesUuid, LogsActivity, HasRoles, CausesActivity, CanResetPassword;
 
     /**
      * The attributes that are mass assignable.
@@ -52,6 +54,17 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * Send the password reset notification.
+     *
+     * @param  string  $token
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new ResetPasswordNotification($token));
+    }
 
     /**
      * Find the user instance for the given username.

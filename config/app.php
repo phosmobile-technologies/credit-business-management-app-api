@@ -56,6 +56,8 @@ return [
 
     'asset_url' => env('ASSET_URL', null),
 
+    'frontend_url' => env('FRONT_END_URL', 'https://upspringvest.com'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone
