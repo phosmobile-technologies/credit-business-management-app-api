@@ -14,6 +14,7 @@ type ContributionPlan {
     interest_rate: Float #per annum, depending on type and duration, rates would be given
     frequency: ContributionFrequency
     contribution_id: String! #id to identify the contribution
+    status: ContributionPlanStatus!
     created_at: DateTime!
     updated_at: DateTime!
 }
@@ -31,4 +32,10 @@ enum ContributionFrequency {
     WEEKLY
     MONTHLY
     QUARTERLY
+}
+
+enum ContributionPlanStatus {
+    INACTIVE
+    ACTIVE
+    COMPLETED
 }

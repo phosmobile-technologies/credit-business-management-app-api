@@ -35,6 +35,14 @@ extend type Query {
     ): [LoanApplication]!
     @paginate(builder: "App\\GraphQL\\Queries\\GetBranchLoanApplications", defaultCount: 10)
 
+    """ Get all contribution plans that belong to a branch """
+    GetBranchContributionPlans(
+        branch_id: ID!,
+        status: ContributionPlanStatus @where(operator: "=", key: "status"),
+        orderBy: [OrderByClause!] @orderBy(columns: ["created_at"])
+    ): [ContributionPlan]!
+    @paginate(builder: "App\\GraphQL\\Queries\\GetBranchContributionPlans", defaultCount: 10)
+
     """ Search/Filter a branch's customers """
     SearchBranchCustomers(
         branch_id: ID!

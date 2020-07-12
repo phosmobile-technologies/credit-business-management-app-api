@@ -95,6 +95,19 @@ class CompanyBranchRepository implements CompanyBranchRepositoryInterface
     }
 
     /**
+     * Get the eloquent query builder that can get contribution plans that belong to a branch.
+     *
+     * @param string $branch_id
+     * @return HasManyThrough
+     */
+    public function findContributionPlansQuery(string $branch_id): HasManyThrough
+    {
+        $branch = $this->find($branch_id);
+
+        return $branch->contribubtionPlans();
+    }
+
+    /**
      * Get the eloquent query builder that can get loan applications that belong to a branch.
      *
      * @param string      $branch_id
@@ -180,4 +193,5 @@ class CompanyBranchRepository implements CompanyBranchRepositoryInterface
 
         });
     }
+
 }

@@ -78,6 +78,17 @@ class BranchService
     }
 
     /**
+     * Get the query builder for loans that a belong to a branch.
+     *
+     * @param string $branch_id
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     */
+    public function getBranchContributionPlansQuery(string $branch_id)
+    {
+        return $this->branchRepository->findContributionPlansQuery($branch_id);
+    }
+
+    /**
      * Get the query builder for loan applications that a belong to a branch.
      *
      * @param string      $branch_id
