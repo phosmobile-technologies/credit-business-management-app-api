@@ -66,6 +66,16 @@ class CompanyBranch extends Model
     }
 
     /**
+     * The contribution plans that belong to a branch
+     *
+     * @return HasManyThrough
+     */
+    public function contributionPlans(): HasManyThrough
+    {
+        return $this->hasManyThrough(ContributionPlan::class, UserProfile::class, 'branch_id', 'user_id', 'id', 'user_id');
+    }
+
+    /**
      * The transactions that belong to a branch
      *
      * @return HasMany

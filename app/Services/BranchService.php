@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Models\CompanyBranch;
+use App\Models\ContributionPlan;
+use App\Models\Enums\LoanDefaultStatus;
 use App\Repositories\Interfaces\CompanyBranchRepositoryInterface;
 use Illuminate\Support\Facades\Date;
 
@@ -123,5 +125,30 @@ class BranchService
     public function getBranchTransactionsQuery(string $branch_id, array $queryParameters)
     {
         return $this->branchRepository->findTransactionsQuery($branch_id, $queryParameters);
+    }
+
+    /**
+     * @param string $branch_id
+     * @return array
+     */
+    public function getBranchStatistics(string $branch_id): array
+    {
+        $branch = $this->branchRepository->find($branch_id);
+
+        $statistics = [
+            'branch_customers' => 0,
+            'loan_applications' => 0,
+            'defaulting_loans' => 0,
+            'active_contribution_plans' => 0,
+            'transactions' => 0
+        ];
+
+        $statistics['branch_customers'] = $branch->customers()->count();
+        $statistics['loan_applications'] = $branch->loanApplications()->count();
+        $statistics['defaulting_loans'] = $branch->loans()->where('loan_default_status', '=', LoanDefaultStatus::DEFAULTING)->count();
+        $statistics['active_contribution_plans'] = $branch->contributionPlans()->where('contribution_plans.status', '=', ContributionPlan::STATUS_ACTIVE)->count();
+        $statistics['transactions'] = $branch->transactions()->count();
+
+        return $statistics;
     }
 }
