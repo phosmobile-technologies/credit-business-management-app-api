@@ -1,4 +1,4 @@
-extend type Query {
+extend type Query @middleware(checks: ["auth:api"]){
     """ Get a company branch by their ID """
     GetBranchById(id: ID! @eq): CompanyBranch @find(model: "App\\Models\\CompanyBranch")
 
@@ -58,4 +58,7 @@ extend type Query {
         orderBy: [OrderByClause!] @orderBy(columns: ["created_at"])
     ): [Transaction]!
     @paginate(builder: "App\\GraphQL\\Queries\\GetBranchTransactions", defaultCount: 10)
+
+    """ Get aggregate statistics for a branch  """
+    GetBranchStatistics( branch_id: ID!): BranchStatistics!
 }
