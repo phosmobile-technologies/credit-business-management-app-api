@@ -1,0 +1,17 @@
+""" Branch statistics """
+type BranchStatistics {
+    """ Number of customers in the branch """
+    branch_customers: Int!
+
+    """ number of loan applications """
+    loan_applications: Int!
+
+    """ Number of defaulting loans """
+    defaulting_loans: Int!
+
+    """ Number of active contribution plans """
+    active_contribution_plans: Int!
+
+    """ Number of transactions """
+    transactions: Int!
+}
