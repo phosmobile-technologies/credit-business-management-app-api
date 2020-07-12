@@ -1,4 +1,4 @@
-extend type Query @middleware(checks: ["auth:api"]){
+extend type Query {
     """ Get a company branch by their ID """
     GetBranchById(id: ID! @eq): CompanyBranch @find(model: "App\\Models\\CompanyBranch")
 
@@ -38,7 +38,7 @@ extend type Query @middleware(checks: ["auth:api"]){
     """ Get all contribution plans that belong to a branch """
     GetBranchContributionPlans(
         branch_id: ID!,
-        status: ContributionPlanStatus @where(operator: "=", key: "status"),
+        status: ContributionPlanStatus @where(operator: "=", key: "contribution_plans.status"),
         orderBy: [OrderByClause!] @orderBy(columns: ["created_at"])
     ): [ContributionPlan]!
     @paginate(builder: "App\\GraphQL\\Queries\\GetBranchContributionPlans", defaultCount: 10)

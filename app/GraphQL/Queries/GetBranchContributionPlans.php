@@ -34,6 +34,6 @@ class GetBranchContributionPlans
      */
     public function __invoke($rootValue, array $args, GraphQLContext $context, ResolveInfo $resolveInfo)
     {
-        return $this->branchService->getBranchLoanApplicationsQuery($args['branch_id']);
+        return $this->branchService->getBranchContributionPlansQuery($args['branch_id']);
     }
 }
