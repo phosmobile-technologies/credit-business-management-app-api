@@ -104,6 +104,10 @@ class TransactionService
             case TransactionType::BRANCH_FUND_DISBURSEMENT:
                 return $this->initiateBranchFundDisbursementTransaction($owner_id, $transactionDetails);
                 break;
+
+            case TransactionType::BRANCH_EXPENSE:
+                return $this->initiateBranchExpenseTransaction($owner_id, $transactionDetails);
+                break;
         }
     }
 
@@ -143,6 +147,10 @@ class TransactionService
 
             case (TransactionType::BRANCH_FUND_DISBURSEMENT):
                 return $this->processBranchFundReimbursementTransaction($user, $transaction, $action, $message);
+                break;
+
+            case (TransactionType::BRANCH_EXPENSE):
+                return $this->processBranchFundExpenseTransaction($user, $transaction, $action, $message);
                 break;
         }
     }
@@ -221,6 +229,18 @@ class TransactionService
      * @return Transaction
      */
     public function initiateBranchFundDisbursementTransaction(string $branch_id, array $transactionDetails)
+    {
+        return $this->createTransaction(TransactionOwnerType::COMPANY_BRANCH, $branch_id, $transactionDetails);
+    }
+
+    /**
+     * Create a branch fund disbursement transaction.
+     *
+     * @param string $branch_id
+     * @param array  $transactionDetails
+     * @return Transaction
+     */
+    public function initiateBranchExpenseTransaction(string $branch_id, array $transactionDetails)
     {
         return $this->createTransaction(TransactionOwnerType::COMPANY_BRANCH, $branch_id, $transactionDetails);
     }
@@ -460,6 +480,33 @@ class TransactionService
      * @return Transaction|null
      */
     private function processBranchFundReimbursementTransaction(User $user, Transaction $transaction, string $action, ?string $message)
+    {
+        DB::transaction(function () use ($transaction, $action, $user, $message) {
+            switch ($action) {
+                case TransactionProcessingActions::APPROVE:
+                    $transaction = $this->transactionRepository->updateTransactionStatus($transaction, TransactionStatus::COMPLETED);
+                    break;
+
+                case TransactionProcessingActions::DISAPPROVE:
+                    $transaction = $this->transactionRepository->updateTransactionStatus($transaction, TransactionStatus::FAILED);
+                    break;
+            }
+
+            $processedTransaction = $this->transactionRepository->storeProcessedTransaction($transaction, $user->id, $action, $message);
+            event(new TransactionProcessedEvent($user, $transaction, $processedTransaction));
+        });
+
+        return $transaction;
+    }
+
+    /**
+     * @param User        $user The user processing the transaction
+     * @param Transaction $transaction
+     * @param string      $action
+     * @param null|string $message
+     * @return Transaction|null
+     */
+    private function processBranchFundExpenseTransaction(User $user, Transaction $transaction, string $action, ?string $message)
     {
         DB::transaction(function () use ($transaction, $action, $user, $message) {
             switch ($action) {
