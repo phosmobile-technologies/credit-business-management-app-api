@@ -100,6 +100,58 @@ class UserService
     }
 
     /**
+     * Register a new user.
+     *
+     * @param array $attributes
+     * @return User
+     */
+    public function registerAdminUser(array $attributes): User
+    {
+        $attributes = collect($attributes);
+
+        $roles = $attributes['roles'];
+
+        $userData = $attributes->only([
+            'first_name',
+            'last_name',
+            'email',
+            'phone_number',
+        ])->toArray();
+
+        $this->defaultPassword = Str::random(8);
+        $userData['password'] = $this->defaultPassword;
+
+
+        // TODO: Figure why the 'directive' index is added by Lighthouse-php to the args it passes down
+//        $userProfileData = $attributes->except([
+//            'first_name',
+//            'last_name',
+//            'email',
+//            'phone_number',
+//            'roles',
+//            'directive',
+//            'password',
+//            'password_confirmation',
+//        ])->toArray();
+//        $userProfileData['customer_identifier'] = $this->generateCustomerIdentifier();
+
+        // @TODO: Stop using dummy user profile for admin users
+        $userProfileData = factory(UserProfile::class)->make([
+            'customer_identifier' => $this->generateCustomerIdentifier(),
+            'company_id' => $attributes['company_id'],
+            'branch_id' => $attributes['branch_id']
+        ])->toArray();
+
+        $user = $this->userRepository->createUser($userData);
+        $this->userRepository->attachUserProfile($user, $userProfileData);
+        $this->userRepository->attachUserRoles($user, $roles, RegistrationSource::BACKEND);
+
+        event(new NewUserRegistered($user, $this->defaultPassword, RegistrationSource::BACKEND));
+
+        return $user;
+    }
+
+    /**
      * Generate a random custom identifier for a user.
      *
      * @return int
