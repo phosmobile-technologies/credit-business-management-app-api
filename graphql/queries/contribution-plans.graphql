@@ -1,4 +1,4 @@
-extend type Query {
+extend type Query @middleware(checks: ["auth:api"]) {
     """ Get user contribution plans by ID and contribution type """
     GetCustomerContributionPlans(
         customer_id: ID! @where(operator: "=", key: "user_id"),

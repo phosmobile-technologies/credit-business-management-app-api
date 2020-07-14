@@ -26,3 +26,10 @@ enum UserRoles {
     ADMIN_MANAGER,
     SUPER_ADMIN
 }
+
+enum AdminUserRoles {
+    ADMIN_STAFF,
+    ADMIN_ACCOUNTANT,
+    ADMIN_MANAGER,
+    SUPER_ADMIN
+}

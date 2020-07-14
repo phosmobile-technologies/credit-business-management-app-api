@@ -57,12 +57,17 @@ class CompanyBranchRepository implements CompanyBranchRepositoryInterface
     /**
      * Get the eloquent query builder that can get admins that belong to a branch.
      *
-     * @param string $branch_id
+     * @param string     $branch_id
+     * @param array|null $roles
      * @return HasManyThrough
      */
-    public function findAdminsQuery(string $branch_id): HasManyThrough
+    public function findAdminsQuery(string $branch_id, ?array $roles): HasManyThrough
     {
         $branch = $this->find($branch_id);
+
+        if (isset($roles)) {
+            return $branch->customers()->role($roles);
+        }
 
         return $branch->customers()->role([UserRoles::ADMIN_STAFF, UserRoles::BRANCH_ACCOUNTANT, UserRoles::BRANCH_MANAGER,
             UserRoles::ADMIN_MANAGER, UserRoles::ADMIN_ACCOUNTANT]);

@@ -49,12 +49,13 @@ class BranchService
     /**
      * Get the query builder for customers that a belong to a branch.
      *
-     * @param string $branch_id
+     * @param string     $branch_id
+     * @param array|null $roles
      * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
      */
-    public function getBranchAdminsQuery(string $branch_id)
+    public function getBranchAdminsQuery(string $branch_id, ?array $roles)
     {
-        return $this->branchRepository->findAdminsQuery($branch_id);
+        return $this->branchRepository->findAdminsQuery($branch_id, $roles);
     }
 
     /**

@@ -1,4 +1,4 @@
-extend type Query {
+extend type Query @middleware(checks: ["auth:api"]) {
     """ Get a company branch by their ID """
     GetBranchById(id: ID! @eq): CompanyBranch @find(model: "App\\Models\\CompanyBranch")
 
@@ -12,6 +12,7 @@ extend type Query {
     """ Get all customers that belong to a branch """
     GetBranchAdmins(
         branch_id: ID!,
+        roles: [AdminUserRoles!]
         orderBy: [OrderByClause!] @orderBy(columns: ["created_at"])
     ): [User]!
     @paginate(builder: "App\\GraphQL\\Queries\\GetBranchAdmins", defaultCount: 10)

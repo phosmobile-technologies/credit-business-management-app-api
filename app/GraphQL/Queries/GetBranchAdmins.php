@@ -33,6 +33,7 @@ class GetBranchAdmins
      */
     public function __invoke($rootValue, array $args, GraphQLContext $context, ResolveInfo $resolveInfo)
     {
-        return $this->branchService->getBranchAdminsQuery($args['branch_id']);
+        $roles = isset($args['roles']) ? $args['roles'] : null;
+        return $this->branchService->getBranchAdminsQuery($args['branch_id'], $roles);
     }
 }

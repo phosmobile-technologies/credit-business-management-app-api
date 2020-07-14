@@ -38,10 +38,11 @@ interface CompanyBranchRepositoryInterface
     /**
      * Get the eloquent query builder that can get admins that belong to a branch.
      *
-     * @param string $branch_id
+     * @param string     $branch_id
+     * @param array|null $roles
      * @return HasManyThrough
      */
-    public function findAdminsQuery(string $branch_id): HasManyThrough;
+    public function findAdminsQuery(string $branch_id, ?array $roles): HasManyThrough;
 
     /**
      * Find the loans that belong to a branch.
