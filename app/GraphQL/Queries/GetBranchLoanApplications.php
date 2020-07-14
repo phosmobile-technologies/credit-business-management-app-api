@@ -34,7 +34,7 @@ class GetBranchLoanApplications
      */
     public function __invoke($rootValue, array $args, GraphQLContext $context, ResolveInfo $resolveInfo)
     {
-        $isAssigned = isset($args['is_assigned']) ?: null;
+        $isAssigned = isset($args['is_assigned']) ? $args['is_assigned'] : null;
         return $this->branchService->getBranchLoanApplicationsQuery($args['branch_id'], $isAssigned);
     }
 }
