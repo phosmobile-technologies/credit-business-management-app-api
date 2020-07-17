@@ -122,7 +122,7 @@ class UserService
         $userData['password'] = $this->defaultPassword;
 
 
-        // TODO: Figure why the 'directive' index is added by Lighthouse-php to the args it passes down
+        // TODO: Figure why the 'directive' index is added by Lighthouse-php to the args it passes down to us
 //        $userProfileData = $attributes->except([
 //            'first_name',
 //            'last_name',
