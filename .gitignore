@@ -15,3 +15,5 @@ Homestead.yaml
 npm-debug.log
 yarn-error.log
 .serverless/
+!/storage/app/oauth-private.key.encrypted
+!/storage/app/oauth-public.key.encrypted
