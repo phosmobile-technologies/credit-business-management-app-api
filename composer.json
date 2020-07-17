@@ -24,11 +24,11 @@
         "nuwave/lighthouse": "^4.3",
         "phpseclib/bcmath_compat": "1.0.4",
         "spatie/laravel-activitylog": "^3.8",
-        "spatie/laravel-permission": "^3.0"
+        "spatie/laravel-permission": "^3.0",
+        "fzaninotto/faker": "^1.4"
     },
     "require-dev": {
         "facade/ignition": "^1.4",
-        "fzaninotto/faker": "^1.4",
         "haydenpierce/class-finder": "^0.4.0",
         "mockery/mockery": "^1.0",
         "nunomaduro/collision": "^3.0",
