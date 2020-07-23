@@ -114,7 +114,7 @@ class ContributionPlanPolicy
      */
     public function fund(User $user, ContributionPlan $contributionPlan)
     {
-        return $contributionPlan->user_id === $user->id;
+        return ($contributionPlan->user_id === $user->id) || ($user->can(UserPermissions::CAN_FUND_CONTRIBUTION));
     }
 
     /**

@@ -85,6 +85,7 @@ class RolesAndPermissionsSeeder extends Seeder
             Permission::firstOrCreate(['name' => UserPermissions::CAN_UPDATE_CONTRIBUTION]),
             Permission::firstOrCreate(['name' => UserPermissions::CAN_UPDATE_WALLET]),
             Permission::firstOrCreate(['name' => UserPermissions::CAN_DELETE_CONTRIBUTION]),
+            Permission::firstOrCreate(['name' => UserPermissions::CAN_FUND_CONTRIBUTION]),
         ]);
     }
 
