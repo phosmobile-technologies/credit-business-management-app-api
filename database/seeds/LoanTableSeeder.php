@@ -19,16 +19,16 @@ class LoanTableSeeder extends Seeder
      */
     public function run()
     {
-        $springVerse = Company::first();
-
-        $this->users = (User::whereHas('profile')->with('profile')->get())->filter(function ($user) use ($springVerse) {
-           return $user->profile->company_id === $springVerse->id;
-        });
-
-        $this->seedDisbursedLoans();
-        $this->seedNotDisbursedLoans();
-        $this->seedDefaultingLoans();
-        $this->seedNoneDefaultingLoans();
+//        $springVerse = Company::first();
+//
+//        $this->users = (User::whereHas('profile')->with('profile')->get())->filter(function ($user) use ($springVerse) {
+//           return $user->profile->company_id === $springVerse->id;
+//        });
+//
+//        $this->seedDisbursedLoans();
+//        $this->seedNotDisbursedLoans();
+//        $this->seedDefaultingLoans();
+//        $this->seedNoneDefaultingLoans();
     }
 
     /**

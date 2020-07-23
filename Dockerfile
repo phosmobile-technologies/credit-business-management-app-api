@@ -1,5 +1,5 @@
 # The base image which has php7.2-fpm and nginx
-FROM webdevops/php-nginx:7.2
+FROM webdevops/php-nginx:7.3
 
 # Set image metadata
 LABEL version="1.0"
@@ -9,7 +9,7 @@ LABEL description="Application for the Nimasa dangerous goods graphql api with n
 ENV WEB_DOCUMENT_ROOT="/var/www/public"
 
 # Install various packages, php extensions and composer
-RUN apt-get update && apt-get install -y libmcrypt-dev mysql-client zip libzip-dev libpq-dev libpng-dev \
+RUN apt-get update && apt-get install -y libmcrypt-dev default-mysql-client zip libzip-dev libpq-dev libpng-dev \
     && docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
     && docker-php-ext-install pdo_mysql zip pgsql pdo pdo_pgsql gd \
     && curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer \
