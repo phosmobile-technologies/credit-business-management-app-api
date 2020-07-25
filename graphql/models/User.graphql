@@ -24,6 +24,8 @@ enum UserRoles {
     ADMIN_STAFF,
     ADMIN_ACCOUNTANT,
     ADMIN_MANAGER,
+    BRANCH_ACCOUNTANT,
+    BRANCH_MANAGER,
     SUPER_ADMIN
 }
 
@@ -31,6 +33,8 @@ enum AdminUserRoles {
     ADMIN_STAFF,
     ADMIN_ACCOUNTANT,
     ADMIN_MANAGER,
+    BRANCH_ACCOUNTANT,
+    BRANCH_MANAGER,
 }
 
 enum SuperAdminUserRole {
