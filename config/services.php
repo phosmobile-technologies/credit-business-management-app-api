@@ -33,6 +33,12 @@ return [
     'africastalking' => [
         'username' => env('AFRICAS_TALKING_USERNAME'),
         'key' => env('AFRICAS_TALKING_API_KEY'),
-    ]
+    ],
+
+    'jusibe' => [
+        'key' => env('JUSIBE_PUBLIC_KEY'),
+        'token' => env('JUSIBE_ACCESS_TOKEN'),
+        'sms_from' => 'UMC'
+    ],
 
 ];
