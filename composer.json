@@ -13,8 +13,10 @@
         "barryvdh/laravel-cors": "^0.11.4",
         "bref/bref": "^0.5.11",
         "fideloper/proxy": "^4.0",
+        "fzaninotto/faker": "^1.4",
         "guzzlehttp/guzzle": "^6.4",
         "joselfonseca/lighthouse-graphql-passport-auth": "^2.0",
+        "laravel-notification-channels/jusibe": "^1.1",
         "laravel/framework": "^6.0",
         "laravel/passport": "^7.5",
         "laravel/telescope": "^3.5",
@@ -24,8 +26,7 @@
         "nuwave/lighthouse": "^4.3",
         "phpseclib/bcmath_compat": "1.0.4",
         "spatie/laravel-activitylog": "^3.8",
-        "spatie/laravel-permission": "^3.0",
-        "fzaninotto/faker": "^1.4"
+        "spatie/laravel-permission": "^3.0"
     },
     "require-dev": {
         "facade/ignition": "^1.4",

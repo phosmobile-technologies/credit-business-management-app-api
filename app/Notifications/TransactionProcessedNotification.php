@@ -12,6 +12,8 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use NotificationChannels\Jusibe\JusibeChannel;
+use NotificationChannels\Jusibe\JusibeMessage;
 
 class TransactionProcessedNotification extends Notification implements ShouldQueue
 {
@@ -54,7 +56,8 @@ class TransactionProcessedNotification extends Notification implements ShouldQue
      */
     public function via($notifiable)
     {
-        return [AfricasTalkingCustomChannel::class, 'database'];
+//        AfricasTalkingCustomChannel::class,
+        return [JusibeChannel::class ,'database'];
     }
 
     /**
@@ -77,6 +80,28 @@ class TransactionProcessedNotification extends Notification implements ShouldQue
 
         return (new AfricasTalkingCustomChannelMessage())
             ->message($message);
+    }
+
+    /**
+     * Get the message representation of the SMS
+     *
+     * @return mixed
+     */
+    public function toJusibe()
+    {
+        $formattedTransactionType = strtolower($this->transaction->transaction_type);
+        str_replace($formattedTransactionType, '_', ' ');
+        $formattedTransactionDate = Carbon::parse($this->transaction->created_at)->format('Y-M-d');
+
+        $message = "Dear {$this->user->first_name} {$this->user->last_name}, the {$formattedTransactionType} request you made on {$formattedTransactionDate} for the sum of ₦{$this->transaction->transaction_amount} has been {$this->processedTransaction->processing_type}D";
+
+        // Removed the message for now because it makes the sms too lengthy.
+        if(isset($this->processedTransaction->message) && $this->processedTransaction->message !== '') {
+//            $message .= " because {$this->processedTransaction->message}";
+        }
+
+        return (new JusibeMessage())
+            ->content($message);
     }
 
     /**
