@@ -19,4 +19,15 @@ class UserProfileRepository implements UserProfileRepositoryInterface
     {
         return UserProfile::where('customer_identifier', $identifier)->exists();
     }
+
+    /**
+     * Find a User profile by for a user.
+     *
+     * @param string $user_id
+     * @return UserProfile|null
+     */
+    public function findByUserId(string $user_id): ?UserProfile
+    {
+        return UserProfile::where('user_id', $user_id)->firstOrFail();
+    }
 }

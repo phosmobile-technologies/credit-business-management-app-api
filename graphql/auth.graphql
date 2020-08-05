@@ -87,6 +87,24 @@ input AdminUserRegisterInput {
     roles: [AdminUserRoles!]!
 }
 
+input UpdateUserProfileInput {
+    user_id: ID!
+    gender: Gender
+    date_of_birth: Date
+    marital_status: MaritalStatus
+    occupation: String
+    address: String
+    state_of_origin: String
+    bvn: String
+    bank_account_number: String
+    bank_account_name: String
+    bank_name: String
+    next_of_kin: String
+    relationship_with_next_of_kin: String
+    account_name: String
+    account_number: String
+}
+
 extend type Mutation {
     login(input: LoginInput! @spread): AuthPayload! @field(resolver: "App\\GraphQL\\Mutations\\Login")
     refreshToken(input: RefreshTokenInput! @spread): RefreshTokenPayload! @field(resolver: "Joselfonseca\\LighthouseGraphQLPassport\\GraphQL\\Mutations\\RefreshToken@resolve")
@@ -95,4 +113,5 @@ extend type Mutation {
     updateForgottenPassword(input: NewPasswordWithCodeInput! @spread): ForgotPasswordResponse! @field(resolver: "App\\GraphQL\\Mutations\\ResetPassword")
     register(input: RegisterInput! @spread): RegisterPayload! @field(resolver: "App\\GraphQL\\Mutations\\RegisterUser")
     createAdminUser(input: AdminUserRegisterInput! @spread): User! @field(resolver: "App\\GraphQL\\Mutations\\CreateAdminUser")
+    updateUserProfile(input: UpdateUserProfileInput! @spread): User! @field(resolver: "App\\GraphQL\\Mutations\\UpdateUserProfile")
 }

@@ -42,8 +42,8 @@ class AppServiceProvider extends ServiceProvider
         $this->registerRepositories();
 
         if ($this->app->environment('local', 'heroku')) {
-//            $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
-//            $this->app->register(TelescopeServiceProvider::class);
+            $this->app->register(\Laravel\Telescope\TelescopeServiceProvider::class);
+            $this->app->register(TelescopeServiceProvider::class);
         }
     }
 

@@ -13,6 +13,7 @@ use App\Repositories\Interfaces\UserRepositoryInterface;
 use App\Repositories\Interfaces\WalletRepositoryInterface;
 use App\User;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class UserService
@@ -190,5 +191,22 @@ class UserService
                 return $this->userRepository->findWalletTransactionsQuery($customer_id);
                 break;
         }
+    }
+
+    /**
+     * @param array $args
+     * @return User|null
+     */
+    public function updateUserProfile(array $args) {
+        $userProfile = $this->userProfileRepository->findByUserId($args['user_id']);
+        $userId = $args['user_id'];
+        $args = collect($args)->except('user_id', 'directive')->toArray();
+
+        foreach ($args as $arg => $value) {
+            $userProfile->{$arg} = $value;
+        }
+
+        $userProfile->save();
+        return $this->userRepository->find($userId);
     }
 }

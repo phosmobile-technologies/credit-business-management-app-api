@@ -3,6 +3,8 @@
 namespace App\Repositories\Interfaces;
 
 
+use App\Models\UserProfile;
+
 interface UserProfileRepositoryInterface
 {
     /**
@@ -12,4 +14,12 @@ interface UserProfileRepositoryInterface
      * @return bool
      */
     public function customerIdentifierExists(int $identifier): bool;
+
+    /**
+     * Find a User profile by user id.
+     *
+     * @param string $user_id
+     * @return UserProfile|null
+     */
+    public function findByUserId(string $user_id): ?UserProfile;
 }
