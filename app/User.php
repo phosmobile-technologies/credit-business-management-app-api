@@ -91,6 +91,11 @@ class User extends Authenticatable
         return $this->phone_number;
     }
 
+    public function routeNotificationForJusibe()
+    {
+        return $this->phone_number;
+    }
+
     /**
      * Converts the user email to lowercase when setting it.
      *

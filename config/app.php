@@ -179,6 +179,8 @@ return [
         App\Providers\TelescopeServiceProvider::class,
 //        Laravel\Telescope\TelescopeServiceProvider::class
 
+        NotificationChannels\Jusibe\JusibeServiceProvider::class,
+
     ],
 
     /*
