@@ -33,13 +33,13 @@ class UserService
      */
     private $walletRepository;
 
-    private  $defaultPassword;
+    private $defaultPassword;
 
     public function __construct(UserRepositoryInterface $userRepository, UserProfileRepositoryInterface $userProfileRepository, WalletRepositoryInterface $walletRepository)
     {
-        $this->userRepository = $userRepository;
+        $this->userRepository        = $userRepository;
         $this->userProfileRepository = $userProfileRepository;
-        $this->walletRepository = $walletRepository;
+        $this->walletRepository      = $walletRepository;
     }
 
     /**
@@ -52,7 +52,7 @@ class UserService
     {
         $attributes = collect($attributes);
 
-        $roles = $attributes['roles'];
+        $roles               = $attributes['roles'];
         $registration_source = $attributes['registration_source'];
 
         $userData = $attributes->only([
@@ -64,16 +64,16 @@ class UserService
         ])->toArray();
 
         // Generate a random password for the user registration via backend
-        if( $attributes['registration_source'] === RegistrationSource::BACKEND){
+        if ($attributes['registration_source'] === RegistrationSource::BACKEND) {
             $this->defaultPassword = Str::random(8);
-            $userData['password'] = $this->defaultPassword;
-        }else{
+            $userData['password']  = $this->defaultPassword;
+        } else {
             // mailing event requires defaultPassword not to be null
             $this->defaultPassword = $attributes['password'];
         }
 
         // TODO: Figure why the 'directive' index is added by Lighthouse-php to the args it passes down
-        $userProfileData = $attributes->except([
+        $userProfileData                        = $attributes->except([
             'first_name',
             'last_name',
             'email',
@@ -89,7 +89,7 @@ class UserService
         $this->userRepository->attachUserProfile($user, $userProfileData);
         $this->userRepository->attachUserRoles($user, $roles, $registration_source);
         $this->walletRepository->create([
-            'user_id' => $user->id,
+            'user_id'        => $user->id,
             'wallet_balance' => 0
         ]);
 
@@ -120,7 +120,7 @@ class UserService
         ])->toArray();
 
         $this->defaultPassword = Str::random(8);
-        $userData['password'] = $this->defaultPassword;
+        $userData['password']  = $this->defaultPassword;
 
 
         // TODO: Figure why the 'directive' index is added by Lighthouse-php to the args it passes down to us
@@ -139,8 +139,8 @@ class UserService
         // @TODO: Stop using dummy user profile for admin users
         $userProfileData = factory(UserProfile::class)->make([
             'customer_identifier' => $this->generateCustomerIdentifier(),
-            'company_id' => $attributes['company_id'],
-            'branch_id' => $attributes['branch_id']
+            'company_id'          => $attributes['company_id'],
+            'branch_id'           => $attributes['branch_id']
         ])->toArray();
 
         $user = $this->userRepository->createUser($userData);
@@ -197,16 +197,23 @@ class UserService
      * @param array $args
      * @return User|null
      */
-    public function updateUserProfile(array $args) {
+    public function updateUserProfile(array $args)
+    {
         $userProfile = $this->userProfileRepository->findByUserId($args['user_id']);
-        $userId = $args['user_id'];
-        $args = collect($args)->except('user_id', 'directive')->toArray();
+        $user        = $this->userRepository->find($args['user_id']);
+        $args        = collect($args)->except('user_id', 'directive')->toArray();
 
         foreach ($args as $arg => $value) {
-            $userProfile->{$arg} = $value;
+            if ($arg === 'phone_number') {
+                $user->phone_number = $value;
+            } else {
+                $userProfile->{$arg} = $value;
+            }
         }
 
+        $user->save();
         $userProfile->save();
-        return $this->userRepository->find($userId);
+
+        return $user;
     }
 }

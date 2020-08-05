@@ -89,6 +89,7 @@ input AdminUserRegisterInput {
 
 input UpdateUserProfileInput {
     user_id: ID!
+    phone_number: String @rules(apply: ["string", "unique:users,phone_number"])
     gender: Gender
     date_of_birth: Date
     marital_status: MaritalStatus
