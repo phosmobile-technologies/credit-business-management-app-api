@@ -110,7 +110,7 @@ extend type Mutation {
     login(input: LoginInput! @spread): AuthPayload! @field(resolver: "App\\GraphQL\\Mutations\\Login")
     refreshToken(input: RefreshTokenInput! @spread): RefreshTokenPayload! @field(resolver: "Joselfonseca\\LighthouseGraphQLPassport\\GraphQL\\Mutations\\RefreshToken@resolve")
     logout: LogoutResponse! @field(resolver: "Joselfonseca\\LighthouseGraphQLPassport\\GraphQL\\Mutations\\Logout@resolve")
-    forgotPassword(input: ForgotPasswordInput! @spread): ForgotPasswordResponse! @field(resolver: "Joselfonseca\\LighthouseGraphQLPassport\\GraphQL\\Mutations\\ResetPassword@resolve")
+    forgotPassword(input: ForgotPasswordInput! @spread): ForgotPasswordResponse! @field(resolver: "Joselfonseca\\LighthouseGraphQLPassport\\GraphQL\\Mutations\\ForgotPassword@resolve")
     updateForgottenPassword(input: NewPasswordWithCodeInput! @spread): ForgotPasswordResponse! @field(resolver: "App\\GraphQL\\Mutations\\ResetPassword")
     register(input: RegisterInput! @spread): RegisterPayload! @field(resolver: "App\\GraphQL\\Mutations\\RegisterUser")
     createAdminUser(input: AdminUserRegisterInput! @spread): User! @field(resolver: "App\\GraphQL\\Mutations\\CreateAdminUser")
