@@ -91,9 +91,9 @@ class User extends Authenticatable
         return $this->phone_number;
     }
 
-    public function routeNotificationForJusibe()
+    public function routeNotificationForJusibe($notification)
     {
-        return '+234' . $this->phone_number;
+        return $this->phone_number;
     }
 
     /**
