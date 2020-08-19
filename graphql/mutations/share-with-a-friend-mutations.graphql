@@ -1,0 +1,4 @@
+extend type Mutation  @middleware(checks: ["auth:api"]) {
+    """ Send an invitation email """
+    ShareWithAFriend(name: String! phone_number: String email: String!): String @inject(context: "user", name: "user")
+}
