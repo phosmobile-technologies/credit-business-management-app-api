@@ -375,7 +375,8 @@ class TransactionService
                     break;
             }
 
-            $this->transactionRepository->storeProcessedTransaction($transaction, $user->id, $action, $message);
+            $processedTransaction = $this->transactionRepository->storeProcessedTransaction($transaction, $user->id, $action, $message);
+            event(new TransactionProcessedEvent($user, $transaction, $processedTransaction));
         });
 
         return [$transaction, $amountSentToWallet];

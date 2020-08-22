@@ -39,8 +39,6 @@ class AfricasTalkingCustomChannel
         $phoneNumber = "+234{$notifiable->phone_number}";
         $response =  $this->africasTalkingService->sendSms($phoneNumber, $message);
 
-        Log::info($response);
-
         return $response;
     }
 }

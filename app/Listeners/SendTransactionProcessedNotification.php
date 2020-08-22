@@ -6,10 +6,10 @@ use App\Events\TransactionProcessedEvent;
 use App\Models\enums\TransactionType;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Support\Facades\Log;
 
-class SendTransactionProcessedNotification implements ShouldQueue
+class SendTransactionProcessedNotification
 {
-    use InteractsWithQueue;
 
     /**
      * Create the event listener.
@@ -44,8 +44,9 @@ class SendTransactionProcessedNotification implements ShouldQueue
 
     }
 
-    public function failed()
+    public function failed(TransactionProcessedEvent $event, $exception)
     {
-
+        Log::info("The SendTransactionProcessedNotification Listener Failed");
+        Log::info($exception->getMessage());
     }
 }
