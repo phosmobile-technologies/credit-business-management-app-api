@@ -13,10 +13,13 @@ use App\Notifications\ResetPasswordNotification;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Passport\HasApiTokens;
@@ -94,6 +97,11 @@ class User extends Authenticatable
     public function routeNotificationForJusibe($notification)
     {
         return $this->phone_number;
+    }
+
+    public function routeNotificationForMail($notification)
+    {
+        return $this->email;
     }
 
     /**
@@ -189,5 +197,13 @@ class User extends Authenticatable
     public function walletTransactions()
     {
         return $this->hasManyThrough(Transaction::class, Wallet::class, 'user_id', 'owner_id', 'id', 'id');
+    }
+
+    /**
+     * @return MorphMany
+     */
+    public function recentNotifications(): MorphMany
+    {
+        return $this->notifications()->whereDate('created_at', '>', Carbon::now()->subDays(30));
     }
 }

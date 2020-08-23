@@ -36,14 +36,14 @@ class TransactionProcessedNotification extends Notification
     /**
      * Create a new notification instance.
      *
-     * @param User $user
-     * @param Transaction $transaction
+     * @param User                 $user
+     * @param Transaction          $transaction
      * @param ProcessedTransaction $processedTransaction
      */
     public function __construct(User $user, Transaction $transaction, ProcessedTransaction $processedTransaction)
     {
-        $this->transaction = $transaction;
-        $this->user = $user;
+        $this->transaction          = $transaction;
+        $this->user                 = $user;
         $this->processedTransaction = $processedTransaction;
     }
 
@@ -55,18 +55,16 @@ class TransactionProcessedNotification extends Notification
      */
     public function via($notifiable)
     {
-//        AfricasTalkingCustomChannel::class,
-//        JusibeChannel::class
-
-        return [AfricasTalkingCustomChannel::class,'database'];
+        // return [JusibeChannel::class, 'database'];
+        return [AfricasTalkingCustomChannel::class, 'database', 'mail'];
     }
 
     /**
-     * Get the message representation of the SMS
+     * Generate the SMS message to be sent out
      *
-     * @return mixed
+     * @return string
      */
-    public function toAfricasTalkingCustom()
+    public function generateNotificationMessage()
     {
         $formattedTransactionType = strtolower($this->transaction->transaction_type);
         str_replace($formattedTransactionType, '_', ' ');
@@ -75,31 +73,35 @@ class TransactionProcessedNotification extends Notification
         $message = "Dear {$this->user->first_name} {$this->user->last_name}, the {$formattedTransactionType} request you made on {$formattedTransactionDate} for the sum of ₦{$this->transaction->transaction_amount} has been {$this->processedTransaction->processing_type}D";
 
         // Removed the message for now because it makes the sms too lengthy.
-        if(isset($this->processedTransaction->message) && $this->processedTransaction->message !== '') {
-//            $message .= " because {$this->processedTransaction->message}";
-        }
+        // if (isset($this->processedTransaction->message) && $this->processedTransaction->message !== '') {
+        // $message .= " because {$this->processedTransaction->message}";
+        // }
+
+        return $message;
+    }
+
+
+    /**
+     * Get the message representation of the SMS for Africa's talking.
+     *
+     * @return mixed
+     */
+    public function toAfricasTalkingCustom()
+    {
+        $message = $this->generateNotificationMessage();
 
         return (new AfricasTalkingCustomChannelMessage())
             ->message($message);
     }
 
     /**
-     * Get the message representation of the SMS
+     * Get the message representation of the SMS for Jusibe
      *
      * @return mixed
      */
     public function toJusibe()
     {
-        $formattedTransactionType = strtolower($this->transaction->transaction_type);
-        str_replace($formattedTransactionType, '_', ' ');
-        $formattedTransactionDate = Carbon::parse($this->transaction->created_at)->format('Y-M-d');
-
-        $message = "Dear {$this->user->first_name} {$this->user->last_name}, the {$formattedTransactionType} request you made on {$formattedTransactionDate} for the sum of ₦{$this->transaction->transaction_amount} has been {$this->processedTransaction->processing_type}D";
-
-        // Removed the message for now because it makes the sms too lengthy.
-        if(isset($this->processedTransaction->message) && $this->processedTransaction->message !== '') {
-//            $message .= " because {$this->processedTransaction->message}";
-        }
+        $message = $this->generateNotificationMessage();
 
         return (new JusibeMessage())
             ->content($message);
@@ -108,15 +110,33 @@ class TransactionProcessedNotification extends Notification
     /**
      * Get the array representation of the notification.
      *
-     * @param  mixed  $notifiable
+     * @param  mixed $notifiable
      * @return array
      */
     public function toArray($notifiable)
     {
         return [
-            '$transaction' => $this->transaction,
+            'notificationMessage'  => $this->generateNotificationMessage(),
+            'transaction'          => $this->transaction,
             'processedTransaction' => $this->processedTransaction,
         ];
+    }
+
+    /**
+     * Convert the notification to a message to be sent via email
+     *
+     * @param $notifiable
+     * @return MailMessage
+     */
+    public function toMail($notifiable): MailMessage
+    {
+        return (new MailMessage)->view(
+            'email.transaction.processed', [
+            'user'                 => $this->user,
+            'transaction'          => $this->transaction,
+            'processedTransaction' => $this->processedTransaction,
+        ]);
+
     }
 
 }

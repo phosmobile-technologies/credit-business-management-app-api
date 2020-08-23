@@ -10,6 +10,7 @@ type User {
     loans: [Loan]! @hasMany
     contribution_plans: [ContributionPlan]! @hasMany(relation: "contributionPlans")
     roles: [Role!]! @morphMany
+    recentNotifications: [Notification]! @morphMany
     created_at: DateTime!
     updated_at: DateTime!
 }
@@ -17,6 +18,16 @@ type User {
 type Role {
     id: ID!
     name: String!
+}
+
+type Notification {
+    id: ID!
+    type: String!
+    notifiable_type: String!
+    notifiable_id: String!
+    data: String!
+    read_at: DateTime
+    created_at: DateTime
 }
 
 enum UserRoles {

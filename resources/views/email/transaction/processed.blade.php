@@ -7,14 +7,12 @@
 
         Please see the transaction details below:
 
-
-            * Transaction Type - {{ $user['email'] }}
-            * Transaction Amount - {{ $defaultPassword }}
+            * Transaction Type - {{ $transaction->transaction_type }}
+            * Transaction Amount - {{ $transaction->transaction_amount }}
             * Transaction Message - {{ $defaultPassword }}
-            * Transaction Date - {{ $defaultPassword }}
+            * Transaction Date - {{ $processedTransaction->message }}
 
         If you are not a UMC customer, please disregard this email.
-        please disregard this email.
 
         Warm Regards,<br>
         The UMC Team
