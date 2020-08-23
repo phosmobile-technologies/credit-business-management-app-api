@@ -15,8 +15,9 @@ use Illuminate\Notifications\Notification;
 use NotificationChannels\Jusibe\JusibeChannel;
 use NotificationChannels\Jusibe\JusibeMessage;
 
-class TransactionProcessedNotification extends Notification
+class TransactionProcessedNotification extends Notification implements ShouldQueue
 {
+    use Queueable;
 
     /**
      * @var Transaction
@@ -56,7 +57,7 @@ class TransactionProcessedNotification extends Notification
     public function via($notifiable)
     {
         // return [JusibeChannel::class, 'database'];
-        return [AfricasTalkingCustomChannel::class, 'database', 'mail'];
+        return [AfricasTalkingCustomChannel::class, 'mail', 'database'];
     }
 
     /**
