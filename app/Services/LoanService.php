@@ -14,8 +14,10 @@ use App\Models\Enums\DisbursementStatus;
 use App\Models\Enums\LoanApplicationStatus;
 use App\Models\Enums\LoanConditionStatus;
 use App\Models\Enums\LoanDefaultStatus;
+use App\Models\enums\LoanDocumentOwnerType;
 use App\Models\enums\TransactionType;
 use App\Models\Loan;
+use App\Repositories\Interfaces\LoanDocumentRepositoryInterface;
 use App\Repositories\Interfaces\LoanRepositoryInterface;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use Illuminate\Support\Facades\Auth;
@@ -36,19 +38,28 @@ class LoanService
      * @var UserRepositoryInterface
      */
     private $userRepository;
+    /**
+     * @var LoanDocumentRepositoryInterface
+     */
+    private $loanDocumentRepository;
 
     /**
      * LoanService constructor.
      *
-     * @param LoanRepositoryInterface $loanRepository
-     * @param TransactionService $transactionService
-     * @param UserRepositoryInterface $userRepository
+     * @param LoanRepositoryInterface         $loanRepository
+     * @param TransactionService              $transactionService
+     * @param UserRepositoryInterface         $userRepository
+     * @param LoanDocumentRepositoryInterface $loanDocumentRepository
      */
-    public function __construct(LoanRepositoryInterface $loanRepository, TransactionService $transactionService, UserRepositoryInterface $userRepository)
+    public function __construct(LoanRepositoryInterface $loanRepository,
+                                TransactionService $transactionService,
+                                UserRepositoryInterface $userRepository,
+                                LoanDocumentRepositoryInterface $loanDocumentRepository)
     {
-        $this->loanRepository = $loanRepository;
+        $this->loanRepository     = $loanRepository;
         $this->transactionService = $transactionService;
-        $this->userRepository = $userRepository;
+        $this->userRepository     = $userRepository;
+        $this->loanDocumentRepository = $loanDocumentRepository;
     }
 
     /**
@@ -70,18 +81,26 @@ class LoanService
         $loanData['loan_identifier'] = $this->generateLoanIdentifier();
 
         // Ensure that the default values when creating a loan are set
-        $loanData['disbursement_status'] = DisbursementStatus::NOT_DISBURSED;
-        $loanData['application_status'] = LoanApplicationStatus::PENDING;
+        $loanData['disbursement_status']   = DisbursementStatus::NOT_DISBURSED;
+        $loanData['application_status']    = LoanApplicationStatus::PENDING;
         $loanData['loan_condition_status'] = LoanConditionStatus::INACTIVE;
-        $loanData['loan_default_status'] = LoanDefaultStatus::NOT_DEFAULTING;
-        $loanData['disbursement_date'] = null;
-        $loanData['amount_disbursed'] = 0;
-        $loanData['num_of_default_days'] = null;
-        $loanData['loan_balance'] = null;
-        $loanData['next_due_payment'] = null;
-        $loanData['due_date'] = null;
+        $loanData['loan_default_status']   = LoanDefaultStatus::NOT_DEFAULTING;
+        $loanData['disbursement_date']     = null;
+        $loanData['amount_disbursed']      = 0;
+        $loanData['num_of_default_days']   = null;
+        $loanData['loan_balance']          = null;
+        $loanData['next_due_payment']      = null;
+        $loanData['due_date']              = null;
 
         $loan = $this->loanRepository->create($loanData);
+
+        $loanDocumentsUrls = isset($loanData['loan_files']) ? $loanData['loan_files'] : null;
+
+        if ($loanDocumentsUrls) {
+            foreach ($loanDocumentsUrls as $loanDocumentsUrl) {
+                $this->saveLoanDocumentForLoan($loan, $loanDocumentsUrl);
+            }
+        }
 
         event(new NewLoanCreated($loan));
 
@@ -108,14 +127,14 @@ class LoanService
     /**
      * Update the application_state of a loan.
      *
-     * @param string $loanID
-     * @param string $loanApplicationStatus
+     * @param string      $loanID
+     * @param string      $loanApplicationStatus
      * @param null|string $message
      * @return Loan
      */
     public function updateLoanApplicationStatus(string $loanID, string $loanApplicationStatus, ?string $message)
     {
-        $loan = $this->loanRepository->find($loanID);
+        $loan                     = $this->loanRepository->find($loanID);
         $oldLoanApplicationStatus = $loan->application_status;
 
         $this->loanRepository->updateApplicationState($loan, $loanApplicationStatus);
@@ -127,21 +146,22 @@ class LoanService
     /**
      * Disburse a loan
      *
-     * @param string $loanID
-     * @param float $amountDisbursed
+     * @param string      $loanID
+     * @param float       $amountDisbursed
      * @param null|string $message
      * @return
      * @throws \Exception
      */
-    public function disburseLoan(string $loanID, float $amountDisbursed, ?string $message) {
-        $loan = $this->loanRepository->find($loanID);
+    public function disburseLoan(string $loanID, float $amountDisbursed, ?string $message)
+    {
+        $loan        = $this->loanRepository->find($loanID);
         $loanBalance = $loan->loan_balance;
 
-        if($loan->disbursement_status === DisbursementStatus::DISBURSED) {
+        if ($loan->disbursement_status === DisbursementStatus::DISBURSED) {
             throw new GraphqlError("Cannot disburse funds for a loan that has already been disbursed");
         }
 
-        if($loan->application_status !== LoanApplicationStatus::APPROVED_BY_GLOBAL_MANAGER()->getValue()) {
+        if ($loan->application_status !== LoanApplicationStatus::APPROVED_BY_GLOBAL_MANAGER()->getValue()) {
             throw new GraphqlError("Cannot disburse funds for a loan that is not approved");
         }
 
@@ -156,26 +176,42 @@ class LoanService
      * Repay a loan
      *
      * @param string $loan_id
-     * @param array $transactionDetails
+     * @param array  $transactionDetails
      * @return \App\Models\Transaction
      * @throws GraphqlError
      */
-    public function initiateLoanRepayment(string $loan_id, array $transactionDetails) {
+    public function initiateLoanRepayment(string $loan_id, array $transactionDetails)
+    {
         $loan = $this->loanRepository->find($loan_id);
 
         $transactionAmount = $transactionDetails['transaction_amount'];
 
-        if($transactionDetails['transaction_amount'] > $loan->loan_balance) {
+        if ($transactionDetails['transaction_amount'] > $loan->loan_balance) {
             throw new GraphqlError("Transaction amount {$transactionAmount} is greater than the total loan balance");
         }
 
-        if($transactionDetails['transaction_type'] !== TransactionType::LOAN_REPAYMENT) {
+        if ($transactionDetails['transaction_type'] !== TransactionType::LOAN_REPAYMENT) {
             throw new GraphqlError("The transaction type selected must be Loan Repayment");
         }
 
         $transaction = $this->transactionService->initiateLoanRepaymentTransaction($loan, $transactionDetails);
 
         return $transaction;
+    }
+
+    /**
+     * Save document for a loan.
+     *
+     * @param Loan   $loan
+     * @param String $loanDocumentUrl
+     * @return \App\Models\LoanDocument
+     */
+    public function saveLoanDocumentForLoan(Loan $loan, String $loanDocumentUrl) {
+        return $this->loanDocumentRepository->create([
+            'owner_id' => $loan->id,
+            'owner_type' => LoanDocumentOwnerType::LOAN,
+            'url' => $loanDocumentUrl
+        ]);
     }
 
 }

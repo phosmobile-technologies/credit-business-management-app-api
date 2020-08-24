@@ -4,12 +4,16 @@ namespace App\Providers;
 
 use App\Models\CompanyBranch;
 use App\Models\ContributionPlan;
+use App\Models\enums\LoanDocumentOwnerType;
 use App\Models\enums\TransactionOwnerType;
 use App\Models\Loan;
+use App\Models\LoanApplication;
 use App\Models\Wallet;
 use App\Models\Transaction;
 use App\Repositories\CompanyBranchRepository;
 use App\Repositories\ContributionRepository;
+use App\Repositories\Interfaces\LoanDocumentRepositoryInterface;
+use App\Repositories\LoanDocumentRepository;
 use App\Repositories\WalletRepository;
 use App\Repositories\Interfaces\CompanyBranchRepositoryInterface;
 use App\Repositories\Interfaces\ContributionRepositoryInterface;
@@ -81,7 +85,8 @@ class AppServiceProvider extends ServiceProvider
             ContributionRepositoryInterface::class    => ContributionRepository::class,
             WalletRepositoryInterface::class          => WalletRepository::class,
             TransactionRepositoryInterface::class     => TransactionRepository::class,
-            CompanyBranchRepositoryInterface::class   => CompanyBranchRepository::class
+            CompanyBranchRepositoryInterface::class   => CompanyBranchRepository::class,
+            LoanDocumentRepositoryInterface::class    => LoanDocumentRepository::class
         ];
 
         foreach ($repositories as $interface => $repository) {
@@ -99,7 +104,8 @@ class AppServiceProvider extends ServiceProvider
             TransactionOwnerType::LOAN              => Loan::class,
             TransactionOwnerType::CONTRIBUTION_PLAN => ContributionPlan::class,
             TransactionOwnerType::COMPANY_BRANCH    => CompanyBranch::class,
-            TransactionOwnerType::WALLET            => Wallet::class
+            TransactionOwnerType::WALLET            => Wallet::class,
+            LoanDocumentOwnerType::LOAN_APPLICATION => LoanApplication::class
         ]);
     }
 

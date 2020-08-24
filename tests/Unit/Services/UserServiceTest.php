@@ -12,6 +12,7 @@ use App\Repositories\WalletRepository;
 use App\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Http\UploadedFile;
 use Mockery;
 use Tests\TestCase;
 use App\Services\UserService;
@@ -73,6 +74,51 @@ class UserServiceTest extends TestCase
         $registrationData['roles'] = [UserRoles::CUSTOMER];
         $registrationData['registration_source'] = [RegistrationSource::BACKEND];
         $registrationData['password'] = 'password';
+
+        $this->userRepository->shouldReceive('createUser')
+            ->andReturn($user);
+
+        $this->userRepository->shouldReceive('attachUserProfile')
+            ->andReturn($user);
+
+        $this->userRepository->shouldReceive('attachUserRoles')
+            ->andReturn($user);
+
+        $this->userRepository->shouldReceive('attachWallet')
+            ->andReturn($user);
+
+        $this->userProfileRepository->shouldReceive('customerIdentifierExists')
+            ->andReturn(false);
+
+        $this->walletRepository->shouldReceive('create');
+
+        $response = $this->userService->registerUser($registrationData);
+
+        $this->assertEquals($userData['first_name'], $response['user']['first_name']);
+        $this->assertEquals($userData['last_name'], $response['user']['last_name']);
+        $this->assertEquals($userData['email'], $response['user']['email']);
+
+        Event::assertDispatched(NewUserRegistered::class);
+    }
+
+    /**
+     * @test
+     * @group active
+     */
+    public function testItStoresAUserProfileImage()
+    {
+        Event::fake();
+
+        $user = factory(User::class)->make();
+        $userData = collect($user)->except('email_verified_at')->toArray();
+        $userProfileData = factory(UserProfile::class)->make()->toArray();
+        $walletData = factory(Wallet::class)->make()->toArray();
+        $registrationData = array_merge($userData, $userProfileData);
+        $registrationData = array_merge($userData, $walletData);
+        $registrationData['roles'] = [UserRoles::CUSTOMER];
+        $registrationData['registration_source'] = [RegistrationSource::BACKEND];
+        $registrationData['password'] = 'password';
+        $registrationData['profile_picture'] = UploadedFile::fake()->image('user1.jpg');
 
         $this->userRepository->shouldReceive('createUser')
             ->andReturn($user);

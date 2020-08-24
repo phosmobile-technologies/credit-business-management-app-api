@@ -151,6 +151,16 @@ class Loan extends Model
     }
 
     /**
+     * Get all of the loan's documents.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     */
+    public function documents()
+    {
+        return $this->morphMany(LoanDocument::class, 'owner');
+    }
+
+    /**
      * The user who owns the loan.
      *
      * @return BelongsTo
