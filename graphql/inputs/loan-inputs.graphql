@@ -9,6 +9,9 @@ input CreateLoanInput {
     service_charge: Float! # (percent of the loan / static amount)
     default_amount: Float! # (static amount to be set for defaults on loans, defaults count when due date is exceeded)
     tenure: Int! # In Months
+
+    """ An array of the url's of the files for the loan """
+    loan_files: [String!]
 }
 
 """ Input which allows customers apply for a loan """
@@ -20,6 +23,7 @@ input CreateLoanApplicationInput {
     loan_repayment_frequency: LoanRepaymentFrequency!
     tenure: Int # In Months
     expected_disbursement_date: Date
+    loan_files: [Upload!]
 }
 
 """ Input for disbursing loans """

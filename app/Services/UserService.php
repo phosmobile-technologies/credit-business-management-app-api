@@ -12,6 +12,8 @@ use App\Repositories\Interfaces\UserProfileRepositoryInterface;
 use App\Repositories\Interfaces\UserRepositoryInterface;
 use App\Repositories\Interfaces\WalletRepositoryInterface;
 use App\User;
+
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -55,6 +57,13 @@ class UserService
         $roles               = $attributes['roles'];
         $registration_source = $attributes['registration_source'];
 
+        /** @var \Illuminate\Http\UploadedFile $file */
+        $profilePicture = isset($attributes['profile_picture']) ? $attributes['profile_picture'] : null;
+
+        if ($profilePicture) {
+            $profilePicturePath = Storage::disk('local')->put('user-profile-pictures', $profilePicture);
+        }
+
         $userData = $attributes->only([
             'first_name',
             'last_name',
@@ -84,6 +93,11 @@ class UserService
             'password_confirmation',
         ])->toArray();
         $userProfileData['customer_identifier'] = $this->generateCustomerIdentifier();
+
+        if ($profilePicture) {
+            $profilePicturePath = Storage::disk('local')->put('user-profile-pictures', $profilePicture);
+            $userProfileData['profile_picture'] = $profilePicturePath;
+        }
 
         $user = $this->userRepository->createUser($userData);
         $this->userRepository->attachUserProfile($user, $userProfileData);

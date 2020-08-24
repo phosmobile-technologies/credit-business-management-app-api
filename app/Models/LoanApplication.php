@@ -51,6 +51,16 @@ class LoanApplication extends Model
     }
 
     /**
+     * Get all of the loan application's documents.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     */
+    public function documents()
+    {
+        return $this->morphMany(LoanDocument::class, 'owner');
+    }
+
+    /**
      * Determine if the loan application has been assigned to an admin staff for processing
      *
      * @return bool

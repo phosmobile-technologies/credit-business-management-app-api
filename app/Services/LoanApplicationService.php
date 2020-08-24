@@ -3,8 +3,12 @@
 namespace App\Services;
 
 
+use App\Models\enums\LoanDocumentOwnerType;
 use App\Models\LoanApplication;
 use App\Repositories\Interfaces\LoanApplicationRepositoryInterface;
+use App\Repositories\Interfaces\LoanDocumentRepositoryInterface;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 class LoanApplicationService
 {
@@ -12,10 +16,20 @@ class LoanApplicationService
      * @var LoanApplicationRepositoryInterface
      */
     private $loanApplicationRepository;
+    /**
+     * @var LoanDocumentRepositoryInterface
+     */
+    private $loanDocumentRepository;
 
-    public function __construct(LoanApplicationRepositoryInterface $loanApplicationRepository)
+    /**
+     * LoanApplicationService constructor.
+     * @param LoanApplicationRepositoryInterface $loanApplicationRepository
+     * @param LoanDocumentRepositoryInterface    $loanDocumentRepository
+     */
+    public function __construct(LoanApplicationRepositoryInterface $loanApplicationRepository, LoanDocumentRepositoryInterface $loanDocumentRepository)
     {
         $this->loanApplicationRepository = $loanApplicationRepository;
+        $this->loanDocumentRepository    = $loanDocumentRepository;
     }
 
     /**
@@ -26,7 +40,18 @@ class LoanApplicationService
      */
     public function createLoanApplication(array $loanApplicationData)
     {
-        return $this->loanApplicationRepository->create($loanApplicationData);
+        $loanApplication = $this->loanApplicationRepository->create($loanApplicationData);
+
+        $loanFiles = isset($loanApplicationData['loan_files']) ? $loanApplicationData['loan_files'] : null;
+
+        if ($loanFiles) {
+            foreach ($loanFiles as $loanFile) {
+                $this->saveLoanDocumentForLoanApplication($loanFile, $loanApplication);
+            }
+
+        }
+
+        return $loanApplication;
     }
 
     /**
@@ -49,5 +74,22 @@ class LoanApplicationService
     public function processLoanApplication(string $loan_application_id, string $status, ?string $message): LoanApplication
     {
         return $this->loanApplicationRepository->process($loan_application_id, $status, $message);
+    }
+
+    /**
+     * Save a loan document for a loan application.
+     *
+     * @param UploadedFile    $loanDocument
+     * @param LoanApplication $loanApplication
+     * @return \App\Models\LoanDocument
+     */
+    public function saveLoanDocumentForLoanApplication(UploadedFile $loanDocument, LoanApplication $loanApplication)
+    {
+        $loanDocumentPath = Storage::disk('local')->put('loan-documents', $loanDocument);
+        return $this->loanDocumentRepository->create([
+            'owner_id'   => $loanApplication->id,
+            'owner_type' => LoanDocumentOwnerType::LOAN_APPLICATION,
+            'url'        => $loanDocumentPath
+        ]);
     }
 }
