@@ -9,8 +9,8 @@
 
             * Transaction Type - {{ $transaction->transaction_type }}
             * Transaction Amount - {{ $transaction->transaction_amount }}
-            * Transaction Message - {{ $defaultPassword }}
-            * Transaction Date - {{ $processedTransaction->message }}
+            * Transaction Message - {{ $processedTransaction->message }}
+            * Transaction Date - {{ $transaction->transaction_date }}
 
         If you are not a UMC customer, please disregard this email.
 
