@@ -131,7 +131,7 @@ class TransactionProcessedNotification extends Notification implements ShouldQue
      */
     public function toMail($notifiable): MailMessage
     {
-        return (new MailMessage)->view(
+        return (new MailMessage)->markdown(
             'email.transaction.processed', [
             'user'                 => $this->user,
             'transaction'          => $this->transaction,
