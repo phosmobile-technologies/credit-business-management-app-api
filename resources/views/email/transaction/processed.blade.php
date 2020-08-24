@@ -14,7 +14,7 @@
 
         If you are not a UMC customer, please disregard this email.
 
-        Warm Regards,<br>
+        Warm Regards,
         The UMC Team
 
     @endcomponent
