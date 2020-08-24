@@ -48,7 +48,21 @@ class LoanApplicationService
             foreach ($loanFiles as $loanFile) {
                 $this->saveLoanDocumentForLoanApplication($loanFile, $loanApplication);
             }
+        }
 
+        return $loanApplication;
+    }
+
+    /**
+     * @param string $loanApplicationID
+     * @param array  $loanDocuments
+     * @return \App\Models\Loan|LoanApplication|null
+     */
+    public function uploadDocumentsForLoanApplication(string $loanApplicationID, array $loanDocuments) {
+        $loanApplication = $this->loanApplicationRepository->find($loanApplicationID);
+
+        foreach ($loanDocuments as $loanDocument) {
+            $this->saveLoanDocumentForLoanApplication($loanDocument, $loanApplication);
         }
 
         return $loanApplication;

@@ -32,3 +32,8 @@ input DisburseLoanInput {
     amount_disbursed: Float!
     message: String
 }
+
+input UploadDocumentsForLoanApplicationInput {
+    loan_application_id: ID!
+    loan_files: [Upload!]!
+}
