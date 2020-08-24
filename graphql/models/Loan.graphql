@@ -25,6 +25,7 @@ type Loan {
     nextDueAmount: Float
     NextDuePaymentDate: String
     transactions: [Transaction]! @morphMany
+    documents: [LoanDocument]! @morphMany
     activities: [Activity]! @hasMany
     created_at: DateTime!
     updated_at: DateTime!
@@ -45,6 +46,7 @@ type LoanApplication {
     processing_message: String
     isAssigned: Boolean!
     expected_disbursement_date: Date
+    documents: [LoanDocument]! @morphMany
     created_at: Date!
     updated_at: Date
 }
@@ -60,6 +62,11 @@ type Activity {
 type ActivityProperty {
     activity_message: String
     activity_description: String
+}
+
+type LoanDocument {
+    id: ID!
+    url: String!
 }
 
 enum LoanRepaymentFrequency {
