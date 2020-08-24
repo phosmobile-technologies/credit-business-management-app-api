@@ -15,9 +15,8 @@ use Illuminate\Notifications\Notification;
 use NotificationChannels\Jusibe\JusibeChannel;
 use NotificationChannels\Jusibe\JusibeMessage;
 
-class TransactionProcessedNotification extends Notification implements ShouldQueue
+class TransactionProcessedNotification extends Notification
 {
-    use Queueable;
 
     /**
      * @var Transaction
