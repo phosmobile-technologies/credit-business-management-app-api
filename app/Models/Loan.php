@@ -30,6 +30,8 @@ class Loan extends Model
      */
     protected $guarded = [];
 
+    protected $dates = ['disbursement_date'];
+
     /**
      * Get the total loan default amount accrued for a defaulting loan.
      */
