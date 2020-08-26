@@ -38,7 +38,7 @@ class LoanApplication extends Model
      * @return BelongsTo
      */
     public function assignedTo(): BelongsTo {
-        return $this->belongsTo(User::class, 'assigned_to', 'id');
+        return $this->belongsTo(User::class, 'assignee_id', 'id');
     }
 
     /**
