@@ -2,9 +2,15 @@
 
 namespace App\Services;
 
+use App\GraphQL\Errors\GraphqlError;
 use App\Models\CompanyBranch;
 use App\Models\ContributionPlan;
+use App\Models\Enums\DisbursementStatus;
+use App\Models\Enums\LoanConditionStatus;
 use App\Models\Enums\LoanDefaultStatus;
+use App\Models\enums\RegistrationSource;
+use App\Models\enums\TransactionType;
+use App\Models\Transaction;
 use App\Repositories\Interfaces\CompanyBranchRepositoryInterface;
 use Illuminate\Support\Facades\Date;
 
@@ -151,5 +157,60 @@ class BranchService
         $statistics['transactions'] = $branch->transactions()->count();
 
         return $statistics;
+    }
+
+    /**
+     * @param $branch_id
+     * @param null $start_date
+     * @param null $end_date
+     * @return array
+     */
+    public function getBranchReport($branch_id, $start_date=null, $end_date=null)
+    {
+        $branch = $this->branchRepository->find($branch_id);
+        $branch_loans =  $branch->loans();
+         $reports["total_online_branch_members"] = $branch->customers()->where("registration_source", RegistrationSource::ONLINE)->count();
+        $reports["backend_branch_members"] =$branch->customers()->where("registration_source", RegistrationSource::BACKEND)->count();
+        $reports["total_number_of_loans_disbursed"] =$branch_loans->where('disbursement_status', DisbursementStatus::DISBURSED)->count();
+        $reports["total_disbursed_amount"] = $branch_loans->where('disbursement_status', DisbursementStatus::DISBURSED)->sum("loan_amount");
+        $reports["total_loan_applications"] = $branch->loanApplications()->count();
+        $reports["total_new_customers"] = $branch->customers()->count();
+        $reports["total_number_of_defaulting_loans"] = $branch_loans->where('loan_default_status', LoanDefaultStatus::DEFAULTING)->count();
+        $reports["total_default_amount"] = $branch_loans->where('loan_default_status',  LoanDefaultStatus::DEFAULTING)->sum("loan_amount");
+        $reports["total_loan_repayments"] = $branch->transactions()->where("transaction_type", TransactionType::LOAN_REPAYMENT)->count();
+        $reports["total_loan_balance"] = $branch_loans->sum('loan_balance');
+        $reports["total_interest_amount"] = $this->calculateBranchLoanInterestAmount($branch->loans());
+        $reports["total_nonperforming_loans"] = $branch_loans->where('loan_condition_status',  LoanConditionStatus::NONPERFORMING)->count();
+
+        return $reports;
+    }
+
+    public function getBranchContributionReport()
+    {
+        $contributionReport = [];
+
+        $contributionReport["total_wallet_balance"] = 0;
+        $contributionReport["total_amount_withdrawn"] = 0;
+        $contributionReport["total_goal_contribution"] = 0;
+        $contributionReport["total_fixed_contribution"] = 0;
+        $contributionReport["total_locked_contribution"] = 0;
+        $contributionReport["total_locked_interest"] = 0;
+        $contributionReport["total_fixed_interest"] = 0;
+        $contributionReport["total_goal_interest"] = 0;
+        $contributionReport["total_penalties"] = 0;
+
+
+        return $contributionReport;
+    }
+
+
+    public function calculateBranchLoanInterestAmount( $loans)
+    {
+        $loanInterestAmount = 0;
+        foreach ($loans as $loan){
+            $loanInterestAmount += $loan->getTotalInterestAmountAttribute();
+        }
+
+        return $loanInterestAmount;
     }
 }

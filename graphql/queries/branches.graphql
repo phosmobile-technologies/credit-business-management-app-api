@@ -1,4 +1,4 @@
-extend type Query @middleware(checks: ["auth:api"]) {
+extend type Query  {
     """ Get a company branch by their ID """
     GetBranchById(id: ID! @eq): CompanyBranch @find(model: "App\\Models\\CompanyBranch")
 

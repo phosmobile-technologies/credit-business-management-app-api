@@ -15,3 +15,73 @@ type BranchStatistics {
     """ Number of transactions """
     transactions: Int!
 }
+
+
+""" Branch statistics """
+type BranchReport {
+    """ Branch members that signed up online on their own  """
+    total_online_branch_members : Int!
+
+    """ Branch members that were signed up by an admin """
+    backend_branch_members : Int!
+
+    """ Number of loans disbursed in the branch """
+    total_number_of_loans_disbursed : Int!
+
+    """ Total amount disbursed in the branch """
+    total_disbursed_amount : Float!
+
+    """ Total number of loan applications online for the branch """
+    total_loan_applications : Int!
+
+     """ Total new customers in the branch """
+     total_new_customers  : Int!
+
+     """ Total number of defaulting loans for the branch """
+     total_number_of_defaulting_loans   : Int!
+
+     """ Total default amount for the branch """
+     total_default_amount    : Float!
+
+     """ Total amount of loan repayment """
+     total_loan_repayments     : Int!
+
+     """ Total loan balance for the branch """
+     total_loan_balance      : Float!
+
+     """ Total interest amount for the branch """
+     total_interest_amount       : Float!
+
+     """ Total number of non performing loans with the condition status of NONPERFORMING """
+          total_nonperforming_loans        : Int!
+}
+
+""" Branch statistics """
+type BranchContributionReport {
+    """ Total of the wallet balance for users in the branch """
+    total_wallet_balance : Int!
+
+    """ How much has been withdrawn by the users that have contributions """
+    total_amount_withdrawn : Int!
+
+    """ Total goal contribution on the system """
+    total_goal_contribution : Int!
+
+    """ Total fixed contribution for the branch on the system """
+    total_fixed_contribution : Int!
+
+    """ Total locked contribution for the branch """
+    total_locked_contribution : Int!
+
+    """ Total locked interest for the users """
+    total_locked_interest  : Int!
+
+    """ Total fixed interest for the users """
+    total_fixed_interest   : Int!
+
+    """ Total goal interest for the users """
+    total_goal_interest    : Int!
+
+    """ Total penalties incurred for people who tried to withdraw before time """
+    total_penalties     : Int!
+}

@@ -65,7 +65,7 @@
     "prefer-stable": true,
     "scripts": {
         "post-autoload-dump": [
-            "php artisan heroku:installkeys",
+
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi"
         ],
