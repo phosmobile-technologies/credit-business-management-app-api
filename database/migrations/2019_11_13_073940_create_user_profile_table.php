@@ -26,7 +26,8 @@ class CreateUserProfileTable extends Migration
             $table->string('state_of_origin')->nullable();
             $table->string('next_of_kin')->nullable();
             $table->string('relationship_with_next_of_kin')->nullable();
-            $table->string('account_administrator')->nullable();
+            $table->string('account_administrator')->nullable(); // Possibly not needed
+            $table->uuid('account_administrator_id')->nullable();
             $table->string('account_name')->nullable();
             $table->string('account_number')->nullable();
             $table->string('bvn')->nullable();
@@ -39,6 +40,10 @@ class CreateUserProfileTable extends Migration
             $table->timestamps();
 
             $table->foreign('user_id')
+                ->references('id')
+                ->on('users');
+
+            $table->foreign('account_administrator_id')
                 ->references('id')
                 ->on('users');
 

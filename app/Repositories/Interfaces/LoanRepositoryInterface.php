@@ -57,4 +57,14 @@ interface LoanRepositoryInterface {
      * @return Loan
      */
     public function repayLoan(Loan $loan, float $repayment_amount): Loan;
+
+    /**
+     * Assign a loan to an admin staff for handling
+     *
+     * @param string $loan_id
+     * @param string $admin_staff_id
+     * @param string $branch_manager_id
+     * @return Loan
+     */
+    public function assign(string $loan_id, string $admin_staff_id, string $branch_manager_id): Loan;
 }
