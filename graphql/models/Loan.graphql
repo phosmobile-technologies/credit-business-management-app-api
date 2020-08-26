@@ -35,8 +35,8 @@ type Loan {
 type LoanApplication {
     id: ID!
     user: User! @belongsTo
-    assignedTo: User! @belongsTo
-    assignedBy: User! @belongsTo
+    assignedTo: User @belongsTo
+    assignedBy: User @belongsTo
     loan_purpose: String!
     loan_repayment_source: String!
     loan_amount: Float!
