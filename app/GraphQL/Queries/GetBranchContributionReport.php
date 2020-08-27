@@ -26,6 +26,8 @@ class GetBranchContributionReport
      */
     public function __invoke($_, array $args)
     {
-        return $this->branchService->getBranchContributionReport();
+        $start_date = isset($args['start_date'])?$args['start_date']:null;
+        $end_date = isset($args['end_date'])?$args['end_date']:null;
+        return $this->branchService->getBranchContributionReport($args['branch_id'],$start_date, $end_date);
     }
 }

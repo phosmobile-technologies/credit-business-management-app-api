@@ -59,10 +59,10 @@ type BranchReport {
 """ Branch statistics """
 type BranchContributionReport {
     """ Total of the wallet balance for users in the branch """
-    total_wallet_balance : Int!
+    total_wallet_balance : Float!
 
     """ How much has been withdrawn by the users that have contributions """
-    total_amount_withdrawn : Int!
+    total_amount_withdrawn : Float!
 
     """ Total goal contribution on the system """
     total_goal_contribution : Int!
@@ -74,13 +74,13 @@ type BranchContributionReport {
     total_locked_contribution : Int!
 
     """ Total locked interest for the users """
-    total_locked_interest  : Int!
+    total_locked_interest  : Float!
 
     """ Total fixed interest for the users """
-    total_fixed_interest   : Int!
+    total_fixed_interest   : Float!
 
     """ Total goal interest for the users """
-    total_goal_interest    : Int!
+    total_goal_interest    : Float!
 
     """ Total penalties incurred for people who tried to withdraw before time """
     total_penalties     : Int!

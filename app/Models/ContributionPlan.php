@@ -132,4 +132,13 @@ class ContributionPlan extends Model
     {
         return $this->contributionStatus === self::STATUS_COMPLETED;
     }
+
+
+    public function getContributionInterest()
+    {
+        $p = $this->fixed_amount; $t = $this->duration/12; $i = $this->interest_rate/100;
+        $amount = $p* (1+($i * $t));
+        return  $amount - $this->fixed_amount;
+
+    }
 }
