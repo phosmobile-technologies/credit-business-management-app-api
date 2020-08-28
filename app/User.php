@@ -145,6 +145,26 @@ class User extends Authenticatable
     }
 
     /**
+     * Relationship between an admin user and their loans.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function loansManagedByAdminStaff(): HasMany
+    {
+        return $this->hasMany(Loan::class, 'assignee_id', 'id');
+    }
+
+    /**
+     * Relationship between an admin user and their loans.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function userProfilesManagedByAdminStaff(): HasMany
+    {
+        return $this->hasMany(UserProfile::class, 'account_administrator_id', 'id');
+    }
+
+    /**
      * A user's currently active loans
      *
      * @return Collection

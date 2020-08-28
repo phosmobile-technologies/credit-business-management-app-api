@@ -116,4 +116,23 @@ class LoanRepository implements LoanRepositoryInterface
 
         return $loan;
     }
+
+    /**
+     * Assign an online loan application to an admin staff for handling
+     *
+     * @param string $loan_id
+     * @param string $admin_staff_id
+     * @param string $branch_manager_id
+     * @return Loan
+     */
+    public function assign(string $loan_id, string $admin_staff_id, string $branch_manager_id): Loan
+    {
+        $loan = $this->find($loan_id);
+
+        $loan->assignee_id = $admin_staff_id;
+        $loan->assigned_by = $branch_manager_id;
+
+        $loan->save();
+        return $loan;
+    }
 }

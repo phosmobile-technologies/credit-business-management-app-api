@@ -65,7 +65,10 @@ class CreateLoansTable extends Migration
             ])->nullable(); //
             $table->integer("num_of_default_days")
                 ->nullable()
-                ->comment("Number of days the loan has been defaulted on"); //
+                ->comment("Number of days the loan has been defaulted on");
+            $table->uuid('assignee_id')->nullable();
+            $table->uuid('assigned_by')->nullable();
+
             $table->timestamps();
 
             $table->foreign('user_id')

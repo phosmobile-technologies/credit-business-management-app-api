@@ -214,4 +214,16 @@ class LoanService
         ]);
     }
 
+    /**
+     * @param string $loan_id
+     * @param string $admin_staff_id
+     * @param string $branch_manager_id
+     * @return Loan
+     */
+    public function assignLoanToAdminStaff(string $loan_id, string $admin_staff_id, string $branch_manager_id): Loan
+    {
+        return $this->loanRepository->assign($loan_id, $admin_staff_id, $branch_manager_id);
+    }
+
+
 }
