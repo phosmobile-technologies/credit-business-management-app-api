@@ -4,6 +4,13 @@ namespace App\Repositories;
 
 
 use App\Models\CompanyBranch;
+use App\Models\enums\ContributionType;
+use App\Models\Enums\DisbursementStatus;
+use App\Models\Enums\LoanConditionStatus;
+use App\Models\Enums\LoanDefaultStatus;
+use App\Models\enums\RegistrationSource;
+use App\Models\enums\TransactionStatus;
+use App\Models\enums\TransactionType;
 use App\Models\Enums\UserRoles;
 use App\Repositories\Interfaces\CompanyBranchRepositoryInterface;
 use App\User;
@@ -197,6 +204,181 @@ class CompanyBranchRepository implements CompanyBranchRepositoryInterface
             }
 
         });
+    }
+
+    /**
+     * @param $branch_id
+     * @param $start_date
+     * @param $end_date
+     * @return mixed
+     */
+    public function computeBranchReport($branch_id, $start_date, $end_date)
+    {
+        $branch = $this->find($branch_id);
+
+        $reports["total_online_branch_members"] = $branch->customers()
+            ->where("registration_source", RegistrationSource::ONLINE)
+            ->when($start_date, function ($query) use ($start_date) {
+                return $query->whereDate('users.created_at', '>=', $start_date);
+            })
+            ->when($end_date, function ($query) use ($end_date) {
+                return $query->whereDate('users.created_at', '<=', $end_date);
+            })
+            ->count();
+        $reports["backend_branch_members"] = $branch->customers()
+            ->where("registration_source", RegistrationSource::BACKEND)
+            ->when($start_date, function ($query) use ($start_date) {
+                return $query->whereDate('users.created_at', '>=', $start_date);
+            })
+            ->when($end_date, function ($query) use ($end_date) {
+                return $query->whereDate('users.created_at', '<=', $end_date);
+            })
+            ->count();
+        $reports["total_number_of_loans_disbursed"] = $branch->loans()
+            ->where('disbursement_status', DisbursementStatus::DISBURSED)
+            ->when($start_date, function ($query) use ($start_date) {
+                return $query->whereDate('loans.created_at', '>=', $start_date);
+            })
+            ->when($end_date, function ($query) use ($end_date) {
+                return $query->whereDate('loans.created_at', '<=', $end_date);
+            })
+            ->count();
+        $reports["total_disbursed_amount"] = $branch->loans()
+            ->where('disbursement_status', DisbursementStatus::DISBURSED)
+            ->when($start_date, function ($query) use ($start_date) {
+                return $query->whereDate('loans.created_at', '>=', $start_date);
+            })
+            ->when($end_date, function ($query) use ($end_date) {
+                return $query->whereDate('loans.created_at', '<=', $end_date);
+            })
+            ->sum("loan_amount");
+        $reports["total_loan_applications"] = $branch->loanApplications()
+            ->when($start_date, function ($query) use ($start_date) {
+                return $query->whereDate('loan_applications.created_at', '>=', $start_date);
+            })
+            ->when($end_date, function ($query) use ($end_date) {
+                return $query->whereDate('loan_applications.created_at', '<=', $end_date);
+            })
+            ->count();
+        $reports["total_new_customers"] = $branch->customers()->count();
+        $reports["total_number_of_defaulting_loans"] = $branch->loans()
+            ->where('loan_default_status', LoanDefaultStatus::DEFAULTING)
+            ->when($start_date, function ($query) use ($start_date) {
+                return $query->whereDate('loans.created_at', '>=', $start_date);
+            })
+            ->when($end_date, function ($query) use ($end_date) {
+                return $query->whereDate('loans.created_at', '<=', $end_date);
+            })
+            ->count();
+        $reports["total_default_amount"] = $branch->loans()
+            ->where('loan_default_status', LoanDefaultStatus::DEFAULTING)
+            ->when($start_date, function ($query) use ($start_date) {
+                return $query->whereDate('loans.created_at', '>=', $start_date);
+            })
+            ->when($end_date, function ($query) use ($end_date) {
+                return $query->whereDate('loans.created_at', '<=', $end_date);
+            })
+            ->sum("loan_amount");
+        $reports["total_loan_repayments"] = $branch->transactions()
+            ->where("transaction_type", TransactionType::LOAN_REPAYMENT)
+            ->when($start_date, function ($query) use ($start_date) {
+                return $query->whereDate('transactions.created_at', '>=', $start_date);
+            })
+            ->when($end_date, function ($query) use ($end_date) {
+                return $query->whereDate('transactions.created_at', '<=', $end_date);
+            })
+            ->count();
+        $reports["total_loan_balance"] = $branch->loans()
+            ->when($start_date, function ($query) use ($start_date) {
+                return $query->whereDate('loans.created_at', '>=', $start_date);
+            })
+            ->when($end_date, function ($query) use ($end_date) {
+                return $query->whereDate('loans.created_at', '<=', $end_date);
+            })
+            ->get()->sum('loan_balance');
+        $reports["total_interest_amount"] = $branch->loans()
+            ->when($start_date, function ($query) use ($start_date) {
+                return $query->whereDate('loans.created_at', '>=', $start_date);
+            })
+            ->when($end_date, function ($query) use ($end_date) {
+                return $query->whereDate('loans.created_at', '<=', $end_date);
+            })
+            ->get()->sum(function ($loan) {
+                return $loan->getTotalInterestAmountAttribute();
+            });
+        $reports["total_nonperforming_loans"] = $branch->loans()
+            ->where('loan_condition_status', LoanConditionStatus::NONPERFORMING)
+            ->when($start_date, function ($query) use ($start_date) {
+                return $query->whereDate('loans.created_at', '>=', $start_date);
+            })
+            ->when($end_date, function ($query) use ($end_date) {
+                return $query->whereDate('loans.created_at', '<=', $end_date);
+            })
+            ->count();
+
+        return $reports;
+    }
+
+    /**
+     * @param $branch_id
+     * @param $start_date
+     * @param $end_date
+     * @return mixed
+     */
+    public function computeBranchContributionReport($branch_id, $start_date, $end_date)
+    {
+        $branch = $this->find($branch_id);
+        $lockedContributions = $branch->contribubtionPlans()
+            ->where("type", ContributionType::LOCKED)
+            ->when($start_date, function ($query) use ($start_date) {
+                return $query->whereDate('contribution_plans.created_at', '>=', $start_date);
+            })
+            ->when($end_date, function ($query) use ($end_date) {
+                return $query->whereDate('contribution_plans.created_at', '<=', $end_date);
+            });
+        $goalContributions = $branch->contribubtionPlans()->where("type", ContributionType::GOAL)
+            ->when($start_date, function ($query) use ($start_date) {
+                return $query->whereDate('contribution_plans.created_at', '>=', $start_date);
+            })
+            ->when($end_date, function ($query) use ($end_date) {
+                return $query->whereDate('contribution_plans.created_at', '<=', $end_date);
+            });
+        $fixedContributions = $branch->contribubtionPlans()->where("type", ContributionType::FIXED)
+            ->when($start_date, function ($query) use ($start_date) {
+                return $query->whereDate('contribution_plans.created_at', '>=', $start_date);
+            })
+            ->when($end_date, function ($query) use ($end_date) {
+                return $query->whereDate('contribution_plans.created_at', '<=', $end_date);
+            });
+        $contributionReport["total_wallet_balance"] = $branch->customers()->get()->sum(function ($user) {
+            return $user->wallet->wallet_balance;
+        });
+        $contributionReport["total_amount_withdrawn"] = $branch->transactions()
+            ->where("transaction_type", TransactionType::CONTRIBUTION_PAYMENT)
+            ->where("transaction_status", TransactionStatus::COMPLETED)
+            ->when($start_date, function ($query) use ($start_date) {
+                return $query->whereDate('transactions.created_at', '>=', $start_date);
+            })
+            ->when($end_date, function ($query) use ($end_date) {
+                return $query->whereDate('transactions.created_at', '<=', $end_date);
+            })
+            ->sum("transaction_amount");
+        $contributionReport["total_goal_contribution"] = $goalContributions->count();
+        $contributionReport["total_fixed_contribution"] = $fixedContributions->count();
+        $contributionReport["total_locked_contribution"] = $lockedContributions->count();
+        $contributionReport["total_locked_interest"] = $lockedContributions->get()->sum(function ($contribution) {
+            return $contribution->getContributionInterest();
+        });
+        $contributionReport["total_fixed_interest"] = $fixedContributions->get()->sum(function ($contribution) {
+            return $contribution->getContributionInterest();
+        });
+        $contributionReport["total_goal_interest"] = $goalContributions->get()->sum(function ($contribution) {
+            return $contribution->getContributionInterest();
+        });
+        $contributionReport["total_penalties"] = 0;
+
+        return $contributionReport;
+
     }
 
 }
