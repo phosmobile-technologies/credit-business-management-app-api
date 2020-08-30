@@ -2,10 +2,16 @@
 
 namespace App\Services;
 
-use App\Models\CompanyBranch;
 use App\Models\ContributionPlan;
+use App\Models\enums\ContributionType;
+use App\Models\Enums\DisbursementStatus;
+use App\Models\Enums\LoanConditionStatus;
 use App\Models\Enums\LoanDefaultStatus;
+use App\Models\enums\RegistrationSource;
+use App\Models\enums\TransactionStatus;
+use App\Models\enums\TransactionType;
 use App\Repositories\Interfaces\CompanyBranchRepositoryInterface;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Date;
 
 /**
@@ -49,7 +55,7 @@ class BranchService
     /**
      * Get the query builder for customers that a belong to a branch.
      *
-     * @param string     $branch_id
+     * @param string $branch_id
      * @param array|null $roles
      * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
      */
@@ -94,7 +100,7 @@ class BranchService
     /**
      * Get the query builder for loan applications that a belong to a branch.
      *
-     * @param string      $branch_id
+     * @param string $branch_id
      * @param null|string $isAssigned
      * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
      */
@@ -112,7 +118,8 @@ class BranchService
      * @param Date|null $end_date
      * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
      */
-    public function searchBranchCustomersQuery(string $branch_id, ?string $search_query, ?Date $start_date, ?Date $end_date) {
+    public function searchBranchCustomersQuery(string $branch_id, ?string $search_query, ?Date $start_date, ?Date $end_date)
+    {
         return $this->branchRepository->searchBranchCustomers($branch_id, $search_query, $start_date, $end_date);
     }
 
@@ -120,7 +127,7 @@ class BranchService
      * Get the query builder for transactions that a belong to a branch.
      *
      * @param string $branch_id
-     * @param array  $queryParameters
+     * @param array $queryParameters
      * @return mixed
      */
     public function getBranchTransactionsQuery(string $branch_id, array $queryParameters)
@@ -151,5 +158,28 @@ class BranchService
         $statistics['transactions'] = $branch->transactions()->count();
 
         return $statistics;
+    }
+
+    /**
+     * @param $branch_id
+     * @param null $start_date
+     * @param null $end_date
+     * @return array
+     */
+    public function getBranchReport($branch_id, $start_date = null, $end_date = null)
+    {
+       return $this->branchRepository->computeBranchReport($branch_id, $start_date, $end_date);
+    }
+
+    /**
+     * @param $branch_id
+     * @param null $start_date
+     * @param null $end_date
+     * @return mixed
+     */
+    public function getBranchContributionReport($branch_id, $start_date = null, $end_date = null)
+    {
+        return $this->branchRepository->computeBranchContributionReport($branch_id, $start_date, $end_date);
+
     }
 }

@@ -4,15 +4,15 @@ namespace App\Models;
 
 use App\Models\Concerns\UsesUuid;
 use App\User;
-use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ContributionPlan extends Model
 {
     use UsesUuid;
 
-    CONST STATUS_INACTIVE = "INACTIVE";
+    const STATUS_INACTIVE = "INACTIVE";
     const STATUS_ACTIVE = "ACTIVE";
     const STATUS_COMPLETED = "COMPLETED";
 
@@ -131,5 +131,20 @@ class ContributionPlan extends Model
     public function getIsCompletedAttribute()
     {
         return $this->contributionStatus === self::STATUS_COMPLETED;
+    }
+
+
+    public function getContributionInterest()
+    {
+//        the contribution fixed amount
+        $principal = $this->fixed_amount;
+//        the contribution duration
+        $duration = $this->duration / 12;
+//        contribution interest rate
+        $interest_rate = $this->interest_rate / 100;
+
+        $contribution_accumulate_amount = $principal * (1 + ($interest_rate * $duration));
+        return $contribution_accumulate_amount - $this->fixed_amount;
+
     }
 }

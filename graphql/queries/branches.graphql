@@ -1,4 +1,4 @@
-extend type Query @middleware(checks: ["auth:api"]) {
+extend type Query  {
     """ Get a company branch by their ID """
     GetBranchById(id: ID! @eq): CompanyBranch @find(model: "App\\Models\\CompanyBranch")
 
@@ -70,4 +70,10 @@ extend type Query @middleware(checks: ["auth:api"]) {
 
     """ Get aggregate statistics for a branch  """
     GetBranchStatistics( branch_id: ID!): BranchStatistics!
+
+      """ Get general branch report  """
+    GetBranchReport(branch_id: ID!, start_date: Date, end_date: Date):  BranchReport!
+
+      """ Get contribution specific report of a branch  """
+    GetBranchContributionReport(branch_id: ID!, start_date: Date, end_date: Date):  BranchContributionReport!
 }
