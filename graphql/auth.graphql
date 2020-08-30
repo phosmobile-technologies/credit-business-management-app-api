@@ -70,6 +70,7 @@ input RegisterInput {
     next_of_kin: String
     relationship_with_next_of_kin: String
     account_administrator: String
+    account_administrator_id: ID
     account_name: String
     account_number: String
     status: AccountStatus!  @rules(apply: ["required"])
