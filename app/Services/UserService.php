@@ -96,7 +96,7 @@ class UserService
 
         if ($profilePicture) {
             $profilePicturePath = Storage::disk('local')->put('user-profile-pictures', $profilePicture);
-            $userProfileData['profile_picture'] = $profilePicturePath;
+            $userProfileData['profile_picture_url'] = $profilePicturePath;
         }
 
         $user = $this->userRepository->createUser($userData);
