@@ -96,7 +96,10 @@ class UserService
 
         if ($profilePicture) {
             $profilePicturePath = Storage::disk('public')->put('user-profile-pictures', $profilePicture);
-            $userProfileData['profile_picture_url'] = $profilePicturePath;
+
+            $baseUrl = config("app.url");
+            $userProfileData['profile_picture_url'] = "{$baseUrl}/{$profilePicturePath}";
+
             unset($userProfileData['profile_picture']);
             Log::info(json_encode($userProfileData));
         }
