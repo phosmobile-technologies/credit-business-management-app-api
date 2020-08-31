@@ -95,7 +95,7 @@ class UserService
         $userProfileData['customer_identifier'] = $this->generateCustomerIdentifier();
 
         if ($profilePicture) {
-            $profilePicturePath = Storage::disk('local')->put('user-profile-pictures', $profilePicture);
+            $profilePicturePath = Storage::disk('public')->put('user-profile-pictures', $profilePicture);
             $userProfileData['profile_picture_url'] = $profilePicturePath;
             unset($userProfileData['profile_picture']);
             Log::info(json_encode($userProfileData));
