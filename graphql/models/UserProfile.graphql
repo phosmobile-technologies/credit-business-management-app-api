@@ -18,6 +18,7 @@ type UserProfile {
     account_name: String!
     account_number: String!
     status: AccountStatus!
+    profile_picture_url: String
     company: Company! @belongsTo
     branch: CompanyBranch! @belongsTo
 }
