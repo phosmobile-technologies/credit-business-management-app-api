@@ -106,7 +106,6 @@ input UpdateUserProfileInput {
     relationship_with_next_of_kin: String
     account_name: String
     account_number: String
-    profile_picture: Upload
 }
 
 extend type Mutation {
