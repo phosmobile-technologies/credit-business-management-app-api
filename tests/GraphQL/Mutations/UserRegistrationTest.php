@@ -42,7 +42,7 @@ class UserRegistrationTest extends TestCase
         /** @var \Illuminate\Foundation\Testing\TestResponse $response */
         $response = $this->postGraphQL([
             'query' => '
-            mutation register($input: RegisterInput) {
+            mutation register($input: RegisterInput!) {
                 register(input: $input) {
                     user {
                         first_name,
@@ -59,7 +59,7 @@ class UserRegistrationTest extends TestCase
                         wallet {
                             id,
                             wallet_balance
-                        }  
+                        }
                     }
                 }
             }

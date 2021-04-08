@@ -21,6 +21,7 @@ services:
       - redis_cache
     environment:
       - "APP_NAME=UMC"
+      - "APP_DEBUG=true"
       - "DATABASE_URL=postgres://springVerseUser:springVersePassword@postgresql-database:5432/springVerseDB"
       - "REDIS_PORT=6379"
       - "REDIS_HOST=redis_cache"

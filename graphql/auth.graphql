@@ -53,16 +53,16 @@ input RegisterInput {
     last_name: String! @rules(apply: ["required", "string"])
     phone_number: String! @rules(apply: ["required", "string", "unique:users,phone_number"])
     password:String @rules(apply:["min:6","same:input.password_confirmation"])
+    password_confirmation: String
     email: String @rules(apply: ["email", "unique:users,email"])
     roles: [UserRoles!]!
-    password_confirmation: String
     registration_source:RegistrationSource!
-    gender: Gender! @rules(apply: ["required"])
+    gender: Gender
     date_of_birth: Date
     marital_status: MaritalStatus
     occupation: String
-    address: String!  @rules(apply: ["required", "string"])
-    state_of_origin: String  @rules(apply: ["string"])
+    address: String
+    state_of_origin: String
     bvn: String
     bank_account_number: String
     bank_account_name: String

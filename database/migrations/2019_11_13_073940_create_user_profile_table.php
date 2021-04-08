@@ -22,7 +22,7 @@ class CreateUserProfileTable extends Migration
             $table->date('date_of_birth')->nullable();
             $table->enum('marital_status', ['SINGLE', 'MARRIED', 'DIVORCED', 'SEPERATED', 'WIDOWED'])->nullable();
             $table->string('occupation')->nullable();
-            $table->string('address');
+            $table->string('address')->nullable();
             $table->string('state_of_origin')->nullable();
             $table->string('next_of_kin')->nullable();
             $table->string('relationship_with_next_of_kin')->nullable();
