@@ -1,22 +1,22 @@
 """ Profile data for a user """
 type UserProfile {
     id: ID!
-    gender: Gender!
-    date_of_birth: Date!
-    marital_status: MaritalStatus!
-    occupation: String!
-    address: String!
-    state_of_origin: String!
+    gender: Gender
+    date_of_birth: Date
+    marital_status: MaritalStatus
+    occupation: String
+    address: String
+    state_of_origin: String
     registration_source: RegistrationSource!
     bvn: String
     bank_account_number: String
     bank_account_name: String
     bank_name: String
-    next_of_kin: String!
-    relationship_with_next_of_kin: String!
+    next_of_kin: String
+    relationship_with_next_of_kin: String
     account_administrator: String!
-    account_name: String!
-    account_number: String!
+    account_name: String
+    account_number: String
     status: AccountStatus!
     profile_picture_url: String
     company: Company! @belongsTo
